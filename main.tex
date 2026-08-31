@@ -6,359 +6,601 @@
 % Parsa Eskandar, Jouni Siren, Benedict Paten
 % UC Santa Cruz Genomics Institute
 %
-% Build: compiles with pdflatex (Overleaf default) or tectonic.
-% Size:  48in x 36in landscape (121.92cm x 91.44cm).
-%        Change the beamerposter options below for A0 etc.
+% Build: Overleaf (pdfLaTeX) or tectonic.  48in x 36in landscape.
 % =====================================================================
 \documentclass[final]{beamer}
-\usepackage[orientation=landscape,size=custom,width=121.92,height=91.44,scale=1.25]{beamerposter}
+\usepackage[orientation=landscape,size=custom,width=121.92,height=91.44,scale=1.0]{beamerposter}
 
-\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage{helvet}
-\renewcommand{\familydefault}{\sfdefault}
+\usepackage[sfdefault]{FiraSans}
+\usepackage{amsmath}
+\usepackage{microtype}
 \usepackage{graphicx}
-\usepackage{booktabs}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
 \usepackage{ragged2e}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage[most]{tcolorbox}
+\usepackage{qrcode}
+\usepackage{fontawesome5}
 
 % ---------------------------------------------------------------------
-% Colors (UCSC palette)
+% Palette
 % ---------------------------------------------------------------------
-\definecolor{ucscblue}{HTML}{003C6C}
-\definecolor{ucscgold}{HTML}{FDC700}
-\definecolor{ucscteal}{HTML}{006AAD}
-\definecolor{lightbg}{HTML}{F4F6F8}
-\definecolor{accentgreen}{HTML}{2E7D32}
-\definecolor{accentred}{HTML}{C62828}
+\definecolor{navy}{HTML}{003C6C}      % UCSC primary
+\definecolor{navydeep}{HTML}{06294A}  % masthead
+\definecolor{ink}{HTML}{18293B}       % body text
+\definecolor{muted}{HTML}{5B6B7C}     % secondary text
+\definecolor{gold}{HTML}{FDC700}      % UCSC gold
+\definecolor{amber}{HTML}{C98A00}     % gold, dark enough for text
+\definecolor{teal}{HTML}{0E7C9C}
+\definecolor{coral}{HTML}{E4572E}
+\definecolor{green}{HTML}{2E7D32}
+\definecolor{pagebg}{HTML}{EDF1F5}
+\definecolor{hairline}{HTML}{D9E1E9}
+\definecolor{chipbg}{HTML}{F1F4F8}
+\definecolor{skyfill}{HTML}{E7F0F7}
 
-% ---------------------------------------------------------------------
-% Beamer theme setup
-% ---------------------------------------------------------------------
-\setbeamercolor{background canvas}{bg=lightbg}
-\setbeamercolor{block title}{fg=white,bg=ucscblue}
-\setbeamercolor{block body}{fg=black,bg=white}
-\setbeamerfont{block title}{size=\Large,series=\bfseries}
-\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor{background canvas}{bg=pagebg}
 \setbeamertemplate{navigation symbols}{}
-\setbeamercolor{item}{fg=ucscteal}
-\setbeamercolor{caption name}{fg=ucscblue}
-\setlength{\leftmargini}{3.2ex}
+\setbeamersize{text margin left=0cm, text margin right=0cm}
+\setbeamercolor{normal text}{fg=ink}
+\setbeamercolor{item}{fg=navy}
 
-% Placeholder for screenshots not yet added: drop the PNG into figures/
-% with the given name and the box is replaced automatically.
-\newcommand{\screenshot}[3]{% {filename}{height}{caption shown inside placeholder}
-  \begin{center}
-  \IfFileExists{figures/#1}{%
-    \includegraphics[width=0.97\linewidth,height=#2,keepaspectratio]{figures/#1}%
-  }{%
-    \begin{tikzpicture}
-      \node[draw=ucscteal, dashed, thick, fill=white, minimum width=0.94\linewidth,
-            minimum height=#2, align=center, text=ucscteal, text width=0.85\linewidth,
-            font=\normalsize]
-        {\textbf{Screenshot placeholder} --- \texttt{\detokenize{figures/#1}}\\[0.5ex] #3};
-    \end{tikzpicture}%
-  }%
-  \end{center}
+% ---------------------------------------------------------------------
+% Card system
+% ---------------------------------------------------------------------
+\newtcolorbox{card}{
+  enhanced, colback=white, colframe=white, boxrule=0pt, arc=5mm,
+  left=1.1cm, right=1.1cm, top=0.75cm, bottom=0.85cm,
+  before skip=0cm, after skip=0.95cm,
+  fuzzy shadow={0mm}{-2mm}{0mm}{0.55mm}{black!20}
 }
 
-\newcommand{\kpi}[2]{% big number + label
+% \cardhead{NN}{Title}
+\newcommand{\cardhead}[2]{%
+  \begin{tikzpicture}[baseline=(t.base)]
+    \node[fill=gold, rounded corners=2.2mm, inner sep=0pt,
+          minimum width=1.7cm, minimum height=1.7cm,
+          font=\large\bfseries, text=navydeep] (n) {#1};
+    \node[right=0.6cm of n.east, anchor=west, inner sep=0pt,
+          font=\Large\bfseries, text=navy] (t) {#2};
+  \end{tikzpicture}\par
+  \vspace{0.4cm}
+  {\color{hairline}\hrule height 1.5pt}
+  \vspace{0.6cm}
+}
+
+% Small stat chip used in the hero strip
+\newcommand{\statchip}[2]{%
+  \begin{tikzpicture}
+    \node[fill=chipbg, rounded corners=3mm, inner xsep=0.75cm, inner ysep=0.38cm,
+          align=center] {%
+      {\color{navy}\fontsize{40}{42}\selectfont\bfseries #1}\\[0.35ex]
+      {\color{muted}\small #2}};
+  \end{tikzpicture}}
+
+% Inline label chip
+\newcommand{\chip}[1]{\tikz[baseline=(c.base)]{\node[fill=chipbg, rounded corners=1.8mm,
+  inner xsep=0.4cm, inner ysep=0.18cm, font=\small, text=ink] (c) {#1};}}
+
+% Icon bullet for capability / future-work rows
+\newcommand{\iconrow}[3]{% {icon}{bold lead}{body}
+  \par\noindent
+  \begin{minipage}[t]{2.1cm}
+    \centering\tikz{\node[fill=skyfill, circle, minimum size=1.8cm,
+      text=navy, font=\large]{#1};}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{\dimexpr\linewidth-2.6cm\relax}
+    \RaggedRight{\bfseries\color{navy}#2}\\[0.15ex]#3
+  \end{minipage}\par\vspace{0.5cm}}
+
+% Browser-chrome frame for screenshots (placeholder until PNG exists)
+\newcommand{\browserframe}[3]{% {filename}{height}{caption}
   \begin{center}
-    {\color{ucscblue}\fontsize{56}{60}\selectfont\bfseries #1}\\[0.6ex]
-    {\normalsize #2}
-  \end{center}
+  \begin{tikzpicture}
+    \node[fill=chipbg, rounded corners=3mm, inner sep=0pt] (win)
+      {\begin{minipage}{0.94\linewidth}
+        \vspace{0.3cm}
+        \hspace{0.5cm}\tikz{\fill[coral!80] (0,0) circle (0.13);
+          \fill[gold] (0.5,0) circle (0.13);
+          \fill[green!70] (1.0,0) circle (0.13);}%
+        \hspace{0.6cm}{\footnotesize\color{muted}\texttt{\detokenize{genome.ucsc.edu}}}
+        \vspace{0.25cm}\par
+        \IfFileExists{figures/#1}{%
+          \includegraphics[width=\linewidth,height=#2,keepaspectratio]{figures/#1}\par
+        }{%
+          \begin{tikzpicture}
+            \node[fill=white, minimum width=\linewidth, minimum height=#2,
+                  align=center, text=muted, font=\normalsize, inner sep=0.4cm]
+              {\faImage\ \ add \texttt{\detokenize{figures/#1}}\\[0.4ex]
+               {\footnotesize #3}};
+          \end{tikzpicture}\par
+        }%
+      \end{minipage}};
+  \end{tikzpicture}
+  \end{center}}
+
+% Chart defaults
+\pgfplotsset{
+  poster/.style={
+    axis line style={hairline, thick},
+    axis x line*=bottom, axis y line*=left,
+    tick style={hairline, thick},
+    ticklabel style={font=\small, color=muted},
+    label style={font=\small, color=muted},
+    grid style={hairline, dashed},
+    every axis/.append style={line width=1.2pt},
+  },
+  sqlegend/.style={legend image code/.code={\fill[##1] (0cm,-0.1cm) rectangle (0.38cm,0.26cm);}},
 }
 
 \begin{document}
 \begin{frame}[t]
 
-% ============================ HEADER =================================
-\vskip1ex
-\begin{columns}[c]
-  \begin{column}{0.02\paperwidth}\end{column}
-  \begin{column}{0.10\paperwidth}
-    \centering
-    % Drop a logo at figures/ucsc_logo.png to show it here
-    \IfFileExists{figures/ucsc_logo.png}{\includegraphics[width=0.9\linewidth]{figures/ucsc_logo.png}}{%
-      \begin{tikzpicture}\node[draw=ucscblue,thick,circle,minimum size=7.5cm,align=center,fill=white,text=ucscblue,font=\large]{\textbf{UCSC}\\Genomics\\Institute};\end{tikzpicture}}
-  \end{column}
-  \begin{column}{0.72\paperwidth}
-    \centering
-    {\color{ucscblue}\fontsize{72}{80}\selectfont\bfseries
-      A Pangenome Sequence Search and Coordinate\\[0.6ex]
-      Translation Service for the UCSC Genome Browser\par}
-    \vskip1.5ex
-    {\LARGE Parsa Eskandar \quad\textbullet\quad Jouni Sir\'en \quad\textbullet\quad Benedict Paten}\\[0.8ex]
-    {\Large UC Santa Cruz Genomics Institute, University of California, Santa Cruz \quad\textbullet\quad \texttt{seeskand@ucsc.edu}}
-  \end{column}
-  \begin{column}{0.10\paperwidth}
-    \centering
-    \IfFileExists{figures/hprc_logo.png}{\includegraphics[width=0.9\linewidth]{figures/hprc_logo.png}}{%
-      \begin{tikzpicture}\node[draw=ucscblue,thick,circle,minimum size=7.5cm,align=center,fill=white,text=ucscblue,font=\large]{\textbf{HPRC}\\2026};\end{tikzpicture}}
-  \end{column}
-  \begin{column}{0.02\paperwidth}\end{column}
-\end{columns}
-\vskip1.5ex
-\begin{center}\textcolor{ucscgold}{\rule{0.97\paperwidth}{5pt}}\end{center}
-\vskip0.5ex
+% ====================================================================
+%  MASTHEAD
+% ====================================================================
+\vspace*{-0.15cm}
+\begin{tikzpicture}
+  \fill[navydeep] (0,0) rectangle (\paperwidth,-12.5cm);
+  \fill[gold]     (0,-12.5cm) rectangle (\paperwidth,-12.85cm);
 
-% ============================ BODY ===================================
+  % --- emblem: haplotype ribbons through two bubbles -----------------
+  \begin{scope}[shift={(3.0cm,-6.2cm)}, xscale=1.28, yscale=1.28,
+                line width=9pt, line cap=round]
+    \draw[white!85!navy]  (0,0)   .. controls (2.2,0)   and (2.8,1.5)  .. (4.6,1.5)
+                          .. controls (6.4,1.5) and (7.0,0)   .. (9.2,0)
+                          .. controls (11.4,0)  and (12.0,0)  .. (13.6,0);
+    \draw[gold]           (0,0)   .. controls (2.6,0)   and (3.2,-1.5) .. (4.6,-1.5)
+                          .. controls (6.0,-1.5) and (6.8,0) .. (9.2,0)
+                          .. controls (10.6,0) and (11.2,1.35) .. (12.2,1.35)
+                          .. controls (13.0,1.35) and (13.2,0.6) .. (13.6,0);
+    \draw[teal!60!white]  (0,0) -- (13.6,0);
+    \fill[white] (0,0) circle (0.3) (13.6,0) circle (0.3);
+  \end{scope}
+
+  % --- title block ---------------------------------------------------
+  \node[anchor=north, align=center, text=gold, font=\normalsize\bfseries]
+    at (0.5\paperwidth,-1.35cm)
+    {HPRC 2026 \ \textbullet\ \ HUMAN PANGENOME REFERENCE CONSORTIUM};
+  \node[anchor=north, align=center, text=white,
+        font=\fontsize{78}{88}\selectfont\bfseries]
+    at (0.5\paperwidth,-2.55cm)
+    {A Pangenome Sequence Search and Coordinate\\
+     Translation Service for the UCSC Genome Browser};
+  \node[anchor=north, align=center, text=white, font=\LARGE]
+    at (0.5\paperwidth,-9.35cm)
+    {Parsa Eskandar \quad\textbullet\quad Jouni Sir\'en \quad\textbullet\quad Benedict Paten};
+  \node[anchor=north, align=center, text=white!72!navy, font=\Large]
+    at (0.5\paperwidth,-11.05cm)
+    {UC Santa Cruz Genomics Institute \quad\textbullet\quad \texttt{seeskand@ucsc.edu}};
+
+  % --- QR tile --------------------------------------------------------
+  \node[anchor=east, fill=white, rounded corners=3mm, inner sep=0.5cm]
+    (qr) at (\paperwidth-3.0cm,-5.4cm) {\qrcode[height=5.6cm]{https://github.com/parsaeskandar/hprc_2026_poster}};
+  \node[anchor=north, text=white!72!navy, font=\small, align=center]
+    at (qr.south) [yshift=-0.3cm] {poster sources \ \faGithub\\[-0.1ex]\texttt{\detokenize{parsaeskandar/hprc_2026_poster}}};
+\end{tikzpicture}
+
+% ====================================================================
+%  HERO STRIP
+% ====================================================================
+\vspace{0.55cm}
+\begin{center}
+\begin{minipage}{0.965\paperwidth}
+\begin{tcolorbox}[enhanced, colback=white, boxrule=0pt, arc=5mm,
+    left=1.4cm, right=1.4cm, top=0.65cm, bottom=0.65cm,
+    fuzzy shadow={0mm}{-2mm}{0mm}{0.55mm}{black!20}]
+  \begin{minipage}[c]{0.40\linewidth}
+    \RaggedRight
+    {\fontsize{32}{40}\selectfont\color{navy}
+     Paste a \textbf{sequence} or a \textbf{position} --- get an answer from
+     \textbf{every HPRC haplotype}, live, inside the browser.}
+  \end{minipage}\hfill
+  \begin{minipage}[c]{0.58\linewidth}
+    \centering
+    \statchip{464}{haplotypes scored per query}\hspace{0.35cm}
+    \statchip{$\sim$20\,ms}{gene-scale liftover}\hspace{0.35cm}
+    \statchip{466\,\texttimes\,466}{assembly pairs, on demand}\hspace{0.35cm}
+    \statchip{15}{lines changed in kent core}
+  \end{minipage}
+\end{tcolorbox}
+\end{minipage}
+\end{center}
+\vspace{0.45cm}
+
+% ====================================================================
+%  BODY --- four columns
+% ====================================================================
 \begin{columns}[t]
 
-% ---------------------------------------------------------------------
-% COLUMN 1 — Motivation + capabilities + architecture
-% ---------------------------------------------------------------------
-\begin{column}{0.232\paperwidth}
+% ====================== COLUMN 1 =====================================
+\begin{column}{0.2335\paperwidth}
 
-\begin{block}{Motivation}
+\begin{card}
+\cardhead{01}{The graph nobody could ask}
+\RaggedRight
 The HPRC v2.0 minigraph--Cactus graph holds \textbf{233 samples / 464
-haplotypes} --- but there has been no interactive way to query it.
-\begin{itemize}
-  \item A researcher with a \textbf{sequence} cannot ask which haplotypes
-        carry it, or where it lies on each of them.
-  \item A researcher with a \textbf{position} cannot convert it to another
-        assembly: chain files cover only \textbf{56} of the
-        $\sim$\textbf{213{,}000} possible sample-to-sample pairs.
-\end{itemize}
-We built a service that answers both through the graph itself, integrated
-into the UCSC Genome Browser.
-\end{block}
-
-\begin{block}{Three capabilities}
-\begin{enumerate}
-  \item \textbf{Pangenome sequence search} --- a BLAT-like page: a pasted
-        sequence is mapped to the whole graph with \texttt{vg giraffe}.
-        Results show every assembly carrying the exact allele path, all 464
-        haplotypes ranked by identity, and one-click positions on any
-        haplotype, drawn as a browser track with base-level mismatch
-        coloring.
-  \item \textbf{Any-to-any coordinate translation} --- liftover between any
-        two of the 466 assemblies at interactive speed, with a scored
-        ``which assemblies contain this region'' destination picker.
-  \item \textbf{Annotation lifting} --- a QuickLift chain generated
-        \emph{at request time}, so users land on an HPRC assembly with
-        CHM13's genes, RefSeq, CenSat and T2T Encode at translated
-        positions, plus an \textbf{Alignment Differences} track marking
-        indels and mismatches between the two assemblies.
-\end{enumerate}
-\end{block}
-
-\begin{block}{Architecture}
+haplotypes}, yet there has been no interactive way to query it. Liftover
+needs a chain file per assembly pair --- and almost none exist:
 \begin{center}
-\begin{tikzpicture}[
-  box/.style={draw=ucscblue, thick, rounded corners=6pt, fill=lightbg, align=center,
-              minimum height=2.6cm, text width=10cm, font=\normalsize},
-  arr/.style={-{Stealth[length=5mm]}, very thick, ucscteal}
-]
-  \node[box] (cgi) {\textbf{UCSC Genome Browser}\\ \texttt{hgPangenome} CGI + JS\\ \scriptsize map / surject / convert / quickLift / extendChain};
-  \node[box, below=1.1cm of cgi] (mw) {\textbf{Python middleware} --- JSON API\\ \scriptsize \texttt{/map} \ \texttt{/liftover} \ \texttt{/surject} \ \texttt{/liftover/targets}};
-  \node[box, below=1.1cm of mw, xshift=-5.6cm, text width=9.4cm] (vg) {\textbf{vg giraffe-server}\\ \scriptsize persistent mapper, indexes loaded once};
-  \node[box, below=1.1cm of mw, xshift=5.6cm, text width=9.4cm] (cpp) {\textbf{pangenome-index (C++)}\\ \scriptsize coordinate translation engine};
-  \node[box, below=1.1cm of cpp, text width=10.6cm, draw=ucscteal] (idxs) {\scriptsize GBZ graph (148M nodes)\\ r-index + sampled tag array\\ GBWT FastLocate ($\sim$11\,GB)\\ Table 1 + routing Table 2 (1.78\,GB)};
-  \draw[arr] (cgi) -- (mw);
-  \draw[arr] (mw) -- (vg);
-  \draw[arr] (mw) -- (cpp);
-  \draw[arr] (cpp) -- (idxs);
+\begin{tikzpicture}[scale=0.92]
+  \foreach \x in {0,...,11}
+    \foreach \y in {0,...,7}
+      {\fill[hairline] (\x*0.62,\y*0.62) rectangle +(0.5,0.5);}
+  \fill[gold] (4*0.62,3*0.62) rectangle +(0.5,0.5);
+  \node[anchor=north, font=\small, text=muted, align=center]
+    at (3.4,-0.45) {\textbf{chain files today}\\ 56 of $\sim$213{,}000 pairs};
+  \node[font=\LARGE, text=navy] at (8.6,2.3) {$\Longrightarrow$};
+  \begin{scope}[shift={(10.2,0)}]
+    \foreach \x in {0,...,11}
+      \foreach \y in {0,...,7}
+        {\fill[navy!80] (\x*0.62,\y*0.62) rectangle +(0.5,0.5);}
+    \node[anchor=north, font=\small, text=muted, align=center]
+      at (3.4,-0.45) {\textbf{through the graph}\\ every pair, on demand};
+  \end{scope}
 \end{tikzpicture}
 \end{center}
-Core browser modifications: \textbf{3 files / 15 lines}; everything else is
-a new, self-contained CGI, dark unless configured.
-\end{block}
+\vspace{0.15cm}
+A researcher with a \textbf{sequence} can't ask which haplotypes carry it;
+one with a \textbf{position} can't move it between assemblies. We built the
+service that answers both, and wired it into the UCSC Genome Browser.
+\end{card}
+
+\begin{card}
+\cardhead{02}{What users get}
+\iconrow{\faSearch}{Pangenome sequence search}{A BLAT-like page: a pasted
+sequence is mapped to the whole graph with \texttt{vg giraffe}; results rank
+all 464 haplotypes by identity and link to its position on any of them,
+drawn as a track with base-level mismatch coloring.}
+\iconrow{\faRandom}{Any-to-any coordinate translation}{Liftover between
+any two of 466 assemblies at interactive speed, with a scored ``which
+assemblies contain this region'' destination picker.}
+\iconrow{\faLayerGroup}{Annotation lifting}{A QuickLift chain generated
+\emph{at request time}: users land on an HPRC assembly with CHM13's genes,
+RefSeq, CenSat and T2T~Encode at translated positions, plus an
+\textbf{Alignment Differences} track.}
+\end{card}
+
+\begin{card}
+\cardhead{03}{Architecture}
+\begin{center}
+\begin{tikzpicture}[
+  layer/.style={draw=hairline, very thick, fill=skyfill, rounded corners=3mm,
+                align=center, text width=21.0cm, inner ysep=0.34cm},
+  arr/.style={-{Stealth[length=5mm]}, line width=2.2pt, navy!60}
+]
+  \node[layer] (gb) {{\bfseries\color{navy}UCSC Genome Browser}\\[0.2ex]
+    {\small \texttt{hgPangenome} CGI + JS \ \textbullet\ \ mapping page \ \textbullet\ \ convert page \ \textbullet\ \ \texttt{hgConvert}}};
+  \node[layer, below=0.6cm of gb] (mw) {{\bfseries\color{navy}Python middleware} {\small(JSON API, token auth)}\\[0.25ex]
+    {\small\texttt{/map} \ \ \texttt{/surject} \ \ \texttt{/liftover} \ \ \texttt{/liftover/targets}}};
+  \node[layer, below=0.6cm of mw.south west, anchor=north west, text width=10.0cm] (vg)
+    {{\bfseries\color{navy}vg giraffe-server}\\[0.15ex]{\small persistent mapper;\\ indexes loaded once}};
+  \node[layer, below=0.6cm of mw.south east, anchor=north east, text width=10.0cm] (cpp)
+    {{\bfseries\color{navy}pangenome-index}\\[0.15ex]{\small C++ translation engine}};
+  \node[below=0.45cm of cpp.south, anchor=north, text width=10.0cm, align=center] (idx)
+    {\small\color{muted}GBZ \ 148M nodes \ \textbullet\ \ r-index + tag array\\ FastLocate $\sim$11\,GB \ \textbullet\ \ Tables 1+2 \ 1.78\,GB};
+  \draw[arr] (gb) -- (mw);
+  \draw[arr] (mw.south -| vg) -- (vg);
+  \draw[arr] (mw.south -| cpp) -- (cpp);
+  \draw[arr, hairline] (cpp) -- (idx);
+\end{tikzpicture}
+\end{center}
+\vspace{0.1cm}
+\RaggedRight
+Core browser changes: \textbf{3 files, 15 lines}. Everything else is a new,
+self-contained CGI --- dark unless configured.
+\end{card}
 
 \end{column}
 
-% ---------------------------------------------------------------------
-% COLUMN 2 — Methods
-% ---------------------------------------------------------------------
-\begin{column}{0.232\paperwidth}
+% ====================== COLUMN 2 =====================================
+\begin{column}{0.2335\paperwidth}
 
-\begin{block}{Translation through the graph}
-\begin{enumerate}
-  \item \textbf{Table 1}: \texttt{contig:start-end} $\rightarrow$ graph
-        path + path-local interval.
-  \item \textbf{Candidate discovery}: probe nodes on the source path
-        ($\sim$1 / 2\,kb); each GBWT probe returns \emph{every} haplotype on
-        that node. The \textbf{routing Table 2} replaces probing with a
-        direct lookup.
-  \item \textbf{Anchoring}: nodes visited exactly once by both sides are
-        guaranteed orthologous; a colinearity gate rejects implausible
-        pairings.
-  \item \textbf{Trace}: an LF-walk between first and last shared node emits
-        per-base correspondences.
-\end{enumerate}
-Results fold into \textbf{chain-semantics blocks}: a block breaks only on
-indels, orientation flips, or contig changes --- never on substitutions.
-\end{block}
-
-\begin{block}{Routing table: 17.2 TB $\rightarrow$ 1.78 GB}
-An all-pairs table over the frequency-filtered graph (224M path fragments,
-$2{,}367\times$ fragmentation) would cost \textbf{17.2\,TB}. Building over
-the non-filtered graph (94{,}554 paths) and storing \emph{routing only} ---
-which targets a source range touches, never their coordinates ---
-eliminates every failure mode of interval pairing:
+\begin{card}
+\cardhead{04}{Translation through the graph}
 \begin{center}
-\begin{tabular}{lrr}
-\toprule
- & \textbf{interval-pairing} & \textbf{routing} \\
-\midrule
-abandoned runs & 5{,}025{,}344 & \textbf{0} \\
-splits & 35{,}734{,}985 & \textbf{0} \\
-segments & 68.2\,M & 45.7\,M \\
-size & 3.69\,GB & \textbf{1.78\,GB} \\
-build (32 thr) & --- & \textbf{35 min} \\
-\bottomrule
-\end{tabular}
-\end{center}
-\end{block}
+\begin{tikzpicture}[line cap=round, scale=0.97]
+  % ---- source bar ---------------------------------------------------
+  \node[anchor=west, font=\small\bfseries, text=navy] at (0.1,12.35) {source \ \ CHM13\#0 \ chr10};
+  \fill[navy!12, rounded corners=2mm] (0,11.0) rectangle (22,11.85);
+  \fill[gold, rounded corners=1mm] (7,11.0) rectangle (13.5,11.85);
+  \node[font=\footnotesize, text=navydeep] at (10.25,11.42) {query interval};
+  \node[fill=gold, circle, minimum size=1.0cm, font=\small\bfseries, text=navydeep] at (5.7,11.42) {1};
 
-\begin{block}{Coverage and identity, all 464 at once}
+  % ---- probes annotation (top) ---------------------------------------
+  \node[fill=gold, circle, minimum size=1.0cm, font=\small\bfseries, text=navydeep] at (0.7,9.0) {2};
+  \node[anchor=west, font=\footnotesize, text=amber] at (1.5,9.0)
+    {probes: 1 / 2\,kb --- each returns \emph{every} haplotype on the node};
+
+  % ---- graph row ------------------------------------------------------
+  \coordinate (n1) at (1.5,5.2);  \coordinate (n2) at (4.0,5.2);
+  \coordinate (n3) at (6.5,5.2);  \coordinate (bU) at (9.0,6.3);
+  \coordinate (bD) at (9.0,4.1);  \coordinate (n4) at (11.5,5.2);
+  \coordinate (n5) at (14.0,5.2); \coordinate (n6) at (16.5,5.2);
+  \coordinate (n7) at (19.0,5.2); \coordinate (n8) at (21.2,5.2);
+  \coordinate (det) at (17.75,4.45);
+  \draw[hairline, line width=2.4pt]
+    (n1)--(n2)--(n3) (n4)--(n5)--(n6) (n7)--(n8)
+    (n3) to[bend left=20] (bU) (bU) to[bend left=20] (n4)
+    (n3) to[bend right=20] (bD) (bD) to[bend right=20] (n4)
+    (n6) to[bend left=28] (n7)
+    (n6) -- (det) -- (n7);
+  \draw[teal, line width=4.2pt, opacity=0.7]
+    (0.5,5.32) -- (n1) -- (n2) -- (n3) to[bend left=20] (bU) to[bend left=20] (n4)
+    -- (n5) -- (n6) to[bend left=28] (n7) -- (n8) -- (22,5.32);
+  \draw[coral, line width=4.2pt, opacity=0.7]
+    (0.5,5.08) -- (n1) -- (n2) -- (n3) to[bend right=20] (bD) to[bend right=20] (n4)
+    -- (n5) -- (n6) -- (det) -- (n7) -- (n8) -- (22,5.08);
+  \foreach \p in {n1,n2,n3,bU,bD,n4,n5,n6,n7,n8}
+    {\fill[white] (\p) circle (0.40); \draw[navy!55, line width=2.2pt] (\p) circle (0.40);}
+  \fill[navy!30] (det) circle (0.26);
+  % probe arrows
+  \foreach \p in {n2,n5,n7}
+    {\draw[amber, line width=2.4pt, -{Stealth[length=4mm]}] ($(\p)+(0,2.5)$) -- ($(\p)+(0,0.62)$);}
+  % anchors
+  \draw[gold, line width=4pt] (n3) circle (0.58);
+  \draw[gold, line width=4pt] (n6) circle (0.58);
+  \node[fill=gold, circle, minimum size=1.0cm, font=\small\bfseries, text=navydeep] at (0.7,2.6) {3};
+  \node[anchor=west, font=\footnotesize, text=ink] at (1.5,2.6)
+    {unique anchors {\color{muted}(1$\times$ on both)}};
+  % trace brace (below)
+  \draw[decorate, decoration={brace, mirror, amplitude=8pt}, navy, line width=2pt]
+    (11.6,3.6) -- (15.9,3.6);
+  \node[fill=gold, circle, minimum size=1.0cm, font=\small\bfseries, text=navydeep] at (12.2,2.6) {4};
+  \node[anchor=west, font=\footnotesize, text=navy] at (13.0,2.6)
+    {LF-walk trace $\to$ offsets};
+
+  % ---- target bar ------------------------------------------------------
+  \fill[teal!12, rounded corners=2mm] (0,0.0) rectangle (22,0.85);
+  \fill[gold, rounded corners=1mm] (9,0.0) rectangle (15.5,0.85);
+  \node[font=\footnotesize, text=navydeep] at (12.25,0.42) {translated interval};
+  \node[anchor=west, font=\small\bfseries, text=teal] at (0.1,-0.55) {target \ \ HG00408\#1};
+  % projections
+  \draw[dashed, amber, line width=1.8pt] (7,11.0) -- (6.5,5.9);
+  \draw[dashed, amber, line width=1.8pt] (13.5,11.0) -- (16.5,5.9);
+  \draw[dashed, amber, line width=1.8pt] (6.5,4.5) -- (9,0.85);
+  \draw[dashed, amber, line width=1.8pt] (16.5,4.5) -- (15.5,0.85);
+\end{tikzpicture}
+\end{center}
+\vspace{0.35cm}
+\RaggedRight
+{\bfseries\color{navy}1} \ Table 1 turns \texttt{contig:start-end} into a
+graph path interval. \ {\bfseries\color{navy}2} \ Probing discovers target
+candidates --- or the \textbf{routing Table 2} skips it with a direct
+lookup. \ {\bfseries\color{navy}3} \ Nodes visited exactly once by both
+sides are guaranteed orthologous; a colinearity gate drops implausible
+pairs. \ {\bfseries\color{navy}4} \ The trace folds into
+\textbf{chain-semantics blocks}: broken by indels, flips, contig changes ---
+never by substitutions.
+\end{card}
+
+\begin{card}
+\cardhead{05}{A routing table that fits}
+\RaggedRight
+An all-pairs interval table over the frequency-filtered graph (224M path
+fragments, $2{,}367\times$ fragmentation) would cost \textbf{17.2\,TB}.
+Building on the \emph{non-filtered} graph (94{,}554 paths) and storing
+\emph{routing only} --- which targets a source range touches, never their
+coordinates:
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[poster, width=0.9\linewidth, height=6.2cm,
+  xbar, xmode=log, xmin=0.5, xmax=400000,
+  symbolic y coords={routing --- ours, star via references, all-pairs filtered},
+  ytick=data, bar width=0.95cm,
+  enlarge y limits=0.3,
+  xlabel={index size (GB, log scale)},
+  nodes near coords style={font=\small\bfseries, color=ink},
+  point meta=explicit symbolic, nodes near coords,
+  ]
+  \addplot[fill=navy!80, draw=none] coordinates {
+    (17610,all-pairs filtered) [17.2 TB]
+    (74,star via references) [74 GB]
+    (1.78,routing --- ours) [1.78 GB]
+  };
+\end{axis}
+\end{tikzpicture}
+\end{center}
+Dropping stored target intervals also removed \emph{every} failure mode of
+interval pairing:\\[0.3cm]
+\chip{\textbf{0} abandoned runs \ {\color{muted}(was 5.0M)}}\
+\chip{\textbf{0} splits \ {\color{muted}(was 35.7M)}}\
+\chip{build: \textbf{35 min}}
+\end{card}
+
+\begin{card}
+\cardhead{06}{Scoring all 464 at once}
+\RaggedRight
 One pass over a mapped read's nodes scores \textbf{every haplotype}
-simultaneously (each probe already returns all of them):
+simultaneously --- each probe already returns all of them:
 \begin{center}
-$\displaystyle \mathrm{coverage}(H) = \frac{\textrm{aligned bases on nodes $H$ visits}}{\textrm{aligned bases}}$\\[1ex]
-$\displaystyle \mathrm{identity}(H) = \frac{\textrm{\ldots that also \emph{matched} there}}{\textrm{aligned bases}}$
+\begin{tikzpicture}[line cap=round, scale=0.97]
+  \node[anchor=west, font=\small, text=muted] at (0,3.55) {aligned read bases};
+  \fill[navy!25, rounded corners=1.5mm] (0,2.65) rectangle (21,3.3);
+  \node[anchor=west, font=\small, text=muted] at (0,2.1) {on nodes haplotype $H$ visits};
+  \fill[teal!75, rounded corners=1.5mm] (0,1.1) rectangle (17.6,1.75);
+  \fill[coral] (4.1,1.1) rectangle (4.55,1.75);
+  \fill[coral] (11.2,1.1) rectangle (11.8,1.75);
+  \node[anchor=west, font=\footnotesize, text=coral] at (17.9,1.42) {mismatches};
+  \draw[decorate, decoration={brace, mirror, amplitude=9pt}, navy, line width=2pt]
+    (0,0.75) -- (17.6,0.75);
+  \node[font=\small\bfseries, text=navy] at (8.8,-0.2)
+    {coverage$(H)$ = 84\% \quad\textbullet\quad identity$(H)$ = 79\%};
+\end{tikzpicture}
 \end{center}
-$\mathrm{identity} \le \mathrm{coverage}$ always; the gap is the mismatch
-burden. Shown together, they separate ``present but diverged'' from
-``half missing'' --- which one score conflates.
-\end{block}
-
-\begin{block}{On-the-fly QuickLift chains}
-Blocks become bigChain+bigLink on the fly (JSON $\rightarrow$ BED
-$\rightarrow$ \texttt{bedToBigBed}), served through a generated hub ---
-QuickLift's renderer needs nothing else. \textbf{Two-phase padding} makes
-panning work:
-\begin{itemize}
-  \item \textbf{Phase 1} (synchronous, 0.7\,s): pad to $5\times$ span,
-        clamped to 250\,kb--1\,Mb.
-  \item \textbf{Phase 2} (background, 11\,s nobody waits for): a 222-byte
-        \texttt{sendBeacon} during navigation rebuilds at $\pm$5\,Mb; the
-        next pan picks it up, no reload.
-\end{itemize}
-\end{block}
+\vspace{0.2cm}
+identity $\le$ coverage always; the gap is the mismatch burden. Together
+they separate cases one number conflates:\\[0.3cm]
+\chip{100 / 99 \ \ present, near-exact}\
+\chip{100 / 60 \ \ present, diverged}\
+\chip{50 / 50 \ \ half missing}
+\end{card}
 
 \end{column}
 
-% ---------------------------------------------------------------------
-% COLUMN 3 — In the browser (screenshots)
-% ---------------------------------------------------------------------
-\begin{column}{0.232\paperwidth}
+% ====================== COLUMN 3 =====================================
+\begin{column}{0.2335\paperwidth}
 
-\begin{block}{Sequence search in the browser}
-\screenshot{mapping_page.png}{12cm}{Pangenome Mapping page: identity-ranked assembly list, position-on-haplotype links}
-A 300\,bp query scores all 464 haplotypes in a couple of seconds. Clicking
-a haplotype re-surjects the cached alignment --- no remapping --- and the
-browser opens there with the sequence drawn as a track:
-\screenshot{pangenome_seq_track.png}{9cm}{``Pangenome Seq'' track, BLAT-style base-level mismatch coloring}
-\end{block}
+\begin{card}
+\cardhead{07}{Sequence search, in the browser}
+\browserframe{mapping_page.png}{8.6cm}{Pangenome Mapping page: identity-ranked assemblies, position-on-haplotype links}
+\RaggedRight
+A 300\,bp query scores all 464 haplotypes in seconds. Picking a haplotype
+\textbf{re-surjects the cached alignment} --- no remapping --- and the
+browser opens there with the sequence as a native track:
+\browserframe{pangenome_seq_track.png}{6.2cm}{``Pangenome Seq'' track, BLAT-style base-level mismatch coloring}
+\end{card}
 
-\begin{block}{Conversion and lifted annotations}
-\screenshot{convert_page.png}{9cm}{Convert page: scored destination picker, hgConvert-style results}
-Pangenome assemblies also appear in the stock \texttt{hgConvert} dropdown
-(462 destinations from a sample assembly). Converting lands on the target
-with \textbf{annotations lifted from CHM13} and Alignment Differences:
-\screenshot{lifted_annotations.png}{11cm}{HPRC assembly with lifted CHM13 tracks + Alignment Differences}
-Verified base-by-base: across 22\,kb of ABO, the track shows exactly the 2
-real C$\rightarrow$T mismatches between hs1 and HG00597\#1.
-\end{block}
+\begin{card}
+\cardhead{08}{Landing with annotations}
+\browserframe{lifted_annotations.png}{8.6cm}{HPRC assembly with lifted CHM13 tracks + Alignment Differences}
+\RaggedRight
+Converting a position lands on the target with \textbf{CHM13's annotation
+tracks lifted} through an on-the-fly chain, plus an \textbf{Alignment
+Differences} track --- verified base-by-base: across 22\,kb of ABO it shows
+exactly the 2 real C$\to$T mismatches between hs1 and HG00597\#1. Pangenome
+assemblies also appear in the stock \texttt{hgConvert} dropdown.
+\end{card}
 
-\begin{block}{Chain widening in action}
-Lifted gene items visible after panning away from the converted window
-(1 = track label only):
+\begin{card}
+\cardhead{09}{Chains that keep up with panning}
 \begin{center}
-\begin{tabular}{lrr}
-\toprule
-\textbf{pan distance} & \textbf{phase 1 (1.1\,Mb)} & \textbf{phase 2 (10\,Mb)} \\
-\midrule
-converted window & 3 & 3 \\
-$\sim$400\,kb & 129 & 129 \\
-$\sim$2\,Mb & 1 & \textbf{5} \\
-$\sim$4\,Mb & 1 & \textbf{31} \\
-\bottomrule
-\end{tabular}
+\begin{tikzpicture}[line cap=round, scale=0.97]
+  \draw[hairline, line width=3pt] (0,0) -- (22,0);
+  \fill[gold] (1.2,-0.2) rectangle (4.4,0.2);
+  \fill[teal!70] (8.2,-0.2) rectangle (17.8,0.2);
+  \foreach \x/\l in {1.2/click, 4.4/page loads, 8.2/beacon, 17.8/done}
+    {\draw[ink, line width=2pt] (\x,-0.45) -- (\x,0.45);
+     \node[font=\footnotesize, text=muted, anchor=north] at (\x,-0.6) {\l};}
+  \node[font=\small\bfseries, text=amber, anchor=south] at (2.8,0.55)
+    {phase 1 \ 0.7\,s};
+  \node[font=\footnotesize, text=amber, anchor=south] at (2.8,1.55)
+    {pad to 5\texttimes\ span};
+  \node[font=\small\bfseries, text=teal, anchor=south] at (13.0,0.55)
+    {phase 2 \ 11\,s in background};
+  \node[font=\footnotesize, text=teal, anchor=south] at (13.0,1.55)
+    {222-byte \texttt{sendBeacon} $\to$ rebuild at \textpm 5\,Mb};
+  \node[font=\footnotesize, text=muted, anchor=west] at (18.4,0.85)
+    {next pan: free};
+\end{tikzpicture}
 \end{center}
-\end{block}
+\vspace{0.4cm}
+\RaggedRight
+Blocks become bigChain{+}bigLink (JSON $\to$ BED $\to$
+\texttt{bedToBigBed}); QuickLift reopens the file each request, so the
+widened chain appears on the next pan --- \emph{no reload}. Lifted items
+visible after panning away:
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[poster, width=0.92\linewidth, height=7.2cm,
+  ybar, ymode=log, ymin=0.5, ymax=600,
+  symbolic x coords={in window, 400 kb, 2 Mb, 4 Mb},
+  xtick=data, bar width=1.35cm,
+  enlarge x limits=0.16,
+  ylabel={lifted gene items (log)},
+  legend style={font=\small, draw=none, fill=none, at={(0.5,1.02)}, anchor=south,
+    /tikz/every even column/.append style={column sep=0.9cm}},
+  legend columns=2, legend cell align=left, sqlegend,
+  point meta=explicit symbolic,
+  nodes near coords, every node near coord/.append style={font=\small\bfseries, color=ink},
+  ]
+  \addplot[fill=gold, draw=none] coordinates
+    {(in window,3) [3] (400 kb,129) [129] (2 Mb,1) [1] (4 Mb,1) [1]};
+  \addplot[fill=navy!80, draw=none] coordinates
+    {(in window,3) [3] (400 kb,129) [129] (2 Mb,5) [5] (4 Mb,31) [31]};
+  \legend{phase 1 (1.1 Mb chain), phase 2 (10 Mb chain)}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\end{card}
 
 \end{column}
 
-% ---------------------------------------------------------------------
-% COLUMN 4 — Performance + future work
-% ---------------------------------------------------------------------
-\begin{column}{0.232\paperwidth}
+% ====================== COLUMN 4 =====================================
+\begin{column}{0.2335\paperwidth}
 
-\begin{block}{Performance}
-\textbf{Translation latency} (warm, CHM13 chr10 source):
+\begin{card}
+\cardhead{10}{Performance}
+\RaggedRight
+\textbf{Translation latency} (warm; completeness in gray):
 \begin{center}
-\begin{tabular}{lrr}
-\toprule
-\textbf{span} & \textbf{median} & \textbf{completeness} \\
-\midrule
-100\,bp & 22\,ms & 99.0\% \\
-1\,kb & 21\,ms & 99.8\% \\
-10\,kb & 115\,ms & 99.6\% \\
-100\,kb & 599\,ms & 97.2\% \\
-1\,Mb & 4.3\,s & 93.1\% \\
-\bottomrule
-\end{tabular}
+\begin{tikzpicture}
+\begin{axis}[poster, width=0.9\linewidth, height=8.4cm,
+  xbar, xmode=log, xmin=8, xmax=300000,
+  symbolic y coords={1 Mb, 100 kb, 10 kb, 1 kb, 100 bp},
+  ytick=data, bar width=0.95cm,
+  enlarge y limits=0.14,
+  xlabel={median latency (ms, log scale)},
+  point meta=explicit symbolic,
+  nodes near coords, nodes near coords style={font=\small\bfseries, color=ink},
+  ]
+  \addplot[fill=navy!80, draw=none] coordinates {
+    (22,100 bp)  [22 ms \ {\color{muted}99.0\%}]
+    (21,1 kb)    [21 ms \ {\color{muted}99.8\%}]
+    (115,10 kb)  [115 ms \ {\color{muted}99.6\%}]
+    (599,100 kb) [0.6 s \ {\color{muted}97.2\%}]
+    (4300,1 Mb)  [4.3 s \ {\color{muted}93.1\%}]
+  };
+\end{axis}
+\end{tikzpicture}
 \end{center}
-Fixing candidate discovery (stop-at-first-hit $\rightarrow$ exhaustive)
-took 1\,Mb completeness from \textcolor{accentred}{\textbf{2.9\%}} to
-\textcolor{accentgreen}{\textbf{93.1\%}}, and made it $2\times$ faster.
-\vskip1ex
-\textbf{Concurrency} (3.4\,kb queries, GIL released in C++):
+Exhaustive candidate discovery (was stop-at-first-hit) took 1\,Mb
+completeness \textcolor{coral}{\textbf{2.9\%}} $\to$
+\textcolor{green}{\textbf{93.1\%}} --- and made it $2\times$ faster.
+\vspace{0.45cm}
+
+\textbf{Concurrent queries} (3.4\,kb, GIL released in C++):
 \begin{center}
-\begin{tabular}{lrr}
-\toprule
-\textbf{threads} & \textbf{q/s} & \textbf{speedup} \\
-\midrule
-1 & 6.3 & 1.0$\times$ \\
-4 & 23.6 & 3.7$\times$ \\
-8 & \textbf{60.3} & \textbf{9.6}$\times$ \\
-32 & 65.3 & 10.4$\times$ \\
-\bottomrule
-\end{tabular}
+\begin{tikzpicture}
+\begin{axis}[poster, width=0.9\linewidth, height=7.8cm,
+  xmode=log, log basis x=2, xtick={1,2,4,8,16,32},
+  xticklabels={1,2,4,8,16,32},
+  ymin=0, ymax=80,
+  ytick={0,20,40,60,80}, yticklabels={0,20,40,60,80},
+  xlabel={threads}, ylabel={queries / s},
+  grid=major,
+  ]
+  \addplot[navy, line width=3pt, mark=*, mark size=3pt,
+           mark options={fill=navy}] coordinates
+    {(1,6.3) (2,13.2) (4,23.6) (8,60.3) (16,59.4) (32,65.3)};
+  \draw[gold, line width=3pt] (axis cs:8,60.3) circle (0.32cm);
+  \node[font=\small\bfseries, color=amber, anchor=south east]
+    at (axis cs:8,62) {9.6$\times$ at 8 threads};
+\end{axis}
+\end{tikzpicture}
 \end{center}
 Scored destination picker: 100\,kb region in \textbf{1.28\,s} vs 29.5\,s
 exact ($23\times$). Chain generation: linear, $\sim$1.14\,s/Mb.
-\end{block}
+\end{card}
 
-\begin{block}{At a glance}
-\begin{columns}[t]
-  \begin{column}{0.48\linewidth}\kpi{464}{haplotypes scored per query}\end{column}
-  \begin{column}{0.48\linewidth}\kpi{$\sim$20\,ms}{gene-scale liftover}\end{column}
-\end{columns}
-\vskip0.5ex
-\begin{columns}[t]
-  \begin{column}{0.48\linewidth}\kpi{1.78\,GB}{routing table, not 17.2\,TB}\end{column}
-  \begin{column}{0.48\linewidth}\kpi{15}{lines changed in kent core}\end{column}
-\end{columns}
-\end{block}
+\begin{card}
+\cardhead{11}{What's next}
+\iconrow{\faBolt}{Bulk offline chain generator}{Direct path intersection
+instead of r-index probing: est.\ $\sim$300$\times$ faster ($\sim$1.6\,h per
+target genome-wide vs 19 days via the API) --- precomputed whole-chromosome
+chains, full QuickLift parity.}
+\iconrow{\faDatabase}{Persistent chain cache}{Widened chains currently die
+with the one-hour session; a cache makes popular regions free after the
+first visit.}
+\iconrow{\faPuzzlePiece}{Segdup-dense intervals}{Wide queries lose positions
+($\sim$46\% at 1q21.1); exact path intersection removes the probe spacing
+that misses them.}
+\iconrow{\faRocket}{Public release}{Core-change sign-off, per-install API
+tokens, service-side concurrency deployment.}
+\end{card}
 
-\begin{block}{Future work}
-\begin{itemize}
-  \item \textbf{Bulk offline chain generator}: direct path intersection
-        instead of r-index probing --- est.\ $\sim$300$\times$ faster
-        ($\sim$1.6\,h per target genome-wide vs 19 days via the API) ---
-        for precomputed whole-chromosome chains and full QuickLift parity.
-  \item \textbf{Persistent chain cache}, so widened chains outlive the
-        one-hour session and popular regions become free after the first
-        visit.
-  \item Segdup-dense wide intervals lose positions ($\sim$46\% at 1q21.1);
-        the bulk path removes the probe spacing that misses them.
-  \item Public release: core-change sign-off, per-install API tokens,
-        service-side concurrency deployment.
-\end{itemize}
-\end{block}
-
-\begin{block}{Acknowledgements \& availability}
-Built on \texttt{vg}, GBWT/GBZ and the tag-array index (Sir\'en et al.),
-the HPRC v2.0 minigraph--Cactus graph, and the UCSC Genome Browser (kent).
+\begin{card}
+\cardhead{12}{Acknowledgements}
+\RaggedRight\small
+Built on \texttt{vg}, GBWT/GBZ and the tag-array index (Sir\'en et al.), the
+HPRC v2.0 minigraph--Cactus graph, and the UCSC Genome Browser (kent).
 \texttt{vg giraffe-server} is under review as vgteam/vg PR \#4879. We thank
-the UCSC Genome Browser team and the Human Pangenome Reference Consortium.
-Poster sources: \texttt{github.com/parsaeskandar/hprc\_2026\_poster}
-\end{block}
+the UCSC Genome Browser team for design feedback, and the Human Pangenome
+Reference Consortium.
+\end{card}
 
 \end{column}
 
