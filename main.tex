@@ -1,0 +1,367 @@
+% =====================================================================
+% HPRC 2026 Poster
+% A pangenome sequence search and coordinate translation service
+% for the UCSC Genome Browser
+%
+% Parsa Eskandar, Jouni Siren, Benedict Paten
+% UC Santa Cruz Genomics Institute
+%
+% Build: compiles with pdflatex (Overleaf default) or tectonic.
+% Size:  48in x 36in landscape (121.92cm x 91.44cm).
+%        Change the beamerposter options below for A0 etc.
+% =====================================================================
+\documentclass[final]{beamer}
+\usepackage[orientation=landscape,size=custom,width=121.92,height=91.44,scale=1.25]{beamerposter}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
+\usepackage{ragged2e}
+
+% ---------------------------------------------------------------------
+% Colors (UCSC palette)
+% ---------------------------------------------------------------------
+\definecolor{ucscblue}{HTML}{003C6C}
+\definecolor{ucscgold}{HTML}{FDC700}
+\definecolor{ucscteal}{HTML}{006AAD}
+\definecolor{lightbg}{HTML}{F4F6F8}
+\definecolor{accentgreen}{HTML}{2E7D32}
+\definecolor{accentred}{HTML}{C62828}
+
+% ---------------------------------------------------------------------
+% Beamer theme setup
+% ---------------------------------------------------------------------
+\setbeamercolor{background canvas}{bg=lightbg}
+\setbeamercolor{block title}{fg=white,bg=ucscblue}
+\setbeamercolor{block body}{fg=black,bg=white}
+\setbeamerfont{block title}{size=\Large,series=\bfseries}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{item}{fg=ucscteal}
+\setbeamercolor{caption name}{fg=ucscblue}
+\setlength{\leftmargini}{3.2ex}
+
+% Placeholder for screenshots not yet added: drop the PNG into figures/
+% with the given name and the box is replaced automatically.
+\newcommand{\screenshot}[3]{% {filename}{height}{caption shown inside placeholder}
+  \begin{center}
+  \IfFileExists{figures/#1}{%
+    \includegraphics[width=0.97\linewidth,height=#2,keepaspectratio]{figures/#1}%
+  }{%
+    \begin{tikzpicture}
+      \node[draw=ucscteal, dashed, thick, fill=white, minimum width=0.94\linewidth,
+            minimum height=#2, align=center, text=ucscteal, text width=0.85\linewidth,
+            font=\normalsize]
+        {\textbf{Screenshot placeholder} --- \texttt{\detokenize{figures/#1}}\\[0.5ex] #3};
+    \end{tikzpicture}%
+  }%
+  \end{center}
+}
+
+\newcommand{\kpi}[2]{% big number + label
+  \begin{center}
+    {\color{ucscblue}\fontsize{56}{60}\selectfont\bfseries #1}\\[0.6ex]
+    {\normalsize #2}
+  \end{center}
+}
+
+\begin{document}
+\begin{frame}[t]
+
+% ============================ HEADER =================================
+\vskip1ex
+\begin{columns}[c]
+  \begin{column}{0.02\paperwidth}\end{column}
+  \begin{column}{0.10\paperwidth}
+    \centering
+    % Drop a logo at figures/ucsc_logo.png to show it here
+    \IfFileExists{figures/ucsc_logo.png}{\includegraphics[width=0.9\linewidth]{figures/ucsc_logo.png}}{%
+      \begin{tikzpicture}\node[draw=ucscblue,thick,circle,minimum size=7.5cm,align=center,fill=white,text=ucscblue,font=\large]{\textbf{UCSC}\\Genomics\\Institute};\end{tikzpicture}}
+  \end{column}
+  \begin{column}{0.72\paperwidth}
+    \centering
+    {\color{ucscblue}\fontsize{72}{80}\selectfont\bfseries
+      A Pangenome Sequence Search and Coordinate\\[0.6ex]
+      Translation Service for the UCSC Genome Browser\par}
+    \vskip1.5ex
+    {\LARGE Parsa Eskandar \quad\textbullet\quad Jouni Sir\'en \quad\textbullet\quad Benedict Paten}\\[0.8ex]
+    {\Large UC Santa Cruz Genomics Institute, University of California, Santa Cruz \quad\textbullet\quad \texttt{seeskand@ucsc.edu}}
+  \end{column}
+  \begin{column}{0.10\paperwidth}
+    \centering
+    \IfFileExists{figures/hprc_logo.png}{\includegraphics[width=0.9\linewidth]{figures/hprc_logo.png}}{%
+      \begin{tikzpicture}\node[draw=ucscblue,thick,circle,minimum size=7.5cm,align=center,fill=white,text=ucscblue,font=\large]{\textbf{HPRC}\\2026};\end{tikzpicture}}
+  \end{column}
+  \begin{column}{0.02\paperwidth}\end{column}
+\end{columns}
+\vskip1.5ex
+\begin{center}\textcolor{ucscgold}{\rule{0.97\paperwidth}{5pt}}\end{center}
+\vskip0.5ex
+
+% ============================ BODY ===================================
+\begin{columns}[t]
+
+% ---------------------------------------------------------------------
+% COLUMN 1 — Motivation + capabilities + architecture
+% ---------------------------------------------------------------------
+\begin{column}{0.232\paperwidth}
+
+\begin{block}{Motivation}
+The HPRC v2.0 minigraph--Cactus graph holds \textbf{233 samples / 464
+haplotypes} --- but there has been no interactive way to query it.
+\begin{itemize}
+  \item A researcher with a \textbf{sequence} cannot ask which haplotypes
+        carry it, or where it lies on each of them.
+  \item A researcher with a \textbf{position} cannot convert it to another
+        assembly: chain files cover only \textbf{56} of the
+        $\sim$\textbf{213{,}000} possible sample-to-sample pairs.
+\end{itemize}
+We built a service that answers both through the graph itself, integrated
+into the UCSC Genome Browser.
+\end{block}
+
+\begin{block}{Three capabilities}
+\begin{enumerate}
+  \item \textbf{Pangenome sequence search} --- a BLAT-like page: a pasted
+        sequence is mapped to the whole graph with \texttt{vg giraffe}.
+        Results show every assembly carrying the exact allele path, all 464
+        haplotypes ranked by identity, and one-click positions on any
+        haplotype, drawn as a browser track with base-level mismatch
+        coloring.
+  \item \textbf{Any-to-any coordinate translation} --- liftover between any
+        two of the 466 assemblies at interactive speed, with a scored
+        ``which assemblies contain this region'' destination picker.
+  \item \textbf{Annotation lifting} --- a QuickLift chain generated
+        \emph{at request time}, so users land on an HPRC assembly with
+        CHM13's genes, RefSeq, CenSat and T2T Encode at translated
+        positions, plus an \textbf{Alignment Differences} track marking
+        indels and mismatches between the two assemblies.
+\end{enumerate}
+\end{block}
+
+\begin{block}{Architecture}
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={draw=ucscblue, thick, rounded corners=6pt, fill=lightbg, align=center,
+              minimum height=2.6cm, text width=10cm, font=\normalsize},
+  arr/.style={-{Stealth[length=5mm]}, very thick, ucscteal}
+]
+  \node[box] (cgi) {\textbf{UCSC Genome Browser}\\ \texttt{hgPangenome} CGI + JS\\ \scriptsize map / surject / convert / quickLift / extendChain};
+  \node[box, below=1.1cm of cgi] (mw) {\textbf{Python middleware} --- JSON API\\ \scriptsize \texttt{/map} \ \texttt{/liftover} \ \texttt{/surject} \ \texttt{/liftover/targets}};
+  \node[box, below=1.1cm of mw, xshift=-5.6cm, text width=9.4cm] (vg) {\textbf{vg giraffe-server}\\ \scriptsize persistent mapper, indexes loaded once};
+  \node[box, below=1.1cm of mw, xshift=5.6cm, text width=9.4cm] (cpp) {\textbf{pangenome-index (C++)}\\ \scriptsize coordinate translation engine};
+  \node[box, below=1.1cm of cpp, text width=10.6cm, draw=ucscteal] (idxs) {\scriptsize GBZ graph (148M nodes)\\ r-index + sampled tag array\\ GBWT FastLocate ($\sim$11\,GB)\\ Table 1 + routing Table 2 (1.78\,GB)};
+  \draw[arr] (cgi) -- (mw);
+  \draw[arr] (mw) -- (vg);
+  \draw[arr] (mw) -- (cpp);
+  \draw[arr] (cpp) -- (idxs);
+\end{tikzpicture}
+\end{center}
+Core browser modifications: \textbf{3 files / 15 lines}; everything else is
+a new, self-contained CGI, dark unless configured.
+\end{block}
+
+\end{column}
+
+% ---------------------------------------------------------------------
+% COLUMN 2 — Methods
+% ---------------------------------------------------------------------
+\begin{column}{0.232\paperwidth}
+
+\begin{block}{Translation through the graph}
+\begin{enumerate}
+  \item \textbf{Table 1}: \texttt{contig:start-end} $\rightarrow$ graph
+        path + path-local interval.
+  \item \textbf{Candidate discovery}: probe nodes on the source path
+        ($\sim$1 / 2\,kb); each GBWT probe returns \emph{every} haplotype on
+        that node. The \textbf{routing Table 2} replaces probing with a
+        direct lookup.
+  \item \textbf{Anchoring}: nodes visited exactly once by both sides are
+        guaranteed orthologous; a colinearity gate rejects implausible
+        pairings.
+  \item \textbf{Trace}: an LF-walk between first and last shared node emits
+        per-base correspondences.
+\end{enumerate}
+Results fold into \textbf{chain-semantics blocks}: a block breaks only on
+indels, orientation flips, or contig changes --- never on substitutions.
+\end{block}
+
+\begin{block}{Routing table: 17.2 TB $\rightarrow$ 1.78 GB}
+An all-pairs table over the frequency-filtered graph (224M path fragments,
+$2{,}367\times$ fragmentation) would cost \textbf{17.2\,TB}. Building over
+the non-filtered graph (94{,}554 paths) and storing \emph{routing only} ---
+which targets a source range touches, never their coordinates ---
+eliminates every failure mode of interval pairing:
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+ & \textbf{interval-pairing} & \textbf{routing} \\
+\midrule
+abandoned runs & 5{,}025{,}344 & \textbf{0} \\
+splits & 35{,}734{,}985 & \textbf{0} \\
+segments & 68.2\,M & 45.7\,M \\
+size & 3.69\,GB & \textbf{1.78\,GB} \\
+build (32 thr) & --- & \textbf{35 min} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{block}
+
+\begin{block}{Coverage and identity, all 464 at once}
+One pass over a mapped read's nodes scores \textbf{every haplotype}
+simultaneously (each probe already returns all of them):
+\begin{center}
+$\displaystyle \mathrm{coverage}(H) = \frac{\textrm{aligned bases on nodes $H$ visits}}{\textrm{aligned bases}}$\\[1ex]
+$\displaystyle \mathrm{identity}(H) = \frac{\textrm{\ldots that also \emph{matched} there}}{\textrm{aligned bases}}$
+\end{center}
+$\mathrm{identity} \le \mathrm{coverage}$ always; the gap is the mismatch
+burden. Shown together, they separate ``present but diverged'' from
+``half missing'' --- which one score conflates.
+\end{block}
+
+\begin{block}{On-the-fly QuickLift chains}
+Blocks become bigChain+bigLink on the fly (JSON $\rightarrow$ BED
+$\rightarrow$ \texttt{bedToBigBed}), served through a generated hub ---
+QuickLift's renderer needs nothing else. \textbf{Two-phase padding} makes
+panning work:
+\begin{itemize}
+  \item \textbf{Phase 1} (synchronous, 0.7\,s): pad to $5\times$ span,
+        clamped to 250\,kb--1\,Mb.
+  \item \textbf{Phase 2} (background, 11\,s nobody waits for): a 222-byte
+        \texttt{sendBeacon} during navigation rebuilds at $\pm$5\,Mb; the
+        next pan picks it up, no reload.
+\end{itemize}
+\end{block}
+
+\end{column}
+
+% ---------------------------------------------------------------------
+% COLUMN 3 — In the browser (screenshots)
+% ---------------------------------------------------------------------
+\begin{column}{0.232\paperwidth}
+
+\begin{block}{Sequence search in the browser}
+\screenshot{mapping_page.png}{12cm}{Pangenome Mapping page: identity-ranked assembly list, position-on-haplotype links}
+A 300\,bp query scores all 464 haplotypes in a couple of seconds. Clicking
+a haplotype re-surjects the cached alignment --- no remapping --- and the
+browser opens there with the sequence drawn as a track:
+\screenshot{pangenome_seq_track.png}{9cm}{``Pangenome Seq'' track, BLAT-style base-level mismatch coloring}
+\end{block}
+
+\begin{block}{Conversion and lifted annotations}
+\screenshot{convert_page.png}{9cm}{Convert page: scored destination picker, hgConvert-style results}
+Pangenome assemblies also appear in the stock \texttt{hgConvert} dropdown
+(462 destinations from a sample assembly). Converting lands on the target
+with \textbf{annotations lifted from CHM13} and Alignment Differences:
+\screenshot{lifted_annotations.png}{11cm}{HPRC assembly with lifted CHM13 tracks + Alignment Differences}
+Verified base-by-base: across 22\,kb of ABO, the track shows exactly the 2
+real C$\rightarrow$T mismatches between hs1 and HG00597\#1.
+\end{block}
+
+\begin{block}{Chain widening in action}
+Lifted gene items visible after panning away from the converted window
+(1 = track label only):
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+\textbf{pan distance} & \textbf{phase 1 (1.1\,Mb)} & \textbf{phase 2 (10\,Mb)} \\
+\midrule
+converted window & 3 & 3 \\
+$\sim$400\,kb & 129 & 129 \\
+$\sim$2\,Mb & 1 & \textbf{5} \\
+$\sim$4\,Mb & 1 & \textbf{31} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{block}
+
+\end{column}
+
+% ---------------------------------------------------------------------
+% COLUMN 4 — Performance + future work
+% ---------------------------------------------------------------------
+\begin{column}{0.232\paperwidth}
+
+\begin{block}{Performance}
+\textbf{Translation latency} (warm, CHM13 chr10 source):
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+\textbf{span} & \textbf{median} & \textbf{completeness} \\
+\midrule
+100\,bp & 22\,ms & 99.0\% \\
+1\,kb & 21\,ms & 99.8\% \\
+10\,kb & 115\,ms & 99.6\% \\
+100\,kb & 599\,ms & 97.2\% \\
+1\,Mb & 4.3\,s & 93.1\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+Fixing candidate discovery (stop-at-first-hit $\rightarrow$ exhaustive)
+took 1\,Mb completeness from \textcolor{accentred}{\textbf{2.9\%}} to
+\textcolor{accentgreen}{\textbf{93.1\%}}, and made it $2\times$ faster.
+\vskip1ex
+\textbf{Concurrency} (3.4\,kb queries, GIL released in C++):
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+\textbf{threads} & \textbf{q/s} & \textbf{speedup} \\
+\midrule
+1 & 6.3 & 1.0$\times$ \\
+4 & 23.6 & 3.7$\times$ \\
+8 & \textbf{60.3} & \textbf{9.6}$\times$ \\
+32 & 65.3 & 10.4$\times$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Scored destination picker: 100\,kb region in \textbf{1.28\,s} vs 29.5\,s
+exact ($23\times$). Chain generation: linear, $\sim$1.14\,s/Mb.
+\end{block}
+
+\begin{block}{At a glance}
+\begin{columns}[t]
+  \begin{column}{0.48\linewidth}\kpi{464}{haplotypes scored per query}\end{column}
+  \begin{column}{0.48\linewidth}\kpi{$\sim$20\,ms}{gene-scale liftover}\end{column}
+\end{columns}
+\vskip0.5ex
+\begin{columns}[t]
+  \begin{column}{0.48\linewidth}\kpi{1.78\,GB}{routing table, not 17.2\,TB}\end{column}
+  \begin{column}{0.48\linewidth}\kpi{15}{lines changed in kent core}\end{column}
+\end{columns}
+\end{block}
+
+\begin{block}{Future work}
+\begin{itemize}
+  \item \textbf{Bulk offline chain generator}: direct path intersection
+        instead of r-index probing --- est.\ $\sim$300$\times$ faster
+        ($\sim$1.6\,h per target genome-wide vs 19 days via the API) ---
+        for precomputed whole-chromosome chains and full QuickLift parity.
+  \item \textbf{Persistent chain cache}, so widened chains outlive the
+        one-hour session and popular regions become free after the first
+        visit.
+  \item Segdup-dense wide intervals lose positions ($\sim$46\% at 1q21.1);
+        the bulk path removes the probe spacing that misses them.
+  \item Public release: core-change sign-off, per-install API tokens,
+        service-side concurrency deployment.
+\end{itemize}
+\end{block}
+
+\begin{block}{Acknowledgements \& availability}
+Built on \texttt{vg}, GBWT/GBZ and the tag-array index (Sir\'en et al.),
+the HPRC v2.0 minigraph--Cactus graph, and the UCSC Genome Browser (kent).
+\texttt{vg giraffe-server} is under review as vgteam/vg PR \#4879. We thank
+the UCSC Genome Browser team and the Human Pangenome Reference Consortium.
+Poster sources: \texttt{github.com/parsaeskandar/hprc\_2026\_poster}
+\end{block}
+
+\end{column}
+
+\end{columns}
+\end{frame}
+\end{document}
