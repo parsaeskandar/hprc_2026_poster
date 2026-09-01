@@ -104,7 +104,7 @@
         \hspace{0.6cm}{\footnotesize\color{muted}\texttt{\detokenize{genome.ucsc.edu}}}
         \vspace{0.26cm}\par
         \IfFileExists{figures/#1}{%
-          \centering\includegraphics[width=\linewidth,height=#2,keepaspectratio]{figures/#1}\par
+          \centering\includegraphics[width=\linewidth]{figures/#1}\par
         }{%
           \begin{tikzpicture}
             \node[fill=white, minimum width=\linewidth, minimum height=#2,
@@ -399,14 +399,16 @@ Differences} track marking indels and mismatches.
 \textbf{Translation latency:}
 \begin{center}
 \begin{tikzpicture}
-\begin{axis}[poster, width=0.88\linewidth, height=6.5cm,
-  xbar, xmode=log, xmin=8, xmax=60000,
+\begin{axis}[poster, width=0.88\linewidth, height=8cm,
+  xbar, xmode=log, xmin=8, xmax=100000,
   symbolic y coords={1 Mb, 100 kb, 10 kb, 1 kb, 100 bp},
-  ytick=data, bar width=0.58cm,
+  ytick=data, bar width=0.62cm,
   enlarge y limits=0.18,
   xlabel={median latency (ms, log scale)},
   point meta=explicit symbolic,
-  nodes near coords, nodes near coords style={font=\small\bfseries, color=ink},
+  nodes near coords,
+  every node near coord/.append style={font=\small\bfseries, color=ink,
+    anchor=west, xshift=3pt},
   ]
   \addplot[fill=navy!80, draw=none] coordinates {
     (22,100 bp)  [22 ms]
@@ -422,7 +424,7 @@ Differences} track marking indels and mismatches.
 \textbf{Concurrent queries} (3.4\,kb):
 \begin{center}
 \begin{tikzpicture}
-\begin{axis}[poster, width=0.88\linewidth, height=6.2cm,
+\begin{axis}[poster, width=0.88\linewidth, height=7.6cm,
   xmode=log, log basis x=2, xtick={1,2,4,8,16,32},
   xticklabels={1,2,4,8,16,32},
   ymin=0, ymax=80,
@@ -439,17 +441,15 @@ Differences} track marking indels and mismatches.
 \end{axis}
 \end{tikzpicture}
 \end{center}
+Search, translation and annotation lifting all run at page-load speed.
 \end{card}
 
 \begin{card}
 \cardhead{09}{What's next}
-\iconrow{\faRocket}{Public release}{Pangenome search and translation in
-the public UCSC Genome Browser.}
-\iconrow{\faDatabase}{Precomputed chains}{Offline whole-genome chains for
-every pair, so lifted tracks pan freely.}
-\iconrow{\faBolt}{Chromosome-scale conversion}{Whole chromosomes
-translated in minutes.}
-\vspace{-0.8cm}
+\iconrow{\faRocket}{Public release}{Bringing pangenome sequence search
+and any-to-any coordinate translation to everyone, in the public UCSC
+Genome Browser.}
+\vspace{-0.6cm}
 \end{card}
 
 \end{column}
