@@ -22,7 +22,6 @@
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.17}
 \usepackage[most]{tcolorbox}
-\usepackage{qrcode}
 \usepackage{fontawesome5}
 
 % ---------------------------------------------------------------------
@@ -54,7 +53,7 @@
 \newtcolorbox{card}{
   enhanced, colback=white, colframe=white, boxrule=0pt, arc=5mm,
   left=1.2cm, right=1.2cm, top=0.9cm, bottom=1.0cm,
-  before skip=0cm, after skip=1.3cm,
+  before skip=0cm, after skip=1.15cm,
   fuzzy shadow={0mm}{-2mm}{0mm}{0.55mm}{black!20}
 }
 
@@ -81,10 +80,6 @@
       {\color{muted}\small #2}};
   \end{tikzpicture}}
 
-% Inline label chip
-\newcommand{\chip}[1]{\tikz[baseline=(c.base)]{\node[fill=chipbg, rounded corners=1.8mm,
-  inner xsep=0.4cm, inner ysep=0.18cm, font=\small, text=ink] (c) {#1};}}
-
 % Icon bullet for capability rows
 \newcommand{\iconrow}[3]{% {icon}{bold lead}{body}
   \par\noindent
@@ -94,7 +89,7 @@
   \end{minipage}\hfill
   \begin{minipage}[t]{\dimexpr\linewidth-2.7cm\relax}
     \RaggedRight{\bfseries\color{navy}#2}\\[0.15ex]#3
-  \end{minipage}\par\vspace{0.65cm}}
+  \end{minipage}\par\vspace{0.45cm}}
 
 % Browser-chrome frame for screenshots (placeholder until PNG exists)
 \newcommand{\browserframe}[3]{% {filename}{height}{caption}
@@ -109,7 +104,7 @@
         \hspace{0.6cm}{\footnotesize\color{muted}\texttt{\detokenize{genome.ucsc.edu}}}
         \vspace{0.26cm}\par
         \IfFileExists{figures/#1}{%
-          \includegraphics[width=\linewidth,height=#2,keepaspectratio]{figures/#1}\par
+          \centering\includegraphics[width=\linewidth,height=#2,keepaspectratio]{figures/#1}\par
         }{%
           \begin{tikzpicture}
             \node[fill=white, minimum width=\linewidth, minimum height=#2,
@@ -144,11 +139,23 @@
 % ====================================================================
 \vspace*{-0.15cm}
 \begin{tikzpicture}
-  \fill[navydeep] (0,0) rectangle (\paperwidth,-13.3cm);
-  \fill[gold]     (0,-13.3cm) rectangle (\paperwidth,-13.65cm);
+  \fill[navydeep] (0,0) rectangle (\paperwidth,-12.9cm);
+  \fill[gold]     (0,-12.9cm) rectangle (\paperwidth,-13.25cm);
 
-  % --- emblem: haplotype ribbons through two bubbles -----------------
-  \begin{scope}[shift={(3.0cm,-6.6cm)}, xscale=1.28, yscale=1.28,
+  % --- emblem: haplotype ribbons through two bubbles (both sides) -----
+  \begin{scope}[shift={(3.0cm,-6.45cm)}, xscale=1.28, yscale=1.28,
+                line width=9pt, line cap=round]
+    \draw[white!85!navy]  (0,0)   .. controls (2.2,0)   and (2.8,1.5)  .. (4.6,1.5)
+                          .. controls (6.4,1.5) and (7.0,0)   .. (9.2,0)
+                          .. controls (11.4,0)  and (12.0,0)  .. (13.6,0);
+    \draw[gold]           (0,0)   .. controls (2.6,0)   and (3.2,-1.5) .. (4.6,-1.5)
+                          .. controls (6.0,-1.5) and (6.8,0) .. (9.2,0)
+                          .. controls (10.6,0) and (11.2,1.35) .. (12.2,1.35)
+                          .. controls (13.0,1.35) and (13.2,0.6) .. (13.6,0);
+    \draw[teal!60!white]  (0,0) -- (13.6,0);
+    \fill[white] (0,0) circle (0.3) (13.6,0) circle (0.3);
+  \end{scope}
+  \begin{scope}[shift={(\paperwidth-3.0cm,-6.45cm)}, xscale=-1.28, yscale=1.28,
                 line width=9pt, line cap=round]
     \draw[white!85!navy]  (0,0)   .. controls (2.2,0)   and (2.8,1.5)  .. (4.6,1.5)
                           .. controls (6.4,1.5) and (7.0,0)   .. (9.2,0)
@@ -171,35 +178,28 @@
     {A Pangenome Sequence Search and Coordinate\\
      Translation Service for the UCSC Genome Browser};
   \node[anchor=north, align=center, text=white, font=\LARGE]
-    at (0.5\paperwidth,-9.55cm)
+    at (0.5\paperwidth,-9.4cm)
     {Parsa Eskandar \quad\textbullet\quad Jouni Sir\'en \quad\textbullet\quad Benedict Paten};
   \node[anchor=north, align=center, text=white!72!navy, font=\Large]
-    at (0.5\paperwidth,-11.45cm)
+    at (0.5\paperwidth,-11.15cm)
     {UC Santa Cruz Genomics Institute \quad\textbullet\quad \texttt{seeskand@ucsc.edu}};
-
-  % --- QR tile --------------------------------------------------------
-  \node[anchor=east, fill=white, rounded corners=3mm, inner sep=0.5cm]
-    (qr) at (\paperwidth-3.0cm,-5.8cm) {\qrcode[height=5.6cm]{https://github.com/parsaeskandar/hprc_2026_poster}};
-  \node[anchor=north, text=white!72!navy, font=\small, align=center]
-    at (qr.south) [yshift=-0.3cm] {poster sources \ \faGithub\\[-0.1ex]\texttt{\detokenize{parsaeskandar/hprc_2026_poster}}};
 \end{tikzpicture}
 
 % ====================================================================
 %  HERO STRIP
 % ====================================================================
-\vspace{0.6cm}
+\vspace{0.45cm}
 \begin{center}
 \begin{minipage}{0.965\paperwidth}
 \begin{tcolorbox}[enhanced, colback=white, boxrule=0pt, arc=5mm,
     left=1.6cm, right=1.6cm, top=0.7cm, bottom=0.7cm,
     fuzzy shadow={0mm}{-2mm}{0mm}{0.55mm}{black!20}]
-  \begin{minipage}[c]{0.46\linewidth}
+  \begin{minipage}[c]{0.42\linewidth}
     \RaggedRight
-    {\fontsize{34}{42}\selectfont\color{navy}
-     Paste a \textbf{sequence} or a \textbf{position} --- get an answer from
-     \textbf{every HPRC haplotype}, live, inside the browser.}
+    {\fontsize{40}{48}\selectfont\color{navy}
+     The \textbf{UCSC Genome Browser} now speaks \textbf{pangenome}.}
   \end{minipage}\hfill
-  \begin{minipage}[c]{0.51\linewidth}
+  \begin{minipage}[c]{0.55\linewidth}
     \centering
     \statchip{464}{haplotypes scored per query}\hspace{0.6cm}
     \statchip{$\sim$20\,ms}{gene-scale liftover}\hspace{0.6cm}
@@ -208,7 +208,7 @@
 \end{tcolorbox}
 \end{minipage}
 \end{center}
-\vspace{0.6cm}
+\vspace{0.45cm}
 
 % ====================================================================
 %  BODY --- four columns
@@ -219,11 +219,13 @@
 \begin{column}{0.2335\paperwidth}
 
 \begin{card}
-\cardhead{01}{The graph nobody could ask}
+\cardhead{01}{The graph you couldn't ask}
 \RaggedRight
-The HPRC v2.0 graph holds \textbf{233 samples / 464 haplotypes}, yet there
-has been no interactive way to query it. Liftover needs a chain file per
-assembly pair --- and almost none exist:
+The HPRC v2.0 graph holds \textbf{233 samples and 464 haplotypes}. You can
+browse each assembly, but you cannot simply ask the graph a question: which
+haplotypes carry my sequence? Where does my region land on another
+assembly? Classic liftover needs a chain file per pair, and almost none
+exist:
 \begin{center}
 \begin{tikzpicture}[scale=0.98]
   \foreach \x in {0,...,11}
@@ -243,24 +245,27 @@ assembly pair --- and almost none exist:
 \end{tikzpicture}
 \end{center}
 \vspace{0.2cm}
-A researcher with a \textbf{sequence} can't ask which haplotypes carry it;
-one with a \textbf{position} can't move it between assemblies. We built the
-service that answers both, inside the UCSC Genome Browser.
+We built that query layer, inside the UCSC Genome Browser.
 \end{card}
 
 \begin{card}
 \cardhead{02}{What users get}
-\iconrow{\faSearch}{Pangenome sequence search}{A BLAT-like page: a pasted
-sequence is mapped to the whole graph with \texttt{vg giraffe}; results rank
-all 464 haplotypes by identity and link to its position on any of them,
-drawn as a track with base-level mismatch coloring.}
-\iconrow{\faRandom}{Any-to-any coordinate translation}{Liftover between
-any two of 466 assemblies at interactive speed, with a scored ``which
-assemblies contain this region'' destination picker.}
-\iconrow{\faLayerGroup}{Annotation lifting}{Users land on an HPRC assembly
-with CHM13's genes, RefSeq, CenSat and T2T~Encode at translated positions,
-plus an \textbf{Alignment Differences} track --- via a QuickLift chain
-generated on the fly.}
+\iconrow{\faSearch}{Pangenome sequence search}{BLAT, but for the whole
+pangenome: one search ranks all 464 haplotypes and links to the hit on any
+of them.}
+\iconrow{\faRandom}{Any-to-any coordinate translation}{Move a region
+between any two of the 466 assemblies, at interactive speed.}
+\iconrow{\faLayerGroup}{Annotation lifting}{Arrive with the source's
+annotation tracks drawn at translated positions, plus an Alignment
+Differences track.}
+\end{card}
+
+\begin{card}
+\cardhead{10}{Acknowledgements}
+\RaggedRight
+We thank our colleagues in the UC Santa Cruz Computational Genomics Lab,
+especially Adam Novak, Glenn Hickey, and Zia Truong, and the UCSC Genome
+Browser team. Built on \texttt{vg} and the HPRC v2.0 graph.
 \end{card}
 
 \end{column}
@@ -271,15 +276,16 @@ generated on the fly.}
 \begin{card}
 \cardhead{03}{One index, every haplotype}
 \RaggedRight
-Everything rides on the \textbf{tag-array index} (Sir\'en et al.) built once
-over the HPRC graph: it annotates \textbf{every node} with the haplotypes
-that cross it, and where. Translation is a walk through the graph --- not a
+Everything rides on our \textbf{tag-array index} (\emph{lossless pangenome
+indexing}): it annotates each position of the BWT index with its graph
+position, so every match knows its node, and every node knows the
+haplotypes standing on it. Translation is a walk through the graph, not a
 lookup in 213{,}000 pairwise files:
-\vspace{0.3cm}
+\vspace{0.4cm}
 \begin{center}
 \begin{tikzpicture}[line cap=round]
   % ---- source bar ---------------------------------------------------
-  \node[anchor=west, font=\small\bfseries, text=navy] at (0.1,12.35) {source \ \ CHM13\#0 \ chr10};
+  \node[anchor=west, font=\small\bfseries, text=navy] at (0.1,12.35) {source \ \ CHM13\#0 \ chr6};
   \fill[navy!12, rounded corners=2mm] (0,11.0) rectangle (22,11.85);
   \fill[gold, rounded corners=1mm] (7,11.0) rectangle (13.5,11.85);
   \node[font=\footnotesize, text=navydeep] at (10.25,11.42) {query interval};
@@ -307,64 +313,44 @@ lookup in 213{,}000 pairwise files:
   \foreach \p in {n1,n2,n3,bU,bD,n4,n5,n6,n7,n8}
     {\fill[white] (\p) circle (0.40); \draw[navy!55, line width=2.2pt] (\p) circle (0.40);}
   \fill[navy!30] (det) circle (0.26);
-  % tag-array arrows (no inline text; explained in bottom row)
+  % tag-array lookups
   \foreach \p in {n2,n4,n7}
     {\draw[amber, line width=2.4pt, -{Stealth[length=4mm]}] ($(\p)+(0,2.3)$) -- ($(\p)+(0,0.62)$);}
+  \node[fill=gold, circle, minimum size=1.0cm, font=\small\bfseries, text=navydeep] at (2.85,7.2) {2};
   % anchors at n3 and n5 (under the interval edges)
   \draw[gold, line width=4pt] (n3) circle (0.58);
   \draw[gold, line width=4pt] (n5) circle (0.58);
-
-  % ---- caption row (badges + short labels, clear of all lines) --------
-  \node[fill=gold, circle, minimum size=1.0cm, font=\small\bfseries, text=navydeep] at (0.7,2.4) {2};
-  \node[anchor=west, font=\footnotesize, text=amber] at (1.45,2.4) {tag arrays};
-  \node[fill=gold, circle, minimum size=1.0cm, font=\small\bfseries, text=navydeep] at (7.6,2.4) {3};
-  \node[anchor=west, font=\footnotesize, text=ink] at (8.35,2.4) {anchors};
-  \node[fill=gold, circle, minimum size=1.0cm, font=\small\bfseries, text=navydeep] at (15.6,2.4) {4};
-  \node[anchor=west, font=\footnotesize, text=navy] at (16.35,2.4) {walk $\to$ offsets};
+  \node[fill=gold, circle, minimum size=1.0cm, font=\small\bfseries, text=navydeep] at (5.05,3.75) {3};
+  % the walk between anchors
+  \node[fill=gold, circle, minimum size=1.0cm, font=\small\bfseries, text=navydeep] at (10.25,3.3) {4};
 
   % ---- target bar ------------------------------------------------------
   \fill[teal!12, rounded corners=2mm] (0,0.0) rectangle (22,0.85);
   \fill[gold, rounded corners=1mm] (9,0.0) rectangle (15.5,0.85);
   \node[font=\footnotesize, text=navydeep] at (12.25,0.42) {translated interval};
-  \node[anchor=west, font=\small\bfseries, text=teal] at (0.1,-0.6) {target \ \ HG00408\#1};
-  % projections (near-vertical; clear of the caption row text)
+  \node[anchor=west, font=\small\bfseries, text=teal] at (0.1,-0.6) {target \ \ HG02015\#1};
+  % projections
   \draw[dashed, amber, line width=1.8pt] (7,11.0) -- (6.5,5.9);
   \draw[dashed, amber, line width=1.8pt] (13.5,11.0) -- (14.0,5.9);
   \draw[dashed, amber, line width=1.8pt] (6.5,4.5) -- (9,0.85);
   \draw[dashed, amber, line width=1.8pt] (14.0,4.5) -- (15.5,0.85);
 \end{tikzpicture}
 \end{center}
-\vspace{0.4cm}
-{\bfseries\color{navy}1} \ Locate the query interval on its graph path.
-\ {\bfseries\color{navy}2} \ The tag array answers, per node, \emph{every}
-haplotype standing on it --- all 464 in one pass. \ {\bfseries\color{navy}3}
-\ Nodes visited exactly once by source and target are guaranteed orthologous
-anchors. \ {\bfseries\color{navy}4} \ Walking between them emits per-base
-offsets, folded into chain blocks.
-\vspace{0.5cm}
-{\color{hairline}\hrule height 1.5pt}
-\vspace{0.6cm}
-The same pass \textbf{scores a mapped read against all 464 haplotypes}:
-\begin{center}
-\begin{tikzpicture}[line cap=round]
-  \node[anchor=west, font=\small, text=muted] at (0,3.55) {aligned read bases};
-  \fill[navy!25, rounded corners=1.5mm] (0,2.65) rectangle (21,3.3);
-  \node[anchor=west, font=\small, text=muted] at (0,2.1) {on nodes haplotype $H$ visits};
-  \fill[teal!75, rounded corners=1.5mm] (0,1.1) rectangle (17.6,1.75);
-  \fill[coral] (4.1,1.1) rectangle (4.55,1.75);
-  \fill[coral] (11.2,1.1) rectangle (11.8,1.75);
-  \node[anchor=west, font=\footnotesize, text=coral] at (17.9,1.42) {mismatches};
-  \draw[decorate, decoration={brace, mirror, amplitude=9pt}, navy, line width=2pt]
-    (0,0.75) -- (17.6,0.75);
-  \node[font=\small\bfseries, text=navy] at (8.8,-0.25)
-    {coverage$(H)$ = 84\% \quad\textbullet\quad identity$(H)$ = 79\%};
-\end{tikzpicture}
-\end{center}
-\vspace{0.25cm}
-Shown together, the two scores separate cases one number conflates:\\[0.35cm]
-\chip{100 / 99 \ \ present, near-exact}\
-\chip{100 / 60 \ \ present, diverged}\
-\chip{50 / 50 \ \ half missing}
+\vspace{0.45cm}
+{\bfseries\color{navy}1} \ Locate the query interval's nodes on the source
+haplotype's path. \ {\bfseries\color{navy}2} \ Tag arrays report, at every
+node, each haplotype standing on it and where. \ {\bfseries\color{navy}3}
+\ Nodes visited exactly once by both source and target make guaranteed
+orthologous anchor pairs. \ {\bfseries\color{navy}4} \ A walk between
+anchors emits per-base offsets, folded into chain blocks.
+\end{card}
+
+\begin{card}
+\cardhead{04}{It fits the tools people know}
+\browserframe{hgconvert_dropdown.png}{10cm}{hgConvert with pangenome assemblies in the menu}
+\RaggedRight
+Pangenome assemblies appear right in the stock \texttt{hgConvert} menu;
+picking one dispatches the conversion through the graph.
 \end{card}
 
 \end{column}
@@ -373,19 +359,23 @@ Shown together, the two scores separate cases one number conflates:\\[0.35cm]
 \begin{column}{0.2335\paperwidth}
 
 \begin{card}
-\cardhead{04}{In the browser}
-\browserframe{mapping_page.png}{12cm}{Pangenome Mapping page: identity-ranked assemblies, position-on-haplotype links}
+\cardhead{05}{Search, in the browser}
+\browserframe{mapping_page.png}{12.5cm}{Pangenome Mapping page}
 \RaggedRight
-One search scores every haplotype; picking one \textbf{re-surjects the
-cached alignment} --- no remapping --- and the browser opens there with the
-sequence as a native track:
-\browserframe{pangenome_seq_track.png}{9cm}{``Pangenome Seq'' track, BLAT-style base-level mismatch coloring}
-\vspace{0.3cm}
-Converting a position lands on the target with \textbf{CHM13's annotations
-lifted} and an \textbf{Alignment Differences} track --- across 22\,kb of
-ABO it shows exactly the 2 real C$\to$T mismatches between hs1 and
-HG00597\#1:
-\browserframe{lifted_annotations.png}{12cm}{HPRC assembly with lifted CHM13 tracks + Alignment Differences}
+One search maps the sequence to the graph with \texttt{vg giraffe} and
+reports every assembly carrying it, ranked by identity. Picking a
+haplotype re-surjects the cached alignment, no remapping, and the hit
+lands as a native track with base-level differences:
+\browserframe{pangenome_seq_track.png}{6.2cm}{The mapped sequence as a ``Pangenome Seq'' track}
+\end{card}
+
+\begin{card}
+\cardhead{06}{Convert between assemblies}
+\browserframe{convert_page.png}{12cm}{Pangenome Coordinate Conversion page}
+\RaggedRight
+CHM13 \texttt{chr6:32,768,058-32,778,749} translated to HG02015 paternal
+\texttt{CM085893.1:32,953,289-32,963,978}, covering 100\% of bases. The
+picker can list only the assemblies that actually contain the region.
 \end{card}
 
 \end{column}
@@ -394,35 +384,45 @@ HG00597\#1:
 \begin{column}{0.2335\paperwidth}
 
 \begin{card}
-\cardhead{05}{Fast enough to be interactive}
+\cardhead{07}{Land with annotations}
+\browserframe{lifted_annotations.png}{7.2cm}{The converted region on HG02015, with lifted tracks}
 \RaggedRight
-\textbf{Translation latency} (completeness in gray):
+The converted region opens on HG02015 with annotations carried over
+from the source haplotype (here CHM13): CAT and Liftoff genes of the
+HLA-DMA cluster, RefSeq and CenSat, under an \textbf{Alignment
+Differences} track marking indels and mismatches.
+\end{card}
+
+\begin{card}
+\cardhead{08}{Fast enough to be interactive}
+\RaggedRight
+\textbf{Translation latency:}
 \begin{center}
 \begin{tikzpicture}
-\begin{axis}[poster, width=0.88\linewidth, height=9.6cm,
-  xbar, xmode=log, xmin=8, xmax=300000,
+\begin{axis}[poster, width=0.88\linewidth, height=6.5cm,
+  xbar, xmode=log, xmin=8, xmax=60000,
   symbolic y coords={1 Mb, 100 kb, 10 kb, 1 kb, 100 bp},
-  ytick=data, bar width=0.9cm,
+  ytick=data, bar width=0.58cm,
   enlarge y limits=0.18,
   xlabel={median latency (ms, log scale)},
   point meta=explicit symbolic,
   nodes near coords, nodes near coords style={font=\small\bfseries, color=ink},
   ]
   \addplot[fill=navy!80, draw=none] coordinates {
-    (22,100 bp)  [22 ms \ {\color{muted}99.0\%}]
-    (21,1 kb)    [21 ms \ {\color{muted}99.8\%}]
-    (115,10 kb)  [115 ms \ {\color{muted}99.6\%}]
-    (599,100 kb) [0.6 s \ {\color{muted}97.2\%}]
-    (4300,1 Mb)  [4.3 s \ {\color{muted}93.1\%}]
+    (22,100 bp)  [22 ms]
+    (21,1 kb)    [21 ms]
+    (115,10 kb)  [115 ms]
+    (599,100 kb) [0.6 s]
+    (4300,1 Mb)  [4.3 s]
   };
 \end{axis}
 \end{tikzpicture}
 \end{center}
-\vspace{0.4cm}
+\vspace{0.35cm}
 \textbf{Concurrent queries} (3.4\,kb):
 \begin{center}
 \begin{tikzpicture}
-\begin{axis}[poster, width=0.88\linewidth, height=8.8cm,
+\begin{axis}[poster, width=0.88\linewidth, height=6.2cm,
   xmode=log, log basis x=2, xtick={1,2,4,8,16,32},
   xticklabels={1,2,4,8,16,32},
   ymin=0, ymax=80,
@@ -439,25 +439,17 @@ HG00597\#1:
 \end{axis}
 \end{tikzpicture}
 \end{center}
-Fast enough that search, translation and annotation lifting all run at
-page-load speed, for any pair of the 466 assemblies.
 \end{card}
 
 \begin{card}
-\cardhead{06}{What's next}
-\iconrow{\faRocket}{Public release}{Bringing pangenome sequence search and
-any-to-any coordinate translation to everyone, in the public UCSC Genome
-Browser.}
-\vspace{-0.5cm}
-\end{card}
-
-\begin{card}
-\cardhead{07}{Acknowledgements}
-\RaggedRight
-We thank our colleagues in the UC Santa Cruz Computational Genomics Lab ---
-especially \textbf{Adam Novak}, \textbf{Glenn Hickey}, and \textbf{Zia
-Truong} --- and the UCSC Genome Browser team. Built on \texttt{vg} and the
-HPRC v2.0 graph.
+\cardhead{09}{What's next}
+\iconrow{\faRocket}{Public release}{Pangenome search and translation in
+the public UCSC Genome Browser.}
+\iconrow{\faDatabase}{Precomputed chains}{Offline whole-genome chains for
+every pair, so lifted tracks pan freely.}
+\iconrow{\faBolt}{Chromosome-scale conversion}{Whole chromosomes
+translated in minutes.}
+\vspace{-0.8cm}
 \end{card}
 
 \end{column}

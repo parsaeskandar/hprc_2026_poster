@@ -1,16 +1,14 @@
 # Figures
 
-Drop screenshots here with these exact filenames and the framed placeholders
-in the poster are replaced automatically (no LaTeX edits needed). Each one is
-shown inside a browser-window frame on the poster:
+Screenshots used on the poster (all cropped from hgwdev):
 
-| filename | what to capture |
+| filename | shows |
 |---|---|
-| `mapping_page.png` | Pangenome Mapping result card: identity-ranked assembly list + "Position on haplotype" section |
-| `pangenome_seq_track.png` | hgTracks showing the "Pangenome Seq" track with base-level mismatch coloring |
-| `lifted_annotations.png` | An HPRC sample assembly with the lifted "Annotations from CHM13" track group + the Alignment Differences track |
+| `mapping_page.png` | Pangenome Mapping page with a mapped sequence result |
+| `pangenome_seq_track.png` | The mapped sequence drawn as a "Pangenome Seq" track on HG01167 hap1 |
+| `convert_page.png` | Pangenome Coordinate Conversion page, CHM13 chr6 region to HG02015 paternal |
+| `hgconvert_dropdown.png` | Stock hgConvert with pangenome assemblies in the menu |
+| `lifted_annotations.png` | HG02015 with lifted CHM13 tracks and the Alignment Differences track |
 
-Tips:
-- Crop tightly to the content (the poster adds its own browser chrome).
-- Wide screenshots work best (the slots are ~2.5:1 to 3:1); PNGs ~2000 px
-  wide print cleanly.
+To replace one, drop in a new PNG with the same name; the poster picks it up
+on the next compile (frames scale to fit).
