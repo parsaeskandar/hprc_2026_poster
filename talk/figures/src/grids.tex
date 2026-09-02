@@ -1,0 +1,20 @@
+\documentclass[tikz,border=8pt]{standalone}
+\input{common.tex}
+\begin{document}
+\begin{tikzpicture}
+  \foreach \x in {0,...,15}
+    \foreach \y in {0,...,9}
+      {\fill[hairline] (\x*0.62,\y*0.62) rectangle +(0.5,0.5);}
+  \fill[gold] (5*0.62,4*0.62) rectangle +(0.5,0.5);
+  \node[anchor=north, font=\large, text=muted, align=center]
+    at (4.65,-0.5) {\textbf{\color{ink}chain files today}\\ 56 of $\sim$213{,}000 pairs};
+  \node[font=\Huge, text=navy] at (11.4,3.0) {$\Longrightarrow$};
+  \begin{scope}[shift={(13.2,0)}]
+    \foreach \x in {0,...,15}
+      \foreach \y in {0,...,9}
+        {\fill[navy!80] (\x*0.62,\y*0.62) rectangle +(0.5,0.5);}
+    \node[anchor=north, font=\large, text=muted, align=center]
+      at (4.65,-0.5) {\textbf{\color{ink}through the graph}\\ every pair, on demand};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

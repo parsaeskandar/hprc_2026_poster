@@ -23,3 +23,12 @@ Differences track).
 - `figures/` — screenshots and logos. See `figures/README.md` for the exact
   filenames; placeholder boxes in the poster are replaced automatically as
   soon as the files are dropped in.
+
+## Talk
+
+`talk/` holds the 15-minute HPRC 2026 talk built from the same material:
+
+- `talk/HPRC2026_talk.pptx`: the deck (16 slides + 3 backup), speaker notes on every slide.
+- `talk/TALK.md`: narrative design, full timed script, delivery notes, and likely questions.
+- `talk/build/build.js`: generator (`cd talk/build && npm install && node build.js`).
+- `talk/figures/`: rendered figures and cropped screenshots (TikZ sources in `figures/src`).
