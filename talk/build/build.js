@@ -98,25 +98,24 @@ For thirty years two tools have moved knowledge between genomes: alignment and l
 And yes, this room can already query the graph: giraffe, the r-index, odgi, halLiftover on the Cactus alignment. From a shell, in seconds to minutes, by people who write shell.
 What has not existed is that capability at web latency, for any pair, inside the tool everyone else uses. In the browser, the graph has been a file, not a tool.`); }
 
-  // ============ 4. THREE QUESTIONS ============
-  const Q = [["FaSearch", "I have a sequence.", "Which haplotypes carry it, and where?", "from a shell only"],
-    ["FaRandom", "I have a CHM13 region.", "Where is it on HG02015?", "56 pairs have chains"],
-    ["FaLayerGroup", "When I get there,", "can I see the genes?", "only its own tracks"]];
-  const cw3 = (W - 2 * M - 0.8) / 3;
-  { const s = light("Three questions the browser can't answer today");
-    Q.forEach(([i, a, b, today], k) => { const x = M + k * (cw3 + 0.4), y = T, h = 4.5; card(s, x, y, cw3, h);
+  // ============ 4. TWO USERS ============
+  const U = [["FaSearch", "Story 1", "A sequence in hand", "Which haplotypes carry this sequence, and where on each? Then map it, and look at it.", "BLAT, one assembly at a time"],
+    ["FaRandom", "Story 2", "A gene on a reference", "This gene is on GRCh38 (or CHM13). Where is it on HG02015? And can I see its annotation there?", "56 chain pairs; only the haplotype's own tracks"]];
+  const cw2 = (W - 2 * M - 0.4) / 2;
+  { const s = light("Two users the browser can't serve today");
+    U.forEach(([i, tag, a, b, today], k) => { const x = M + k * (cw2 + 0.4), y = T, h = 4.5; card(s, x, y, cw2, h);
       circleIcon(s, ic[i], x + 0.35, y + 0.4, 0.85);
-      txt(s, a, x + 0.35, y + 1.5, cw3 - 0.7, 0.5, { fontSize: 20, bold: true, color: C.navy });
-      txt(s, b, x + 0.35, y + 2.05, cw3 - 0.7, 1.0, { fontSize: 20 });
-      txt(s, "today", x + 0.35, y + 3.2, cw3 - 0.7, 0.35, { fontSize: 16, color: C.muted });
-      txt(s, today, x + 0.35, y + 3.55, cw3 - 0.7, 0.7, { fontSize: 26, bold: true, color: C.coral, valign: "middle" }); });
-    takeaway(s, "By the end of this talk: all three, in the browser, in seconds.");
+      txt(s, tag, x + 1.4, y + 0.42, cw2 - 1.8, 0.35, { fontSize: 14, bold: true, color: C.muted, charSpacing: 2 });
+      txt(s, a, x + 1.4, y + 0.75, cw2 - 1.8, 0.5, { fontSize: 22, bold: true, color: C.navy });
+      txt(s, b, x + 0.35, y + 1.6, cw2 - 0.7, 1.4, { fontSize: 19 });
+      txt(s, "today", x + 0.35, y + 3.2, cw2 - 0.7, 0.35, { fontSize: 16, color: C.muted });
+      txt(s, today, x + 0.35, y + 3.55, cw2 - 0.7, 0.7, { fontSize: 24, bold: true, color: C.coral, valign: "middle" }); });
+    takeaway(s, "By the end of this talk: both, in the browser, in seconds.");
     notes(s, `[1:50-2:30]
-Strip this down to what a browser user actually types.
-One: I have a sequence. Which haplotypes carry it, and where?
-Two: I have a region on CHM13. Where is it on HG02015?
-Three: when I get there, can I see the genes?
-Everyone in this room can answer all three with enough shell. Nobody can answer any of them from the browser, in seconds, for an arbitrary pair. By the end of this talk: all three, live.`); }
+So let me follow two users through the browser.
+The first has a sequence in hand: a probe, a contig, a variant's flanks. Which haplotypes in the graph carry it, and where on each? And then: map it, and look at it.
+The second has a gene, and knows it on a reference: GRCh38, or CHM13. Where is that gene on HG02015? And when they get there, can they see its annotation?
+Everyone in this room can serve both users with enough shell. Nobody can do it from the browser, in seconds, for an arbitrary haplotype. By the end of this talk: both, live.`); }
 
   // ============ 5. ARCHITECTURE ============
   { const s = light("One service, two engines, three pages");
@@ -170,28 +169,28 @@ With that one property in hand, translating a region stops being a lookup and be
 So the output isn't a coordinate. It is a chain, and the browser already knows what to do with a chain. And if the target simply doesn't contain the interval, you get fewer positions, never invented ones.`); }
 
   // ============ 8. SEARCH ============
-  { const s = light("One mapping returns every assembly that carries it"); qtag(s, "Question 1");
+  { const s = light("Story 1: one sequence, every haplotype carrying it"); qtag(s, "Story 1");
     const fr = browser(s, ["crop_mapping_result.png"], M, T, W - 2 * M);
     const cw = (W - 2 * M - 0.8) / 3;
     ["Mapped once, to the whole graph, with vg giraffe.", "Every assembly carrying it, ranked by identity.", "Click a haplotype: re-surjected, not remapped."]
       .forEach((t, i) => { const x = M + i * (cw + 0.4), y = fr.bottom + 0.3; chip(s, String(i + 1), x, y); txt(s, t, x + 0.65, y - 0.02, cw - 0.65, 0.9, { fontSize: 17 }); });
     txt(s, "MAPQ is 0 by design: every locus exists hundreds of times in this graph. Per-haplotype identity and coverage replace it.", M, 6.75, W - 2 * M, 0.45, { fontSize: 15, color: C.muted, align: "center" });
     notes(s, `[5:55-6:55]
-That's the whole method. Now the three questions, starting with the first.
-This is the Pangenome Mapping page: BLAT, but for the pangenome. You paste a sequence. It is mapped once, to the whole graph, with vg giraffe. You get back every assembly consistent with it, ranked by identity, and a position on whichever haplotype you pick. Picking a different haplotype re-surjects the same alignment; nothing is remapped.
+That's the whole method. Now the two users, starting with the one holding a sequence.
+This is the Pangenome Mapping page: BLAT, but for the pangenome. She pastes her sequence, a kilobase here. It is mapped once, to the whole graph, with vg giraffe. She gets back every haplotype that carries it, ranked by identity: here two, HG01167 hap1 and HG04157 paternal. And a position on whichever one she picks. Picking a different haplotype re-surjects the same alignment; nothing is remapped.
 You'll notice MAPQ zero. That's not a bad alignment; that's what MAPQ means in a graph where every locus exists hundreds of times. We report identity and coverage per haplotype instead.`); }
 
   // ============ 9. NATIVE TRACK ============
-  { const s = light("...and it lands as a native track");
+  { const s = light("...and map it onto the haplotype you choose"); qtag(s, "Story 1");
     const fr = browser(s, ["crop_seqtrack.png"], M, T, W - 2 * M, 4.9);
     const ih = (fr.w - 0.24) * 430 / 1650; const iy = T + 0.34;
     s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: fr.x + 0.12, y: iy + ih * 0.355, w: fr.w - 0.24, h: ih * 0.075, fill: { color: C.gold, transparency: 100 }, line: { color: C.gold, width: 2.5 }, rectRadius: 0.05 });
     takeaway(s, "The mapped sequence, drawn as a track on HG01167 hap1. Base-level differences, BLAT-style.", fr.bottom + 0.35);
     notes(s, `[6:55-7:25]
-Click through to a haplotype, here HG01167 hap1, and you don't land on a special page. You land in the browser, with the sequence as a native track and base-level differences colored the way BLAT users already know. Nothing here is a special case.`); }
+She clicks through to a haplotype, here HG01167 hap1, and doesn't land on a special page. She lands in the browser, on that haplotype, with her sequence as a native track and base-level differences colored the way BLAT users already know. That's the first user done: which haplotypes, where, and mapped.`); }
 
   // ============ 10. CONVERT ============
-  { const s = light("Any region, any of 464 haplotypes, in about 100 ms"); qtag(s, "Question 2");
+  { const s = light("Story 2: a reference gene on any haplotype, ~100 ms"); qtag(s, "Story 2");
     const fr = browser(s, ["crop_convert.png"], M, T, 7.3, 5.45);
     const rx = M + 7.3 + 0.35, rw = W - M - rx;
     txt(s, "CHM13", rx, T + 0.1, rw, 0.35, { fontSize: 16, bold: true, color: C.muted });
@@ -202,11 +201,11 @@ Click through to a haplotype, here HG01167 hap1, and you don't land on a special
     card(s, rx, T + 2.85, rw, 0.95); txt(s, "100% of bases, 100% of span", rx, T + 2.85, rw, 0.95, { fontSize: 22, bold: true, color: C.navy, align: "center", valign: "middle" });
     txt(s, "About 115 ms for this 10.7 kb region. GRCh38 is a path in the graph too, so hg38 can be the source.", rx, T + 4.0, rw, 1.4, { fontSize: 17 });
     notes(s, `[7:25-8:15]
-Question two starts from coordinates instead of a sequence. Convert Coordinates Between Assemblies. Source: CHM13, a ten-kilobase region on chromosome 6. Target: any of the other 463 haplotypes; the picker can show only the ones that actually contain the region.
-Result: HG02015 paternal, contig CM085893, a hundred percent of bases, a hundred percent of span, in about a hundred milliseconds. And GRCh38 is a path in this graph too, so hg38 works as the source.`); }
+The second user starts from coordinates, not a sequence. He knows his gene on a reference. Here the source is CHM13 and the gene is HLA-DMA, a ten-kilobase region on chromosome 6; GRCh38 is a path in this graph too, so hg38 works exactly the same way. Target: any of the other 463 haplotypes, and the picker can show only the ones that actually contain the region.
+He picks HG02015 paternal, a haplotype he has never looked at. Result: contig CM085893, a hundred percent of bases, a hundred percent of span, in about a hundred milliseconds.`); }
 
   // ============ 11. HGCONVERT ============
-  { const s = light("No new habits: it lives inside hgConvert too");
+  { const s = light("...or from the hgConvert page he already uses"); qtag(s, "Story 2");
     browser(s, ["crop_dropdown.png"], M, T, 7.8);
     const rx = M + 7.8 + 0.4, rw = W - M - rx;
     txt(s, "Pangenome assemblies appear in the ordinary assembly menu.", rx, T + 0.2, rw, 1.1, { fontSize: 18 });
@@ -217,17 +216,17 @@ And it asks nothing new of anyone. Open the ordinary hgConvert page and the pang
 (Skip this slide if running long.)`); }
 
   // ============ 12. PAYOFF ============
-  { const s = light("Arrive with the annotations you left behind"); qtag(s, "Question 3");
+  { const s = light("...and arrive with the reference's annotations"); qtag(s, "Story 2");
     const fr = browser(s, ["crop_lifted.png"], M, T, W - 2 * M);
     txt(s, "HG02015 paternal has its own CAT and Liftoff genes. What it will never have is everything that exists once, on one reference: ClinVar, GWAS, ENCODE, your lab's BED file. Here, CHM13's tracks on HG02015, over a chain built for this page view.",
       M, fr.bottom + 0.15, W - 2 * M, 1.0, { fontSize: 16 });
     txt(s, "translation blocks  →  bigChain  →  QuickLift draws them   •   Alignment Differences marks insertions, deletions and mismatches", M, 6.85, W - 2 * M, 0.4, { fontSize: 15, color: C.muted, align: "center" });
     notes(s, `[8:40-10:20]  SLOW DOWN. This is the slide the talk exists for.
-But a coordinate on its own is a lonely thing. Question three, and this is the one I care about most.
-This is HG02015 paternal. Release 2 gave it CAT and Liftoff genes, and per-assembly annotation is the right answer where it exists. What HG02015 does not have, and never will, is everything else: ClinVar, the GWAS catalog, ENCODE, your lab's BED file. Those live once, on one reference.
+But a coordinate on its own is a lonely thing. He clicks the result, and this is the part I care about most.
+This is HG02015 paternal, at his gene. Release 2 gave it CAT and Liftoff genes, and per-assembly annotation is the right answer where it exists. What HG02015 does not have, and never will, is everything else: ClinVar, the GWAS catalog, ENCODE, your lab's BED file. Those live once, on one reference.
 And here they are: CHM13's tracks, drawn at their translated positions, under an Alignment Differences track marking every insertion, deletion and mismatch between the two assemblies.
 (pause) The chain that made this possible did not exist a second before the page loaded. The translation blocks became a bigChain, the browser's own QuickLift drew the tracks, and the chain is reused for every pan.
-That's what I mean by making release 2 useful. The thousands of tracks that exist once, on one reference, will never be rebuilt 464 times. Any of these assemblies can borrow them, on demand, for the region you're actually looking at.`); }
+That's the second user done: a gene he knew on a reference, on a haplotype nobody annotated for him, with the reference's annotation around it. And that's what I mean by making release 2 useful. The thousands of tracks that exist once, on one reference, will never be rebuilt 464 times. Any haplotype can borrow them, on demand, for the region you're actually looking at.`); }
 
   // ============ 13. VALIDATION ============
   { const s = light("What we have checked, and what we haven't");
@@ -291,17 +290,19 @@ And the milestone all of that serves: the public UCSC Genome Browser.`); }
 
   // ============ 16. VISION (rhymes with slide 4) ============
   { const s = dark();
-    txt(s, "All three: yes", M, 0.42, W - 2 * M, 0.78, { fontSize: 32, bold: true, color: C.white, valign: "middle" });
-    Q.forEach(([i, a, b], k) => { const x = M + k * (cw3 + 0.4), y = T, h = 4.5; card(s, x, y, cw3, h, C.cardDark, C.cardDarkLine);
+    txt(s, "Both users, served", M, 0.42, W - 2 * M, 0.78, { fontSize: 32, bold: true, color: C.white, valign: "middle" });
+    const done = ["every carrying haplotype, ranked; mapped as a track on the one she chose", "the gene on HG02015 in ~100 ms, with the reference's annotation drawn around it"];
+    U.forEach(([i, tag, a, b], k) => { const x = M + k * (cw2 + 0.4), y = T, h = 4.5; card(s, x, y, cw2, h, C.cardDark, C.cardDarkLine);
       circleIcon(s, ic[i], x + 0.35, y + 0.4, 0.85, C.teal);
-      txt(s, a, x + 0.35, y + 1.5, cw3 - 0.7, 0.5, { fontSize: 20, bold: true, color: C.white });
-      txt(s, b, x + 0.35, y + 2.05, cw3 - 0.7, 1.0, { fontSize: 20, color: C.dim });
-      txt(s, k === 2 ? "the reference's tracks, over a chain built on the spot" : "in the browser, in seconds", x + 0.35, y + 3.2, cw3 - 0.7, 0.35, { fontSize: 14, color: C.dim });
-      txt(s, "yes", x + 0.35, y + 3.55, cw3 - 0.7, 0.7, { fontSize: 40, bold: true, color: C.gold, valign: "middle" }); });
+      txt(s, tag, x + 1.4, y + 0.42, cw2 - 1.8, 0.35, { fontSize: 14, bold: true, color: C.dim, charSpacing: 2 });
+      txt(s, a, x + 1.4, y + 0.75, cw2 - 1.8, 0.5, { fontSize: 22, bold: true, color: C.white });
+      txt(s, b, x + 0.35, y + 1.6, cw2 - 0.7, 1.4, { fontSize: 19, color: C.dim });
+      txt(s, done[k], x + 0.35, y + 3.1, cw2 - 0.7, 0.5, { fontSize: 15, color: C.dim });
+      txt(s, "done", x + 0.35, y + 3.55, cw2 - 0.7, 0.7, { fontSize: 40, bold: true, color: C.gold, valign: "middle" }); });
     txt(s, "Live on the development browser today. Bring me your hardest region, and tell me where it breaks.", M, 6.3, W - 2 * M, 0.6, { fontSize: 22, italic: true, color: C.gold, align: "center", valign: "middle" });
     notes(s, `[13:05-13:45]
-So, back to the three questions I promised.
-Which haplotypes carry my sequence? Yes. Where is my region on HG02015? Yes. Can I see the genes when I get there? Yes: the reference's tracks, over a chain built on the spot.
+So, back to the two users I promised.
+The one with a sequence: every haplotype that carries it, ranked, and mapped as a track on the one she chose. The one with a gene on a reference: the same gene on HG02015 in a tenth of a second, with the reference's annotation drawn around it, over a chain built on the spot.
 It's live on the development browser today. So bring me your hardest region, and tell me where it breaks.
 (Advance to the thanks slide, let it breathe, then take questions.)`); }
 
