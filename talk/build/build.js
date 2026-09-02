@@ -34,7 +34,7 @@ const IMG = {
   "convert_page.png": [3160, 1580], "hgconvert_dropdown.png": [3280, 1820],
   "lifted_annotations.png": [2415, 548], "translation.png": [2691, 1715],
   "tagarray.png": [2630, 1384], "grids.png": [2783, 982], "emblem.png": [1678, 392],
-  "grid_sparse.png": [1671, 1011],
+  "grid_sparse.png": [1671, 1011], "hprc_logo.png": [1855, 1540],
 };
 
 (async () => {
@@ -104,6 +104,7 @@ const IMG = {
       { x: M, y: 4.7, w: W - 2 * M, h: 0.5, fontFace: FONT, fontSize: 18, color: C.dim, align: "center", isTextBox: true, margin: 0 });
     s.addText("Parsa Eskandar   •   Jouni Sirén   •   Benedict Paten", { x: M, y: 5.75, w: W - 2 * M, h: 0.45, fontFace: FONT, fontSize: 20, color: C.white, align: "center", isTextBox: true, margin: 0 });
     s.addText("UC Santa Cruz Genomics Institute", { x: M, y: 6.25, w: W - 2 * M, h: 0.4, fontFace: FONT, fontSize: 15, color: C.dim, align: "center", isTextBox: true, margin: 0 });
+    s.addImage({ path: path.join(FIG, "hprc_logo.png"), x: W - M - 1.5, y: H - 0.55 - 1.5 * 1540 / 1855, w: 1.5, h: 1.5 * 1540 / 1855 });
     notes(s, `[0:00-0:20]
 Thanks. I'm Parsa Eskandar from Benedict Paten's lab at UC Santa Cruz, and I want to show you something we built with the UCSC Genome Browser team: the browser can now speak pangenome.
 (Advance on "speak pangenome".)`);
@@ -414,6 +415,7 @@ Which haplotypes carry my sequence? Yes. Where is my region on HG02015? Yes. Can
       { text: "Built on vg and the HPRC v2.0 graph", options: { color: C.dim, fontSize: 15 } }],
       { x: M, y: 3.35, w: W - 2 * M, h: 2.0, fontFace: FONT, isTextBox: true, margin: 0, align: "center", valign: "top", paraSpaceAfter: 6 });
     s.addText("seeskand@ucsc.edu   •   github.com/parsaeskandar/hprc_2026_poster", { x: M, y: 6.2, w: W - 2 * M, h: 0.4, fontFace: "Courier New", fontSize: 13, color: C.gold, isTextBox: true, margin: 0, align: "center" });
+    s.addImage({ path: path.join(FIG, "hprc_logo.png"), x: W - M - 1.5, y: H - 0.55 - 1.5 * 1540 / 1855, w: 1.5, h: 1.5 * 1540 / 1855 });
     notes(s, `[14:10-14:25]
 This is work with Jouni Sirén and Benedict Paten, with a lot of help from the Computational Genomics Lab and the Genome Browser team. Thank you, and I'm happy to take questions.`);
   }
