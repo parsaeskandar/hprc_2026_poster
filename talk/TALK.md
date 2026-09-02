@@ -28,7 +28,7 @@ Everything in the talk serves that sentence. If a slide doesn't, cut it.
 | 11 | **Demo: arrive with annotations** | Question 3 answered. This is the payoff slide | 1:30 |
 | 12 | No new habits: hgConvert | Adoption is free | 0:30 |
 | 13 | Fast enough | Credibility: numbers, briefly | 0:50 |
-| 14 | Not done yet, and the plan | Honesty + ambition; what HPRC2 in the browser will look like | 1:30 |
+| 14 | Not done yet, and the plan | Honesty + the path to public release | 1:30 |
 | 15 | Vision: yes / yes / yes | Close the loop on slide 4 | 0:40 |
 | 16 | Thanks | | 0:15 |
 
@@ -151,11 +151,11 @@ And it scales: the index is read-only and thread-safe, so eight concurrent users
 
 Today, chains are built per view. Pan far enough and we build another one. Wide, segmental-duplication-heavy regions lose positions; on the 1q21.1 region we recover about half.
 
-The plan. First, precomputed whole-genome chains: because we know both endpoints, we can intersect the two haplotype paths directly instead of probing the index, and that's roughly three hundred times faster: hours for every assembly pair, not weeks. That also removes the segdup problem, and it means lifted tracks pan and zoom anywhere for free.
+The plan. First and foremost: this is on the development browser today; the goal is the public UCSC Genome Browser.
 
-Second, this is on the development browser today; the goal is the public UCSC Genome Browser.
+Second, chains that cover more and persist: today a widened chain dies with the session; sharing it across users makes popular regions free after the first visit.
 
-Third: more graphs. Nothing here is specific to release 2. New HPRC releases plug in by building one index."
+Third, better recovery in wide, segdup-dense regions. And more graphs: nothing here is specific to release 2. New HPRC releases plug in by building one index."
 
 ### Slide 15: Vision (13:30 to 14:10)
 
@@ -181,13 +181,13 @@ Which haplotypes carry my sequence? Yes. Where is my region on HG02015? Yes. Can
 ## 5. Questions to expect
 
 **"Why not just precompute all the chains offline?"**
-That is exactly the plan for whole-genome chains (slide 14). The on-demand path is what makes arbitrary regions and arbitrary pairs possible today, and it is the same machinery that a bulk generator will use; the bulk path just skips the index probing because both endpoints are known.
+466 × 466 pairs is about 213,000 chains; computing and hosting all of them is a large standing cost for pairs almost nobody asks for. On-demand generation makes arbitrary regions and arbitrary pairs possible today, and caching widened chains across users (slide 14) gets popular regions most of the benefit of precomputation without the cost.
 
 **"How does this differ from vg surject or minigraph-cactus liftover tools?"**
 Same graph, different access pattern. Surjection needs an alignment; we translate coordinates without one, through anchors that both haplotypes visit exactly once, so it works for any interval and returns chain-semantics blocks the browser can draw directly. And it runs in tens of milliseconds behind a web request.
 
 **"What about accuracy in repeats / segmental duplications?"**
-Anchors are nodes visited exactly once by both haplotypes, so repeats never produce false anchors; the failure mode is missing positions, not wrong ones. Wide segdup-dense intervals currently lose positions (about 46% recovered on 1q21.1); direct path intersection fixes that and is planned.
+Anchors are nodes visited exactly once by both haplotypes, so repeats never produce false anchors; the failure mode is missing positions, not wrong ones. Wide segdup-dense intervals currently lose positions (about 46% recovered on 1q21.1); improving recovery there is on the list.
 
 **"Which graph, and can it use others?"**
 HPRC v2.0 Minigraph-Cactus, CHM13-based, 148M nodes. Nothing is release-specific; the index is rebuilt per graph.

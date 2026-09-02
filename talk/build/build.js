@@ -374,16 +374,17 @@ And it scales: the index is read-only and thread-safe, so eight concurrent users
     const x2 = M + cw + 0.9;
     card(s, x2, cy, cw, ch, C.sky);
     body(s, "Planned", x2 + 0.35, cy + 0.3, cw - 0.7, 0.5, { fontSize: 22, bold: true, color: C.navy });
-    bullets(s, ["Precomputed whole-genome chains by direct path intersection: about 300× faster, hours for all 466 assemblies. Lifted tracks then pan and zoom anywhere for free.",
-      "The same exact intersection fixes wide segdup regions.",
-      "Public release in the UCSC Genome Browser.",
+    bullets(s, ["Public release in the UCSC Genome Browser.",
+      "Chains that cover more, and persist: widened chains shared across users instead of dying with the session.",
+      "Better recovery in wide, segdup-dense regions.",
       "New graphs plug in by building one index; nothing is release-specific."], x2 + 0.35, cy + 1.05, cw - 0.7, 4.2, { fontSize: 16 });
     notes(s, `[12:00-13:30]
 Now, honestly, what's not finished, and what's planned.
 Today, chains are built per view. Pan far enough and we build another one. Wide, segmental-duplication-heavy regions lose positions; on the 1q21.1 region we recover about half.
-The plan. First, precomputed whole-genome chains: because we know both endpoints, we can intersect the two haplotype paths directly instead of probing the index, and that's roughly three hundred times faster: hours for every assembly pair, not weeks. That also removes the segdup problem, and it means lifted tracks pan and zoom anywhere for free.
-Second, this is on the development browser today; the goal is the public UCSC Genome Browser.
-Third: more graphs. Nothing here is specific to release 2. New HPRC releases plug in by building one index.`);
+The plan. First and foremost: this is on the development browser today; the goal is the public UCSC Genome Browser.
+Second, chains that cover more and persist: today a widened chain dies with the session; sharing it across users makes popular regions free after the first visit.
+Third, better recovery in wide, segdup-dense regions.
+And more graphs. Nothing here is specific to release 2. New HPRC releases plug in by building one index.`);
   }
 
   // ================= 15. VISION =================
@@ -452,7 +453,7 @@ This is work with Jouni Sirén and Benedict Paten, with a lot of help from the C
         showTitle: true, title: "Lifted gene items after panning away (log scale)", titleColor: C.navy, titleFontSize: 14, titleFontFace: FONT,
         valAxisLogScaleBase: 10, valAxisMinVal: 1, valAxisMaxVal: 1000, catAxisLabelColor: C.muted, valAxisLabelColor: C.muted,
         valGridLine: { color: C.hair, size: 0.5 }, catGridLine: { style: "none" }, showValue: true, dataLabelPosition: "outEnd", dataLabelFontSize: 11, dataLabelColor: C.ink });
-    notes(s, "Backup: how on-demand chains still let users pan and zoom, and why precomputed whole-genome chains are the long-term answer.");
+    notes(s, "Backup: how on-demand chains still let users pan and zoom.");
   }
   {
     const s = light("Backup: by the numbers");
