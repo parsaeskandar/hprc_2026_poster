@@ -1,205 +1,187 @@
-# HPRC 2026 talk: design, script, and delivery notes
+# HPRC 2026 talk: design, script, and delivery notes (v2)
 
-**Slot:** 15 minutes (plan for 13:30 of talking, leave 90 s of slack for the room).
-**Deck:** `HPRC2026_talk.pptx` (16 main slides + 3 backup). Speaker notes are embedded in every slide; this file is the long form.
+**Slot:** 15 minutes. The script below runs about 14:00 with pauses; if the slot is 12 + 3 for questions, use the cut order in section 4 to land at 11:30.
+**Deck:** `HPRC2026_talk.pptx`, 17 main slides + 4 backup. Speaker notes are embedded in every slide; this file is the long form.
+**Audience:** the HPRC meeting. Everyone builds or uses pangenome graphs. Do not explain what a pangenome is. Do explain what is new: web latency, any pair, no alignment step, inside the browser everyone uses.
 
 ---
 
 ## 1. The one sentence
 
-> HPRC release 2 gave us 466 genomes and no way to move knowledge between them. We indexed the graph so every base knows every haplotype, and the UCSC Genome Browser can now search, translate, and lift annotations across all of them, live.
+> The HPRC release 2 graph holds 464 haplotypes and the browser has no way to move knowledge between them. We indexed the graph so every base knows every haplotype, and the UCSC Genome Browser can now search, translate, and lift annotations across all of them, live.
 
-Everything in the talk serves that sentence. If a slide doesn't, cut it.
+## 2. The arc
 
-## 2. The arc (and why this order)
+| # | Slide | Job | Budget | Elapsed |
+|---|---|---|---|---|
+| 1 | Title | Land the name, don't linger | 0:15 | 0:15 |
+| 2 | 464 assemblies. 56 chain files. | Cold open: name the gap in a system they use | 0:45 | 1:00 |
+| 3 | Two old tools. Both are single-pair. | Name what exists (honestly) and what doesn't | 0:50 | 1:50 |
+| 4 | Three questions the browser can't answer today | The promise | 0:40 | 2:30 |
+| 5 | One service, two engines, three pages | Orient, then get out of the way | 0:45 | 3:15 |
+| 6 | Every base knows every haplotype that carries it | The one idea (tag arrays) | 1:10 | 4:25 |
+| 7 | Translating a region is a walk, not a lookup | The method, on one figure | 1:30 | 5:55 |
+| 8 | One mapping returns every assembly that carries it | Question 1 | 1:00 | 6:55 |
+| 9 | ...and it lands as a native track | First-class browser object | 0:30 | 7:25 |
+| 10 | Any region, any of 464 haplotypes, in about 100 ms | Question 2 | 0:50 | 8:15 |
+| 11 | No new habits: hgConvert | Adoption is free (first to cut) | 0:25 | 8:40 |
+| 12 | Arrive with the annotations you left behind | Question 3. The payoff. Slow down. | 1:40 | 10:20 |
+| 13 | What we have checked, and what we haven't | Trust before speed | 0:50 | 11:10 |
+| 14 | Fast enough to sit behind a web page | Credibility, brisk | 0:50 | 12:00 |
+| 15 | Real limits, and what's next | Honesty and the path to public release | 1:05 | 13:05 |
+| 16 | All three: yes | Close the loop, then the ask | 0:40 | 13:45 |
+| 17 | Thank you | | 0:15 | 14:00 |
 
-| # | Beat | Job of the beat | Time |
-|---|------|-----------------|------|
-| 1 | Title | Set the tone: confident, visual | 0:20 |
-| 2 | **Hook**: every fact has an address; +466 | Make the room feel the problem in one breath | 1:00 |
-| 3 | The two old tools break at 466 | Name the challenge concretely (alignment, lift-over, 56 chains) | 1:15 |
-| 4 | Three questions a user asks | Turn the problem into a promise the talk will keep | 0:45 |
-| 5 | What we built, in one picture | Orient; then get out of the way | 0:50 |
-| 6 | Foundation: tag arrays | The one idea that makes everything possible | 1:15 |
-| 7 | Translation is a walk, not a lookup | The algorithm, in four steps on one figure | 1:30 |
-| 8 | Demo: search | Question 1 answered | 1:00 |
-| 9 | Demo: the hit as a track | ... and it is a first-class browser object | 0:30 |
-| 10 | Demo: convert | Question 2 answered | 0:45 |
-| 11 | **Demo: arrive with annotations** | Question 3 answered. This is the payoff slide | 1:30 |
-| 12 | No new habits: hgConvert | Adoption is free | 0:30 |
-| 13 | Fast enough | Credibility: numbers, briefly | 0:50 |
-| 14 | Not done yet, and the plan | Honesty + the path to public release | 1:30 |
-| 15 | Vision: yes / yes / yes | Close the loop on slide 4 | 0:40 |
-| 16 | Thanks | | 0:15 |
-
-Total: about 14:15. Backup slides B1 to B3 are for questions only.
-
-**Structural choices worth knowing about:**
-
-- The hook is *not* "the HPRC graph is great". The room already believes that. The hook is the cost of having 466 coordinate systems. It makes the audience want the solution before they see it.
-- Slide 4 plants three questions; slide 15 answers them. The audience gets closure, and you get a natural ending line.
-- Method (6, 7) comes *before* the demos. People trust a demo more once they know why it works, and the demos then read as consequences rather than magic.
-- Slide 11 is the thesis Benedict asked for: "how alignment and rapid lift-over make HPRC2 useful in the browser." Give it the most time of any demo slide. Slow down there.
-- Slide 14 says plainly what is not finished. Saying it yourself, with a plan attached, is stronger than being asked about it.
+Why this order: the open names a broken thing inside a tool the room uses, instead of telling them release 2 is big. Slide 4 plants three questions and slide 16 answers them. Method (6, 7) comes before the demos so the demos read as consequences. Slide 12 is the thesis: how alignment and rapid lift-over make release 2 useful in the browser. Slide 13 says what is and isn't validated before anyone asks.
 
 ## 3. Script
 
-Timings are cumulative targets. Lines in *italics* are stage directions.
+Timings are cumulative. Stage directions in *italics*.
 
-### Slide 1: Title (0:00 to 0:20)
+### 1. Title (0:00 to 0:15)
+"Thanks. I'm Parsa Eskandar, from Benedict Paten's lab at UC Santa Cruz, and this is joint work with Jouni Sirén and the UCSC Genome Browser team."
 
-"Thanks. I'm Parsa Eskandar from Benedict Paten's lab at UC Santa Cruz, and I want to show you something we've built with the UCSC Genome Browser team: the browser can now speak pangenome."
+### 2. Cold open (0:15 to 1:00)
+"The UCSC Genome Browser can open 464 HPRC haplotype assemblies. The same database has 56 chain files.
 
-*Advance on "speak pangenome".*
+*Two full beats. Let them do the arithmetic.*
 
-### Slide 2: Hook (0:20 to 1:20)
+Which means almost everything we know about the human genome is written in hg38 or CHM13, and for the other 462 there is no way to move any of it across. You can look at them. You can't ask them anything. That's this talk."
 
-"Every fact we know about the human genome has an address: a chromosome and a position. And almost every one of those addresses is written in one of two coordinate systems: hg38 or CHM13.
+### 3. Two old tools (1:00 to 1:50)
+"For thirty years two tools have moved knowledge between genomes: alignment and lift-over. Neither is broken. Both are single-pair.
 
-HPRC release 2 just handed us 466 more genomes. Which means 466 more coordinate systems.
+*Point left.* BLAT runs against one assembly. There are 464 now.
+*Point right.* A chain covers one ordered pair. Two hundred thousand possible pairs; the browser has fifty-six.
 
-That is a gift and a problem. The gift is obvious. The problem is this talk: how do we make everything we already know, findable in every one of them?"
+And yes, this room can already query the graph: giraffe, the r-index, odgi, halLiftover on the Cactus alignment. From a shell, in seconds to minutes, by people who write shell.
 
-### Slide 3: Two tools, both break (1:20 to 2:35)
+What has not existed is that capability at web latency, for any pair, inside the tool everyone else uses. In the browser, the graph has been a file, not a tool."
 
-"For thirty years, two tools have moved knowledge between genomes.
+### 4. Three questions (1:50 to 2:30)
+"Strip this down to what a browser user actually types. One: I have a sequence. Which haplotypes carry it, and where? Two: I have a region on CHM13. Where is it on HG02015? Three: when I get there, can I see the genes?
 
-*Point left.* Alignment. You have a sequence, you BLAT it. But BLAT runs against one assembly at a time. There are 466 now, and nothing lets you ask the graph itself: who carries this?
+Everyone in this room can answer all three with enough shell. Nobody can answer any of them from the browser, in seconds, for an arbitrary pair. By the end of this talk: all three, live."
 
-*Point right.* Lift-over. A chain file between two assemblies, and QuickLift can draw one assembly's tracks on top of another. But a chain is a pairwise object. With 466 assemblies that's about 213,000 pairs. We counted what actually exists in the browser database: 56.
+### 5. Architecture (2:30 to 3:15)
+"Here's what we built to answer all three, and it fits on one slide. The browser talks to a service. The service holds two engines over the HPRC v2 graph: vg giraffe for mapping sequences, and our coordinate-translation index. Three pages in the browser, three things they do: search, translate, lift annotations.
 
-The pangenome graph is, in principle, the alignment of all of them at once. But inside the browser, it has been a file, not a tool."
+Fifteen lines changed in the browser's core; everything else is a new page. Let me start with the one idea that makes translation possible at all."
 
-### Slide 4: Three questions (2:35 to 3:20)
+### 6. Tag arrays (3:15 to 4:25)
+"The foundation is our tag-array index, from the lossless pangenome indexing work.
 
-"Strip this down to what a browser user actually types.
-
-One: I have a sequence. Which haplotypes carry it, and where?
-Two: I have a region on CHM13. Where is it on HG02015?
-Three: when I get there, can I see the genes?
-
-Today the honest answer to all three is no. By the end of this talk I want to have answered all three: live, inside the browser you already use."
-
-### Slide 5: What we built (3:20 to 4:10)
-
-"Here's the whole system in one breath. The browser talks to a service. The service holds two engines over the HPRC v2 graph: vg giraffe, for mapping sequences, and our coordinate-translation index. Everything else is presentation: three pages in the browser, and three things they do. Search. Translate. Lift annotations.
-
-Let me start with the one idea that makes translation possible at all."
-
-### Slide 6: Tag arrays (4:10 to 5:25)
-
-"The foundation is the tag-array index, from our lossless pangenome indexing work.
-
-A standard FM-index or r-index over all 464 haplotype sequences will find where a string occurs. But it only gives you positions in a text. Tag arrays annotate every position of the BWT with its graph position, the node it belongs to.
+An r-index over all 464 haplotypes tells you where a string occurs, but only as a position in a text. Tag arrays add one thing: every position in the BWT also carries its node in the graph. So a string match doesn't give you an offset. It gives you a place in the graph. One tag per BWT run, not per position, which is why this fits in memory.
 
 And once you're standing on a node, the GBWT tells you every haplotype that passes through it, and where. All 464, in a single lookup.
 
-Notice what's missing: there is no per-pair index anywhere. Nothing that says CHM13-to-HG02015. That one property is what makes any-to-any translation possible."
+Notice what's missing: nothing anywhere says CHM13-to-HG02015. That is the property that makes any-to-any translation possible."
 
-### Slide 7: Translation is a walk (5:25 to 6:55)
+### 7. Translation (4:25 to 5:55)
+"With that one property in hand, translating a region stops being a lookup and becomes a walk.
 
-"So here's how a region moves.
-
-*Badge 1.* Locate the query interval's nodes on the source haplotype's path.
+*Badge 1.* Find the query interval's nodes on the source haplotype's path.
 *Badge 2.* At those nodes, ask the tag arrays who else is standing here. Every haplotype comes back at once.
-*Badge 3.* Nodes that source and target each visit exactly once are unambiguous anchors: guaranteed orthologous. A colinearity check drops the few pairs that don't make sense.
-*Badge 4.* Walk the graph between anchors and emit an offset for every base. Then fold that into blocks: a block breaks on an indel or an inversion, never on a SNP.
+*Badge 3.* Nodes that source and target each visit exactly once are unambiguous anchors. Orthology is inherited from the graph's alignment. What we guarantee is that a repeat can't manufacture a false anchor, and a colinearity check drops pairs whose spans disagree.
+*Badge 4.* Walk the graph between anchors, one base at a time, and group the bases that share an offset into blocks. A block breaks on an indel, never on a SNP; an inversion starts a new chain. That is exactly what a chain file means.
 
-That last part matters. That is exactly what a chain file means. So the output of translation isn't just a coordinate. It is a chain, and the browser already knows what to do with a chain."
+So the output isn't a coordinate. It is a chain, and the browser already knows what to do with a chain. And if the target simply doesn't contain the interval, you get fewer positions, never invented ones."
 
-### Slide 8: Search (6:55 to 7:55)
+### 8. Search (5:55 to 6:55)
+"That's the whole method. Now the three questions, starting with the first.
 
-"Question one. This is the Pangenome Mapping page: BLAT, but for the pangenome.
+This is the Pangenome Mapping page: BLAT, but for the pangenome. You paste a sequence. It is mapped once, to the whole graph, with vg giraffe. You get back every assembly consistent with it, ranked by identity, and a position on whichever haplotype you pick. Picking a different haplotype re-surjects the same alignment; nothing is remapped.
 
-You paste a sequence. It is mapped once, to the whole graph, with vg giraffe. You get back every assembly consistent with it, ranked by identity, and a position on whichever haplotype you pick. Picking a different haplotype re-surjects the same alignment; nothing is remapped."
+You'll notice MAPQ zero. That's not a bad alignment; that's what MAPQ means in a graph where every locus exists hundreds of times. We report identity and coverage per haplotype instead."
 
-### Slide 9: The hit as a track (7:55 to 8:25)
+### 9. Native track (6:55 to 7:25)
+"Click through to a haplotype, here HG01167 hap1, and you don't land on a special page. You land in the browser, with the sequence as a native track and base-level differences colored the way BLAT users already know. Nothing here is a special case."
 
-"And when you click through, the hit lands in the browser as a native track, with base-level differences colored the way BLAT users already know. Nothing here is a special case; it is just another track on another assembly."
+### 10. Convert (7:25 to 8:15)
+"Question two starts from coordinates instead of a sequence. Source: CHM13, a ten-kilobase region on chromosome 6. Target: any of the other 463 haplotypes; the picker can show only the ones that actually contain the region.
 
-### Slide 10: Convert (8:25 to 9:10)
+Result: HG02015 paternal, contig CM085893, a hundred percent of bases, a hundred percent of span, in about a hundred milliseconds. And GRCh38 is a path in this graph too, so hg38 works as the source."
 
-"Question two. Convert Coordinates Between Assemblies. Source CHM13, a ten-kilobase region on chromosome 6. Target: any of the other 463 haplotypes, and the picker can show only the ones that actually contain the region.
+### 11. hgConvert (8:15 to 8:40)
+"And it asks nothing new of anyone. Open the ordinary hgConvert page and the pangenome assemblies are simply in the menu. Pick one, and the conversion goes through the graph instead of a chain file. Same button, new capability."
 
-Result: HG02015 paternal, contig CM085893, a hundred percent of bases, a hundred percent of span. About twenty milliseconds."
+### 12. Arrive with annotations (8:40 to 10:20)
+*Slow down. This is the slide the talk exists for.*
 
-### Slide 11: Arrive with annotations (9:10 to 10:40)
+"But a coordinate on its own is a lonely thing. Question three, and this is the one I care about most.
 
-*Slow down. This is the slide Benedict asked for.*
+This is HG02015 paternal. Release 2 gave it CAT and Liftoff genes, and per-assembly annotation is the right answer where it exists. What HG02015 does not have, and never will, is everything else: ClinVar, the GWAS catalog, ENCODE, your lab's BED file. Those live once, on one reference.
 
-"Question three, and this is the one I care about most.
+And here they are: CHM13's tracks, drawn at their translated positions, under an Alignment Differences track marking every insertion, deletion and mismatch between the two assemblies.
 
-This is HG02015 paternal, a sample assembly with almost no annotation of its own. And you're looking at CHM13's CAT and Liftoff genes, the HLA-DMA cluster, RefSeq, CenSat, drawn at their translated positions. Above them, an Alignment Differences track marks every insertion, deletion and mismatch between the two assemblies.
+*Pause.* The chain that made this possible did not exist a second before the page loaded. The translation blocks became a bigChain, the browser's own QuickLift drew the tracks, and the chain is reused for every pan.
 
-The chain that made this possible did not exist a second before the page loaded. The translation blocks became a bigChain, the browser's own QuickLift drew the tracks, and the chain will be reused for every pan.
+That's what I mean by making release 2 useful. The thousands of tracks that exist once, on one reference, will never be rebuilt 464 times. Any of these assemblies can borrow them, on demand, for the region you're actually looking at."
 
-This is what I mean by making release 2 useful in the browser: every assembly can borrow the annotation of a well-annotated reference, on demand. No precomputation, no chain library, no waiting for someone to annotate 466 genomes."
+### 13. Checked and not yet (10:20 to 11:10)
+"Before the numbers on speed, the numbers on trust, and which ones I actually have.
 
-### Slide 12: hgConvert (10:40 to 11:10)
+Checked: the Alignment Differences track, base by base, across 22 kb of ABO: exactly the two real mismatches, nothing invented. A correctness check, not a divergence estimate. Completeness by span: 99% at gene scale, 93% at a megabase. And one hard case: a segdup-dense span on 1q21.1 recovers about half its bases. Missing positions, not wrong ones: a repeat cannot manufacture an anchor.
 
-"And it asks nothing new of users. Open the ordinary hgConvert page and the pangenome assemblies are simply in the menu. Pick one, and the conversion goes through the graph instead of a chain file. Same button, new capability."
+Not yet: halLiftover on the same Cactus alignment, agreement with the 56 existing chains, and the one I care about most, CHM13's CAT transcripts onto a haplotype that has its own CAT annotation, exon boundary by exon boundary. Those three come before public release."
 
-### Slide 13: Fast enough (11:10 to 12:00)
+### 14. Fast enough (11:10 to 12:00)
+"None of this matters if it takes a minute. So: is it fast enough to sit behind a web page?
 
-"Is it fast enough to sit behind a web page? Gene-scale regions translate in about twenty milliseconds. A hundred kilobases in under a second. A megabase in about four.
+Exon-scale intervals translate in about twenty milliseconds, a ten-kilobase gene in about a tenth of a second, a hundred kilobases in under a second, a megabase in about four.
 
-And it scales: the index is read-only and thread-safe, so eight concurrent users get nearly ten times the throughput of one. That is why this can be a service rather than a batch job."
+And it serves many people at once: throughput goes from six to sixty queries a second and saturates around eight cores. Read that as 'one box serves about sixty queries a second', not as perfect scaling; the single-thread number was warm-up-limited."
 
-### Slide 14: Not done, and the plan (12:00 to 13:30)
+### 15. Limits and next (12:00 to 13:05)
+"Two things I want to be honest about before I stop.
 
-"Now, honestly, what's not finished, and what's planned.
+Chains are built per view, so if you pan far enough we build another one. And wide, segdup-dense spans lose positions: on 1q21.1 we recover about half. Missing, not wrong. This runs on the development browser, as one service with about 250 gigabytes of RAM, and there is no public API yet.
 
-Today, chains are built per view. Pan far enough and we build another one. Wide, segmental-duplication-heavy regions lose positions; on the 1q21.1 region we recover about half.
+What's next. Chains that persist: right now a widened chain dies with your session; share it across users and popular regions are free after the first visit. Better recovery in segdups. A documented JSON API, because half of you will want this from a pipeline, not a browser. And more graphs: nothing here is specific to release 2; a new release plugs in by building one index.
 
-The plan. First and foremost: this is on the development browser today; the goal is the public UCSC Genome Browser.
+And the milestone all of that serves: the public UCSC Genome Browser."
 
-Second, chains that cover more and persist: today a widened chain dies with the session; sharing it across users makes popular regions free after the first visit.
+### 16. All three: yes (13:05 to 13:45)
+"So, back to the three questions I promised.
 
-Third, better recovery in wide, segdup-dense regions. And more graphs: nothing here is specific to release 2. New HPRC releases plug in by building one index."
+Which haplotypes carry my sequence? Yes. Where is my region on HG02015? Yes. Can I see the genes when I get there? Yes: the reference's tracks, over a chain built on the spot.
 
-### Slide 15: Vision (13:30 to 14:10)
+It's live on the development browser today. So bring me your hardest region, and tell me where it breaks."
 
-"So, back to the three questions.
+*Advance to the thanks slide. Let it breathe. Then take questions.*
 
-Which haplotypes carry my sequence? Yes. Where is my region on HG02015? Yes. Can I see the genes when I get there? Yes.
-
-466 genomes, one browser, and knowledge that moves between them."
-
-### Slide 16: Thanks (14:10 to 14:25)
-
-"This is work with Jouni Sirén and Benedict Paten, with a lot of help from the Computational Genomics Lab and the Genome Browser team. Thank you, and I'm happy to take questions."
+### 17. Thanks (13:45 to 14:00)
+"None of this was mine alone: Jouni Sirén, Benedict Paten, and a lot of help from the Computational Genomics Lab and the Genome Browser team. Thank you."
 
 ## 4. Delivery notes
 
-- **Open without a warm-up.** No "today I'll talk about". The first content sentence is "Every fact we know about the human genome has an address."
-- **One pause per slide**, after the sentence that carries the slide. On slide 2 it is "466 more coordinate systems." On slide 11 it is "did not exist a second before the page loaded."
-- **Point at the screenshots.** They are real. Say "this is the dev browser, this morning" if it is true; realness is the whole point of showing screenshots instead of diagrams.
-- **Don't read the four steps** on slide 7; narrate them while touching each badge.
-- **Numbers to know cold:** 233 samples, 464 haplotypes, 466 assemblies (with CHM13 and GRCh38), 56 chains of ~213,000 pairs, ~20 ms gene-scale, 0.6 s at 100 kb, 4.3 s at 1 Mb, 9.6x at 8 threads, 15 lines changed in kent core.
-- If you are running long at slide 12, skip it (it is 30 s and the point is made by slide 11).
+- **Open cold.** No "today I'll talk about". First sentence: "The UCSC Genome Browser can open 464 HPRC haplotype assemblies."
+- **One pause per slide**, after the sentence that carries it. Slide 2: after "56 chain files." Slide 12: after "did not exist a second before the page loaded."
+- **Point at the screenshots.** They are real. Say so.
+- **Don't read the four steps** on slide 7; narrate while touching each badge. Hard caps: slide 7 at 1:35, slide 12 at 1:45, slide 6 at 1:10. These are where you will run long.
+- **Numbers to know cold:** 464 haplotypes (CHM13 and GRCh38 included), 56 chains of 200,000+ pairs, 148M nodes, ~20 ms for ≤1 kb, 115 ms at 10 kb, 0.6 s at 100 kb, 4.3 s at 1 Mb, ~60 queries/s per server, 46% recovered on 1q21.1, 15 lines in kent core, ~250 GB RAM.
+- **Vocabulary, and never deviate:** "haplotype assembly" or "haplotype" for the 464. Don't say 466. Don't say "genome" for 464.
+- **Emergency cut order:** (1) slide 11 hgConvert, 25 s; (2) slide 9 native track, 30 s; (3) the throughput chart on slide 14, speak one sentence instead, 25 s; (4) the fourth "Next" bullet on slide 15, 10 s. Never cut slides 7, 12, or 13.
 
 ## 5. Questions to expect
 
-**"Why not just precompute all the chains offline?"**
-466 × 466 pairs is about 213,000 chains; computing and hosting all of them is a large standing cost for pairs almost nobody asks for. On-demand generation makes arbitrary regions and arbitrary pairs possible today, and caching widened chains across users (slide 14) gets popular regions most of the benefit of precomputation without the cost.
+**"halLiftover already does any-to-any on the same Cactus alignment, and impg projects ranges in milliseconds. What's new?"**
+Nothing about the alignment: it is Cactus's, and where halLiftover and we disagree one of us has a bug, which is a comparison I am running, not a claim I am making. Three things differ. Access pattern: halLiftover wants the HAL, a large file and a batch tool; we answer from a resident index in about a tenth of a second for a gene, behind a web request. No alignment of the query: an interval goes in and blocks come out, through anchors both haplotypes visit exactly once. Output: chain-semantics blocks, so the browser's own QuickLift draws them with no new machinery, which is why the core change is fifteen lines. impg is the closest in spirit; it works from alignment records, we work from the graph index, which is what gives all 464 haplotypes from one query.
 
-**"How does this differ from vg surject or minigraph-cactus liftover tools?"**
-Same graph, different access pattern. Surjection needs an alignment; we translate coordinates without one, through anchors that both haplotypes visit exactly once, so it works for any interval and returns chain-semantics blocks the browser can draw directly. And it runs in tens of milliseconds behind a web request.
+**"What is your accuracy, and what happens in segdups and centromeres?"**
+Structurally: an anchor is a node visited exactly once by both paths, so a repeat can't create a false anchor; a colinearity gate drops pairs whose spans disagree; the failure mode is a missing position, not a wrong one. Orthology itself is the graph's: a paralogy collapsed by Minigraph-Cactus is inherited. Measured: the Alignment Differences track is exact at base level where we checked; completeness is 99% at gene scale and 93% at 1 Mb; a segdup-dense span on 1q21.1 recovers 46%. Not yet measured at scale against an independent source, and the three comparisons on slide 13 come before public release. Orthology itself is inherited from the graph; where Minigraph-Cactus collapsed paralogs or left regions unaligned, we inherit that too.
 
-**"What about accuracy in repeats / segmental duplications?"**
-Anchors are nodes visited exactly once by both haplotypes, so repeats never produce false anchors; the failure mode is missing positions, not wrong ones. Wide segdup-dense intervals currently lose positions (about 46% recovered on 1q21.1); improving recovery there is on the list.
+**"Can I call this from my pipeline? Can I use my own graph or assemblies?"**
+Pipeline: not yet, honestly. It is JSON over HTTP and the browser is just a client, but there is no documented or stable endpoint. A public API is on the plan; tell me what shape you want. Own graph: yes, nothing is release-specific; one index build per GBZ. GRCh38 is already a path in this graph, so hg38 as a source works now. Own assemblies: to be a target, an assembly has to be in the graph; there is no per-user assembly injection. Own annotations: anything QuickLift can draw travels over the chain, so custom tracks should ride along; I want to verify that for track hubs before promising it.
 
-**"Which graph, and can it use others?"**
-HPRC v2.0 Minigraph-Cactus, CHM13-based, 148M nodes. Nothing is release-specific; the index is rebuilt per graph.
-
-**"What does it cost to run?"**
-One service with the graph, r-index, tag arrays and GBWT loaded (the FastLocate structure alone is about 11 GB); on the order of a few hundred GB of RAM. It serves all users; the browser CGI is stateless.
+**"Why not just precompute all the chains?"**
+464 × 463 is more than 200,000 chains, a large standing cost for pairs almost nobody asks for. On-demand generation makes arbitrary regions and arbitrary pairs possible today, and caching widened chains across users (slide 15) gets popular regions most of the benefit without the cost.
 
 **"Is identity the same as BLAT identity?"**
-No. It is per-haplotype: of the read bases aligned to the graph, the fraction lying on nodes that haplotype visits and matching there. Soft-clipped ends are excluded, so a partial hit can look better than it is; we show coverage alongside identity for that reason.
+No. It is per haplotype: of the read bases aligned to the graph, the fraction lying on nodes that haplotype visits and matching there. Soft-clipped ends are excluded, so a partial hit can look better than it is; we show coverage alongside identity for that reason. MAPQ is 0 by design in a graph where every locus exists hundreds of times.
+
+**"What does it cost to run?"**
+One service with the graph, r-index, tag arrays and GBWT loaded (FastLocate alone is about 11 GB), on the order of 250 GB of RAM. It serves all users; the browser CGI is stateless.
 
 **"When can I use it?"**
-It runs on the development browser now. Public release is the next milestone (slide 14).
-
-**"How much of the browser did you have to change?"**
-Three files, fifteen lines in kent core. Everything else is a new, self-contained CGI, dark unless configured.
+It runs on the development browser now. Public release is the next milestone, after the three validation numbers on slide 13.

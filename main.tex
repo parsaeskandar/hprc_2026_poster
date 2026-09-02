@@ -202,8 +202,8 @@
   \begin{minipage}[c]{0.55\linewidth}
     \centering
     \statchip{464}{haplotypes scored per query}\hspace{0.6cm}
-    \statchip{$\sim$20\,ms}{gene-scale liftover}\hspace{0.6cm}
-    \statchip{466\,\texttimes\,466}{assembly pairs, on demand}
+    \statchip{$\sim$0.1\,s}{to lift a 10\,kb gene}\hspace{0.6cm}
+    \statchip{200{,}000+}{assembly pairs, on demand}
   \end{minipage}
 \end{tcolorbox}
 \end{minipage}
@@ -221,8 +221,8 @@
 \begin{card}
 \cardhead{01}{The graph you couldn't ask}
 \RaggedRight
-The HPRC v2.0 graph holds \textbf{233 samples and 464 haplotypes}. You can
-browse each assembly, but you cannot simply ask the graph a question: which
+The HPRC v2.0 graph holds \textbf{464 haplotypes}, CHM13 and GRCh38
+included. You can browse each assembly, but you cannot simply ask the graph a question: which
 haplotypes carry my sequence? Where does my region land on another
 assembly? Classic liftover needs a chain file per pair, and almost none
 exist:
@@ -233,7 +233,7 @@ exist:
       {\fill[hairline] (\x*0.62,\y*0.62) rectangle +(0.5,0.5);}
   \fill[gold] (4*0.62,3*0.62) rectangle +(0.5,0.5);
   \node[anchor=north, font=\small, text=muted, align=center]
-    at (3.4,-0.45) {\textbf{chain files today}\\ 56 of $\sim$213{,}000 pairs};
+    at (3.4,-0.45) {\textbf{chain files today}\\ 56 of 200{,}000+ pairs};
   \node[font=\LARGE, text=navy] at (8.6,2.3) {$\Longrightarrow$};
   \begin{scope}[shift={(10.2,0)}]
     \foreach \x in {0,...,11}
@@ -254,7 +254,7 @@ We built that query layer, inside the UCSC Genome Browser.
 pangenome: one search ranks all 464 haplotypes and links to the hit on any
 of them.}
 \iconrow{\faRandom}{Any-to-any coordinate translation}{Move a region
-between any two of the 466 assemblies, at interactive speed.}
+between any two of the 464 haplotypes, at interactive speed.}
 \iconrow{\faLayerGroup}{Annotation lifting}{Arrive with the source's
 annotation tracks drawn at translated positions, plus an Alignment
 Differences track.}
@@ -281,7 +281,7 @@ Everything rides on our \textbf{tag-array index} (\emph{lossless pangenome
 indexing}): it annotates each position of the BWT index with its graph
 position, so every match knows its node, and every node knows the
 haplotypes standing on it. Translation is a walk through the graph, not a
-lookup in 213{,}000 pairwise files:
+lookup in 200{,}000+ pairwise files:
 \vspace{0.4cm}
 \begin{center}
 \begin{tikzpicture}[line cap=round]
@@ -341,8 +341,8 @@ lookup in 213{,}000 pairwise files:
 {\bfseries\color{navy}1} \ Locate the query interval's nodes on the source
 haplotype's path. \ {\bfseries\color{navy}2} \ Tag arrays report, at every
 node, each haplotype standing on it and where. \ {\bfseries\color{navy}3}
-\ Nodes visited exactly once by both source and target make guaranteed
-orthologous anchor pairs. \ {\bfseries\color{navy}4} \ A walk between
+\ Nodes visited exactly once by both source and target are unambiguous
+anchors; orthology comes from the graph's alignment. \ {\bfseries\color{navy}4} \ A walk between
 anchors emits per-base offsets, folded into chain blocks.
 \end{card}
 
@@ -371,7 +371,7 @@ lands as a native track with base-level differences:
 \end{card}
 
 \begin{card}
-\cardhead{06}{Convert between assemblies}
+\cardhead{06}{Convert between haplotypes}
 \browserframe{convert_page.png}{12cm}{Pangenome Coordinate Conversion page}
 \RaggedRight
 CHM13 \texttt{chr6:32,768,058-32,778,749} translated to HG02015 paternal
@@ -438,7 +438,7 @@ Differences} track marking indels and mismatches.
     {(1,6.3) (2,13.2) (4,23.6) (8,60.3) (16,59.4) (32,65.3)};
   \draw[gold, line width=3pt] (axis cs:8,60.3) circle (0.32cm);
   \node[font=\small\bfseries, color=amber, anchor=south east]
-    at (axis cs:8,62) {9.6$\times$ at 8 threads};
+    at (axis cs:8,62) {$\sim$60 q/s at 8 threads};
 \end{axis}
 \end{tikzpicture}
 \end{center}
