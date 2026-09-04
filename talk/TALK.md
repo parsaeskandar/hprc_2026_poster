@@ -1,7 +1,7 @@
 # HPRC 2026 talk: design, script, and delivery notes (v5)
 
 **Slot:** 15 minutes. The script runs about 12:55 including two ~45 s screen recordings, leaving room for the room.
-**Deck:** `HPRC2026_talk.pptx`, 17 main slides + 5 backup. Speaker notes are on every slide; the script below is generated from them, so the two cannot drift.
+**Deck:** `HPRC2026_talk.pptx`, 20 main slides (17 distinct, slide 8 is four builds) + 5 backup. Speaker notes are on every slide; the script below is generated from them, so the two cannot drift.
 **Audience:** HPRC scientists. The point is not that a browser tool got better; the point is that the release 2 assemblies and graph become directly queryable. Speak of release 2 as their resource. No implementation detail (code, servers, browser internals) belongs in the talk.
 
 ---
@@ -21,7 +21,7 @@
 | 5 | Two capabilities on one index of the release 2 graph | 0:35 | 3:10 |
 | 6 | Indexing a pangenome forced a trade-off | 0:35 | 3:50 |
 | 7 | Tag arrays: an index that knows the graph | 0:40 | 4:30 |
-| 8 | Translating a region is a walk, not a lookup | 1:20 | 5:50 |
+| 8 | Translating a region is a walk, not a lookup (4 build slides) | 1:20 | 5:50 |
 | 9 | Use case 1: a sequence that is not in GRCh38 | 1:20 | 7:10 |
 | 10 | What this enables on release 2 | 0:35 | 7:45 |
 | 11 | Moving a locus onto a release 2 haplotype today | 0:35 | 8:20 |
@@ -81,14 +81,18 @@ Tag arrays take a different route: keep the FM-index on the haplotypes, and anno
 Three consequences. One index holds all 464 haplotypes, so a sequence is found once, however many haplotypes carry it. Every match knows its node, so a hit is a position in the graph, not a line in one assembly. And every node knows its haplotypes, so we can ask who passes through a node and get each haplotype with its own coordinate. That last one is what moves a locus from one haplotype to another.
 Notice what is missing: nothing anywhere says CHM13-to-HG02015. There is no pairwise index, which is why any of the 464 can be translated to any other. The details are in the paper; I am happy to go into them in questions."
 
-### 8. Translating a region is a walk, not a lookup (4:30 to 5:50)
+### 8. Translating a region is a walk, not a lookup (4:30 to 5:50; four slides, one step per click)
 
-"With that one property in hand, translating a region stops being a lookup and becomes a walk.
-(1) Find the query interval's nodes on the source haplotype's path.
-(2) At those nodes, ask the tag arrays who else is standing here. Every haplotype comes back at once.
-(3) Nodes that source and target each visit exactly once are unambiguous anchors. Orthology is inherited from the graph's alignment. What we guarantee is that a repeat can't manufacture a false anchor, and a colinearity check drops pairs whose spans disagree.
-(4) Walk the graph between anchors, one base at a time, and group the bases that share an offset into blocks. A block breaks on an indel, never on a SNP; an inversion starts a new chain. That is exactly what a chain file means.
-So the output isn't a coordinate. It is a chain, and the browser already knows what to do with a chain. And if the target simply doesn't contain the interval, you get fewer positions, never invented ones."
+"With that one property in hand, translating a region stops being a lookup and becomes a walk. Four steps, one click each."
+*click*
+"One. Find the query interval's nodes on the source haplotype's path. The tag arrays give us those directly."
+*click*
+"Two. At those nodes, ask the tag arrays who else is standing here. Every haplotype comes back at once, including the target we care about."
+*click*
+"Three. Nodes that source and target each visit exactly once are unambiguous anchors. Orthology is inherited from the graph's alignment; what we add is that a repeat cannot manufacture a false anchor, and a colinearity check drops pairs whose spans disagree."
+*click*
+"Four. Walk the graph between anchors, one base at a time, and group the bases that share an offset into blocks. A block breaks on an indel, never on a SNP; an inversion starts a new chain. That is exactly what a chain file means.
+So the output is not a coordinate. It is a chain, and the browser already knows what to do with a chain. If the target does not contain the interval, you get fewer positions, never invented ones."
 
 ### 9. Use case 1: a sequence that is not in GRCh38 (5:50 to 7:10)
 

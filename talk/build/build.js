@@ -173,20 +173,30 @@ This is the idea on a toy graph, and it is all you need for the rest of the talk
 Three consequences. One index holds all 464 haplotypes, so a sequence is found once, however many haplotypes carry it. Every match knows its node, so a hit is a position in the graph, not a line in one assembly. And every node knows its haplotypes, so we can ask who passes through a node and get each haplotype with its own coordinate. That last one is what moves a locus from one haplotype to another.
 Notice what is missing: nothing anywhere says CHM13-to-HG02015. There is no pairwise index, which is why any of the 464 can be translated to any other. The details are in the paper; I am happy to go into them in questions.`); }
 
-  // ============ 7. TRANSLATION ============
-  { const s = light("Translating a region is a walk, not a lookup");
-    const iw = 7.6, ih = iw * 1715 / 2691; s.addImage({ path: path.join(FIG, "translation.png"), x: M, y: T + 0.1, w: iw, h: ih });
-    const rx = M + iw + 0.4, rw = W - M - rx;
-    ["Find the query's nodes on the source path.", "Ask the tag arrays who else is here.", "Nodes both visit exactly once: unambiguous anchors.", "Walk between anchors, base by base; group shared offsets into chain blocks."]
-      .forEach((t, i) => { const y = T + 0.15 + i * 1.2; chip(s, String(i + 1), rx, y); txt(s, t, rx + 0.65, y - 0.02, rw - 0.65, 1.1, { fontSize: 17 }); });
-    takeaway(s, "The output is a chain. Orthology is the graph's. Missing positions are possible; a repeat cannot manufacture a wrong one.");
-    notes(s, `[4:30-5:50]
-With that one property in hand, translating a region stops being a lookup and becomes a walk.
-(1) Find the query interval's nodes on the source haplotype's path.
-(2) At those nodes, ask the tag arrays who else is standing here. Every haplotype comes back at once.
-(3) Nodes that source and target each visit exactly once are unambiguous anchors. Orthology is inherited from the graph's alignment. What we guarantee is that a repeat can't manufacture a false anchor, and a colinearity check drops pairs whose spans disagree.
-(4) Walk the graph between anchors, one base at a time, and group the bases that share an offset into blocks. A block breaks on an indel, never on a SNP; an inversion starts a new chain. That is exactly what a chain file means.
-So the output isn't a coordinate. It is a chain, and the browser already knows what to do with a chain. And if the target simply doesn't contain the interval, you get fewer positions, never invented ones.`); }
+  // ============ 7. TRANSLATION (4 build slides, one point per click) ============
+  { const steps = ["Find the query's nodes on the source path.", "Ask the tag arrays who else is here.", "Nodes both visit exactly once: unambiguous anchors.", "Walk between anchors, base by base; group shared offsets into chain blocks."];
+    const stepNotes = [
+`[4:30-4:50]
+With that one property in hand, translating a region stops being a lookup and becomes a walk. Four steps, one click each.
+(click) One. Find the query interval's nodes on the source haplotype's path. The tag arrays give us those directly.`,
+`[4:50-5:05]
+Two. At those nodes, ask the tag arrays who else is standing here. Every haplotype comes back at once, including the target we care about.`,
+`[5:05-5:30]
+Three. Nodes that source and target each visit exactly once are unambiguous anchors. Orthology is inherited from the graph's alignment; what we add is that a repeat cannot manufacture a false anchor, and a colinearity check drops pairs whose spans disagree.`,
+`[5:30-5:50]
+Four. Walk the graph between anchors, one base at a time, and group the bases that share an offset into blocks. A block breaks on an indel, never on a SNP; an inversion starts a new chain. That is exactly what a chain file means.
+So the output is not a coordinate. It is a chain, and the browser already knows what to do with a chain. If the target does not contain the interval, you get fewer positions, never invented ones.`];
+    for (let k = 0; k < 4; k++) {
+      const s = light("Translating a region is a walk, not a lookup"); qtag(s, `Step ${k + 1} of 4`);
+      const iw = 7.6, ih = iw * 1715 / 2691; s.addImage({ path: path.join(FIG, "translation.png"), x: M, y: T + 0.1, w: iw, h: ih });
+      const rx = M + iw + 0.4, rw = W - M - rx;
+      steps.forEach((t, i) => { if (i > k) return; const y = T + 0.15 + i * 1.2; const cur = i === k;
+        if (cur) chip(s, String(i + 1), rx, y);
+        else { s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: rx, y, w: 0.46, h: 0.46, fill: { color: C.card }, line: { color: C.cardLine, width: 1 }, rectRadius: 0.09 });
+          txt(s, String(i + 1), rx, y, 0.46, 0.46, { fontSize: 14, bold: true, color: C.muted, align: "center", valign: "middle" }); }
+        txt(s, t, rx + 0.65, y - 0.02, rw - 0.65, 1.1, { fontSize: 17, bold: cur, color: cur ? C.navy : C.muted }); });
+      if (k === 3) takeaway(s, "The output is a chain. Orthology is the graph's. Missing positions are possible; a repeat cannot manufacture a wrong one.");
+      notes(s, stepNotes[k]); } }
 
   // ============ 8a. USE CASE 1: RECORDING ============
   { const s = light("Use case 1: a sequence that is not in GRCh38"); qtag(s, "Use case 1");
