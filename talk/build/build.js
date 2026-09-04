@@ -64,93 +64,82 @@ async function icon(name, color, px = 256) { const svg = ReactDOMServer.renderTo
     s.addImage({ path: path.join(FIG, "emblem.png"), x: W - M - 5.5, y: 2.565 - 5.5 * 392 / 1678 / 2, w: 5.5, h: 5.5 * 392 / 1678 });
     s.addImage({ path: path.join(FIG, "hprc_logo.png"), x: M, y: 0.45, w: 1.4, h: 1.4 * 1540 / 1855 });
     txt(s, "HPRC 2026", M, 2.05, 4, 0.35, { fontSize: 14, bold: true, color: C.gold, charSpacing: 3 });
-    s.addText([{ text: "The UCSC Genome Browser", options: { breakLine: true } }, { text: "now speaks pangenome.", options: { color: C.gold } }],
-      { x: M, y: 2.85, w: 9.5, h: 1.7, fontFace: FONT, fontSize: 44, bold: true, color: C.white, isTextBox: true, margin: 0, valign: "top" });
-    txt(s, "Sequence search and coordinate translation across all 464 HPRC haplotypes", M, 4.65, 11.5, 0.5, { fontSize: 20, color: C.white });
-    txt(s, "Live on the development browser today", M, 5.2, 9.5, 0.4, { fontSize: 16, color: C.dim });
+    s.addText([{ text: "A pangenome sequence search and coordinate", options: { breakLine: true } }, { text: "translation service for the UCSC Genome Browser", options: {} }],
+      { x: M, y: 2.85, w: 11.8, h: 1.7, fontFace: FONT, fontSize: 38, bold: true, color: C.white, isTextBox: true, margin: 0, valign: "top" });
+    txt(s, "Making the HPRC release 2 assemblies queryable: any sequence, any locus, any of 464 haplotypes", M, 4.65, 11.8, 0.5, { fontSize: 20, color: C.gold });
     txt(s, "Parsa Eskandar   •   Jouni Sirén   •   Benedict Paten", M, 6.05, 10, 0.45, { fontSize: 18, color: C.white });
     txt(s, "UC Santa Cruz Genomics Institute", M, 6.5, 10, 0.4, { fontSize: 16, color: C.dim });
     notes(s, `[0:00-0:15]
-Thanks. I'm Parsa Eskandar, from Benedict Paten's lab at UC Santa Cruz, and this is joint work with Jouni Sirén and the UCSC Genome Browser team.
-(Don't linger. Advance.)`); }
+Thank you. I'm Parsa Eskandar, from Benedict Paten's lab at UC Santa Cruz. This is joint work with Jouni Sirén and the UCSC Genome Browser team, and it is about making the release 2 assemblies something a scientist can query directly.`); }
 
-  // ============ 2. COLD OPEN ============
+  // ============ 2. OPENING ============
   { const s = dark();
     txt(s, "464", M, 0.85, 5.6, 2.0, { fontSize: 120, bold: true, color: C.gold, valign: "middle" });
-    txt(s, "haplotype assemblies the Genome Browser can open", M, 2.85, 5.6, 0.9, { fontSize: 22, color: C.white });
-    txt(s, "56", 7.0, 0.85, 5.7, 2.0, { fontSize: 120, bold: true, color: C.white, valign: "middle" });
-    txt(s, "chain files in its database", 7.0, 2.85, 5.7, 0.9, { fontSize: 22, color: C.dim });
-    // exactly 464 squares: 29 x 16, one gold
+    txt(s, "haplotypes in the HPRC release 2 graph", M, 2.85, 5.6, 0.9, { fontSize: 22, color: C.white });
+    txt(s, "2", 7.0, 0.85, 5.7, 2.0, { fontSize: 120, bold: true, color: C.white, valign: "middle" });
+    txt(s, "of them hold almost everything we know: GRCh38 and CHM13", 7.0, 2.85, 5.7, 0.9, { fontSize: 22, color: C.dim });
     const cols = 29, rows = 16, sq = 0.115, pitch = 0.16, gx = M, gy = 4.0;
-    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
-      const isGold = (r === 6 && c === 9) || (r === 9 && c === 18); const col = isGold ? C.gold : C.grid;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const g = (r === 6 && c === 9) || (r === 9 && c === 18); const col = g ? C.gold : C.grid;
       s.addShape(pres.shapes.RECTANGLE, { x: gx + c * pitch, y: gy + r * pitch, w: sq, h: sq, fill: { color: col }, line: { color: col, width: 0 } }); }
-    txt(s, "464 coordinate systems, two of which hold almost everything we know", M, 6.7, 5.9, 0.5, { fontSize: 15, color: C.dim });
-    txt(s, "Almost everything we know about the human genome is written in hg38 or CHM13.", 7.0, 4.1, 5.7, 1.4, { fontSize: 22, color: C.white });
-    txt(s, "You can look at the other 462. You can't ask them anything.", 7.0, 5.6, 5.7, 1.0, { fontSize: 22, italic: true, color: C.gold });
+    txt(s, "464 coordinate systems; two carry the annotation", M, 6.7, 5.9, 0.5, { fontSize: 15, color: C.dim });
+    txt(s, "Release 2 is the most complete picture of human variation we have. A scientist can open any of these assemblies today.", 7.0, 4.05, 5.7, 1.4, { fontSize: 21, color: C.white });
+    txt(s, "What they cannot do is ask where a sequence lives across them, or carry what we know from GRCh38 onto one.", 7.0, 5.55, 5.7, 1.2, { fontSize: 21, italic: true, color: C.gold });
     notes(s, `[0:15-1:00]
-The UCSC Genome Browser can open 464 HPRC haplotype assemblies. The same database has 56 chain files.
-(pause: two full beats, let them do the arithmetic)
-Which means almost everything we know about the human genome is written in hg38 or CHM13, and for the other 462 there is no way to move any of it across. You can look at them. You can't ask them anything. That's this talk.`); }
+HPRC release 2 is the most complete picture of human variation we have: 464 haplotypes, in one graph. Two of those haplotypes, GRCh38 and CHM13, carry almost everything we know about the human genome: the gene models, the clinical variants, the regulatory annotation, and everyone's own tracks.
+(pause)
+A scientist can open any of the 464 assemblies today. What they cannot do is ask where their sequence lives across them, or take a locus they know on GRCh38 and see it, with its annotation, on one of the new haplotypes. This talk is about closing that gap.`); }
 
-  // ============ 3. TWO TOOLS ============
-  { const s = light("Two old tools. Both are single-pair.");
-    const cw = (W - 2 * M - 0.4) / 2;
-    card(s, M, T, cw, 4.55); circleIcon(s, ic.FaSearch, M + 0.35, T + 0.35, 0.7);
-    txt(s, "Alignment (BLAT)", M + 1.25, T + 0.42, cw - 1.6, 0.55, { fontSize: 22, bold: true, color: C.navy });
-    bullets(s, ["One assembly at a time. There are 464 now.", "The graph itself can be queried, from a shell: vg giraffe, the r-index, odgi.", "Nothing answers \"who carries this?\" from a browser search box."], M + 0.35, T + 1.35, cw - 0.7, 3.0);
-    const x2 = M + cw + 0.4; card(s, x2, T, cw, 4.55); circleIcon(s, ic.FaRandom, x2 + 0.35, T + 0.35, 0.7);
-    txt(s, "Lift-over (chain files)", x2 + 1.25, T + 0.42, cw - 1.6, 0.55, { fontSize: 22, bold: true, color: C.navy });
-    bullets(s, ["A chain covers one ordered pair. 464 assemblies is more than 200,000 pairs.", "Chains in the browser database today: 56.", "halLiftover on the Cactus alignment does any pair, offline, at file scale."], x2 + 0.35, T + 1.35, cw - 0.7, 3.0);
-    takeaway(s, "What hasn't existed: any pair, at web latency, inside the tool everyone already uses.");
-    notes(s, `[1:00-1:50]
-For thirty years two tools have moved knowledge between genomes: alignment and lift-over. Neither is broken. Both are single-pair.
-(point left) BLAT runs against one assembly. There are 464 now.
-(point right) A chain covers one ordered pair. Two hundred thousand possible pairs; the browser has fifty-six.
-And yes, this room can already query the graph: giraffe, the r-index, odgi, halLiftover on the Cactus alignment. From a shell, in seconds to minutes, by people who write shell.
-What has not existed is that capability at web latency, for any pair, inside the tool everyone else uses. In the browser, the graph has been a file, not a tool.`); }
+  // ============ 3. THE CHALLENGE ============
+  { const s = light("Three things a scientist cannot yet do with release 2");
+    const cw = (W - 2 * M - 0.8) / 3;
+    [["FaSearch", "Place a sequence across haplotypes", "Given a sequence, learn which of the 464 haplotypes carry it, where, and what the region looks like on each. Search today works one assembly at a time."],
+     ["FaRandom", "Move a locus onto a haplotype", "Take coordinates known on GRCh38 or CHM13 to an arbitrary release 2 haplotype. Pairwise lift-over exists for a handful of assembly pairs, not for 464."],
+     ["FaLayerGroup", "Bring the annotation along", "See the reference's gene models, ClinVar, GWAS or one's own tracks on a release 2 haplotype. Each assembly has its own CAT and Liftoff genes; nothing else follows."]]
+      .forEach(([ic_, a, b], i) => { const x = M + i * (cw + 0.4); card(s, x, T, cw, 4.55); circleIcon(s, ic[ic_], x + 0.35, T + 0.35, 0.8);
+        txt(s, a, x + 0.35, T + 1.35, cw - 0.7, 0.9, { fontSize: 21, bold: true, color: C.navy }); txt(s, b, x + 0.35, T + 2.3, cw - 0.7, 2.1, { fontSize: 16 }); });
+    takeaway(s, "The graph already aligns all 464 haplotypes. Interactive access to that alignment is what has been missing.");
+    notes(s, `[1:00-1:55]
+Concretely, three things a scientist cannot yet do with release 2, interactively.
+Place a sequence across haplotypes: given a sequence, which of the 464 carry it, where, and what does the region look like on each? Search today works one assembly at a time.
+Move a locus onto a haplotype: take coordinates known on GRCh38 or CHM13 to an arbitrary release 2 haplotype. Pairwise lift-over exists for a handful of assembly pairs, not for 464.
+And bring the annotation along: see the reference's gene models, ClinVar, GWAS, or your own tracks on a release 2 haplotype. Each assembly has its own CAT and Liftoff genes, and nothing else follows.
+The graph already aligns all 464 haplotypes. Interactive access to that alignment is what has been missing.`); }
 
-  // ============ 4. TWO USERS ============
-  const U = [["FaSearch", "Story 1", "A sequence GRCh38 doesn't have", "A researcher assembles an insertion from long reads. It isn't in the reference. Which HPRC haplotypes carry it, and what does it look like there?", "BLAT: one assembly at a time, blind to the graph"],
-    ["FaRandom", "Story 2", "A gene you know, on a genome you don't", "The same researcher is curating a gene on GRCh38, ClinVar and GWAS open, and wants to see it on one HPRC individual.", "QuickLift: only where a chain already exists"]];
+  // ============ 4. TWO USE CASES ============
+  const U = [["FaSearch", "Use case 1", "Sequence search", "A researcher has a sequence that is not in GRCh38: an insertion assembled from a sample, a probe, a contig. Which release 2 haplotypes carry it, and where?", "not available interactively"],
+    ["FaRandom", "Use case 2", "Coordinate translation", "A researcher knows a gene on GRCh38 or CHM13 and wants to see it, with its annotation, on a specific release 2 haplotype.", "only for the few pairs with a chain"]];
   const cw2 = (W - 2 * M - 0.4) / 2;
-  { const s = light("Two users the browser can't serve today");
+  { const s = light("Two use cases on the release 2 graph");
     U.forEach(([i, tag, a, b, today], k) => { const x = M + k * (cw2 + 0.4), y = T, h = 4.5; card(s, x, y, cw2, h);
       circleIcon(s, ic[i], x + 0.35, y + 0.4, 0.85);
       txt(s, tag, x + 1.4, y + 0.42, cw2 - 1.8, 0.35, { fontSize: 14, bold: true, color: C.muted, charSpacing: 2 });
       txt(s, a, x + 1.4, y + 0.75, cw2 - 1.8, 0.5, { fontSize: 22, bold: true, color: C.navy });
-      txt(s, b, x + 0.35, y + 1.6, cw2 - 0.7, 1.4, { fontSize: 19 });
+      txt(s, b, x + 0.35, y + 1.6, cw2 - 0.7, 1.5, { fontSize: 18 });
       txt(s, "today", x + 0.35, y + 3.2, cw2 - 0.7, 0.35, { fontSize: 16, color: C.muted });
-      txt(s, today, x + 0.35, y + 3.55, cw2 - 0.7, 0.7, { fontSize: 24, bold: true, color: C.coral, valign: "middle" }); });
-    takeaway(s, "By the end of this talk: both, in the browser, in seconds.");
-    notes(s, `[1:50-2:35]
-Let me make this concrete with one researcher and two afternoons.
-First afternoon: she has assembled an insertion from a patient's long reads, and it is not in GRCh38. Which HPRC haplotypes carry it? How common is it? What does the neighbourhood look like on a genome that actually has it? Today her tool is BLAT: one assembly at a time, and BLAT knows nothing about the graph, so it can't tell her who else carries the sequence.
-Second afternoon: she's curating a gene on GRCh38, ClinVar and the GWAS catalog open, and she wants to see that locus on one HPRC individual. Today her tool is QuickLift, and QuickLift works only where a chain already exists. For most HPRC haplotypes, it doesn't.
-Everyone in this room can serve her with enough shell. Nobody can do it from the browser, in seconds, for an arbitrary haplotype. By the end of this talk: both afternoons, live.`); }
+      txt(s, today, x + 0.35, y + 3.55, cw2 - 0.7, 0.7, { fontSize: 22, bold: true, color: C.coral, valign: "middle" }); });
+    takeaway(s, "Both are shown live on the release 2 graph in this talk.");
+    notes(s, `[1:55-2:35]
+I will follow two use cases through the rest of the talk.
+Use case 1, sequence search. A researcher has a sequence that is not in GRCh38: an insertion assembled from a sample, a probe, a contig. Which release 2 haplotypes carry it, and where on each?
+Use case 2, coordinate translation. A researcher knows a gene on GRCh38 or CHM13 and wants to see it, with its annotation, on a specific release 2 haplotype.
+Today the first is not available interactively at all, and the second only for the few assembly pairs that happen to have a chain. Both are shown live on the release 2 graph in this talk.`); }
 
-  // ============ 5. ARCHITECTURE ============
-  { const s = light("One service, two engines, three pages");
-    const lx = M, lw = 7.9;
-    card(s, lx, T, lw, 1.35, C.card); txt(s, "UCSC Genome Browser", lx + 0.3, T + 0.12, 5, 0.4, { fontSize: 18, bold: true, color: C.navy });
-    ["Pangenome Mapping", "Convert Coordinates", "hgConvert"].forEach((t, i) => { const cx = lx + 0.3 + i * 2.45;
-      s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: cx, y: T + 0.62, w: 2.3, h: 0.55, fill: { color: C.white }, line: { color: C.cardLine, width: 1 }, rectRadius: 0.08 });
-      txt(s, t, cx, T + 0.62, 2.3, 0.55, { fontSize: 16, align: "center", valign: "middle" }); });
-    s.addShape(pres.shapes.LINE, { x: lx + lw / 2, y: T + 1.35, w: 0, h: 0.5, line: { color: C.navy, width: 2, endArrowType: "triangle" } });
-    txt(s, "JSON over HTTP", lx + lw / 2 + 0.15, T + 1.42, 3, 0.4, { fontSize: 16, color: C.muted });
-    card(s, lx, T + 1.85, lw, 0.75, C.card); txt(s, "pangenome service", lx, T + 1.85, lw, 0.75, { fontSize: 18, bold: true, color: C.navy, align: "center", valign: "middle" });
-    s.addShape(pres.shapes.LINE, { x: lx + 1.95, y: T + 2.6, w: 0, h: 0.45, line: { color: C.navy, width: 2, endArrowType: "triangle" } });
-    s.addShape(pres.shapes.LINE, { x: lx + lw - 1.95, y: T + 2.6, w: 0, h: 0.45, line: { color: C.navy, width: 2, endArrowType: "triangle" } });
-    card(s, lx, T + 3.05, 3.8, 1.2); card(s, lx + lw - 3.8, T + 3.05, 3.8, 1.2);
-    txt(s, "vg giraffe", lx + 0.3, T + 3.15, 3.3, 0.4, { fontSize: 18, bold: true, color: C.navy }); txt(s, "maps a sequence to the whole graph", lx + 0.3, T + 3.57, 3.3, 0.6, { fontSize: 16, color: C.muted });
-    txt(s, "pangenome-index", lx + lw - 3.5, T + 3.15, 3.3, 0.4, { fontSize: 18, bold: true, color: C.navy }); txt(s, "tag arrays: any-to-any translation", lx + lw - 3.5, T + 3.57, 3.3, 0.6, { fontSize: 16, color: C.muted });
-    card(s, lx, T + 4.55, lw, 0.8, C.navy, C.navy); txt(s, "HPRC v2.0 Minigraph-Cactus graph  •  464 haplotypes, CHM13 and GRCh38 included  •  148M nodes", lx, T + 4.55, lw, 0.8, { fontSize: 16, color: C.white, align: "center", valign: "middle" });
-    const rx = M + lw + 0.6, rw = W - M - rx;
-    [["FaSearch", "Search"], ["FaRandom", "Translate"], ["FaLayerGroup", "Lift annotations"]].forEach(([i, t], k) => { const y = T + 0.2 + k * 1.55; circleIcon(s, ic[i], rx, y, 0.85); txt(s, t, rx + 1.1, y, rw - 1.1, 0.85, { fontSize: 22, bold: true, color: C.navy, valign: "middle" }); });
-    txt(s, "Core browser changes: 3 files, 15 lines.", rx, T + 4.85, rw, 0.5, { fontSize: 16, italic: true, color: C.muted });
-    notes(s, `[2:30-3:15]
-Here's what we built to answer all three, and it fits on one slide. The browser talks to a service. The service holds two engines over the HPRC v2 graph: vg giraffe for mapping sequences, and our coordinate-translation index. Three pages in the browser, three things they do: search, translate, lift annotations.
-Fifteen lines changed in the browser's core; everything else is a new page. Let me start with the one idea that makes translation possible at all.`); }
+  // ============ 5. WHAT WE BUILT ============
+  { const s = light("Two capabilities on one index of the release 2 graph");
+    card(s, M, T + 0.2, W - 2 * M, 1.35, C.navy, C.navy);
+    txt(s, "Tag-array index over the HPRC release 2 graph", M, T + 0.32, W - 2 * M, 0.5, { fontSize: 22, bold: true, color: C.white, align: "center" });
+    txt(s, "464 haplotypes  •  every BWT position knows its graph position  •  every node knows every haplotype crossing it", M, T + 0.88, W - 2 * M, 0.4, { fontSize: 16, color: C.dim, align: "center" });
+    [[M, "FaSearch", "Sequence search", "A sequence is mapped once, to the whole graph. Every haplotype that carries it is reported, and the hit can be viewed on any of them."],
+     [M + cw2 + 0.4, "FaRandom", "Coordinate translation", "A locus on any haplotype is translated to any other haplotype, and the source's annotation is drawn there over an alignment built on demand."]].forEach(([x, i, a, b]) => {
+      s.addShape(pres.shapes.LINE, { x: x + cw2 / 2, y: T + 1.55, w: 0, h: 0.5, line: { color: C.navy, width: 2, endArrowType: "triangle" } });
+      card(s, x, T + 2.05, cw2, 2.9); circleIcon(s, ic[i], x + 0.35, T + 2.4, 0.8);
+      txt(s, a, x + 1.4, T + 2.5, cw2 - 1.8, 0.55, { fontSize: 22, bold: true, color: C.navy });
+      txt(s, b, x + 0.35, T + 3.35, cw2 - 0.7, 1.5, { fontSize: 17 }); });
+    takeaway(s, "Both run inside the UCSC Genome Browser, on the release 2 graph, today.");
+    notes(s, `[2:35-3:10]
+What we built, in one picture. One index over the HPRC release 2 graph, a tag-array index, which I will explain in a moment. Every position in the BWT knows its graph position, and every node knows every haplotype crossing it.
+Two capabilities sit on top of it. Sequence search: a sequence is mapped once, to the whole graph, every haplotype that carries it is reported, and the hit can be viewed on any of them. Coordinate translation: a locus on any haplotype is translated to any other, and the source's annotation is drawn there over an alignment built on demand.
+Both run inside the UCSC Genome Browser, on the release 2 graph, today.`); }
 
   // ============ 6a. INDEXING DILEMMA ============
   { const s = light("Indexing a pangenome forced a trade-off"); qtag(s, "Tag arrays");
@@ -183,7 +172,7 @@ Tag arrays take a different route: keep the FM-index on the haplotypes, and anno
 Here is the whole idea on a toy graph. Three haplotypes, one BWT over their sequences. The tag array runs alongside the BWT: for every BWT position, the graph node and offset it came from.
 A query is two steps. The r-index finds the BWT interval for a pattern, exactly as an FM-index would. Then two rank queries on the run-length tag structure return the distinct graph positions in that interval. No scan, no decompression, no redundancy: one hit per graph position, however many haplotypes share it.
 It stays small because similar suffixes sit together, so tags come in long runs: from v1.1 to v2.0 the sequence grew fivefold and the tag runs only doubled. We build it per chromosome and merge through the multi-string BWT. For release 2: 464 haplotypes, 2.6 terabases, 26 billion tag runs, 149 gigabytes, plus a 23 gigabyte sampled tag array that serves coordinate translation.
-Notice what's missing: nothing anywhere says CHM13-to-HG02015. That is what makes any-to-any translation possible.`); }
+Notice what is missing: nothing anywhere says CHM13-to-HG02015. That is what makes any-to-any translation across the 464 haplotypes possible.`); }
 
   // ============ 7. TRANSLATION ============
   { const s = light("Translating a region is a walk, not a lookup");
@@ -200,68 +189,64 @@ With that one property in hand, translating a region stops being a lookup and be
 (4) Walk the graph between anchors, one base at a time, and group the bases that share an offset into blocks. A block breaks on an indel, never on a SNP; an inversion starts a new chain. That is exactly what a chain file means.
 So the output isn't a coordinate. It is a chain, and the browser already knows what to do with a chain. And if the target simply doesn't contain the interval, you get fewer positions, never invented ones.`); }
 
-  // ============ 8a. SCENARIO 1: RECORDING ============
-  { const s = light("Story 1: a sequence GRCh38 doesn't have"); qtag(s, "Story 1");
+  // ============ 8a. USE CASE 1: RECORDING ============
+  { const s = light("Use case 1: a sequence that is not in GRCh38"); qtag(s, "Use case 1");
     const vw = 8.5, vh = vw * 9 / 16; video(s, "scenario1.mp4", M, T, vw, vh, "Screen recording: Pangenome Mapping");
     const rx = M + vw + 0.45, rw = W - M - rx;
-    ["She pastes the insertion into Pangenome Mapping; vg giraffe maps it once, to the whole graph.", "Every haplotype that carries it comes back, ranked by identity: two of 464, and GRCh38 is not one of them.", "She clicks a carrier and lands in the browser with her sequence drawn as a track."]
+    ["The sequence is pasted into Pangenome Mapping and mapped once, to the whole release 2 graph.", "Every haplotype that carries it is returned, ranked by identity: two of 464, and GRCh38 is not one of them.", "Selecting a carrier opens it in the browser with the sequence drawn as a track."]
       .forEach((t, i) => { const y = T + 0.1 + i * 1.5; chip(s, String(i + 1), rx, y); txt(s, t, rx + 0.65, y - 0.02, rw - 0.65, 1.4, { fontSize: 16 }); });
     notes(s, `[6:10-7:30]  Start the recording; narrate over it.
-First afternoon: the insertion that isn't in the reference. This is the Pangenome Mapping page, BLAT for the pangenome.
-She pastes the insertion. It is mapped once, to the whole graph, with vg giraffe, in a few seconds. And here is what BLAT could never have told her: exactly two of the 464 haplotypes carry this sequence, HG01167 hap1 and HG04157 paternal, and GRCh38 is not one of them. Ranked by identity, with coverage beside it.
-She clicks HG01167. No special page: she lands in the browser, on a genome that actually has her insertion, with the sequence as a native track, base-level differences colored the way BLAT users already know, and that haplotype's own annotation around it. Picking a different carrier re-surjects the same alignment; nothing is remapped.`); }
+Use case 1: a sequence that is not in the reference. This is the Pangenome Mapping page.
+The sequence is pasted and mapped once, to the whole release 2 graph, with vg giraffe, in a few seconds. The result is something no single-assembly search can give: exactly two of the 464 haplotypes carry this sequence, HG01167 hap1 and HG04157 paternal, and GRCh38 is not one of them. They are ranked by identity, with coverage beside it.
+Selecting HG01167 opens it in the browser: the sequence is drawn as a track with base-level differences, in the context of that haplotype's own annotation. Selecting a different carrier re-uses the same alignment; nothing is remapped.`); }
 
-  // ============ 8b. SCENARIO 1: WHAT IT SOLVES ============
-  { const s = light("What that changes on release 2"); qtag(s, "Story 1");
+  // ============ 8b. USE CASE 1: WHAT IT ENABLES ============
+  { const s = light("What this enables on release 2"); qtag(s, "Use case 1");
     const fr = browser(s, ["crop_mapping_result.png"], M, T, W - 2 * M, 3.7);
     const cw = (W - 2 * M - 0.8) / 3;
-    ["One search, every carrying haplotype, ranked. BLAT: one assembly at a time.", "Sequences absent from the reference are found where they live.", "Land on any carrier as a track; re-surject without remapping."]
-      .forEach((t, i) => { const x = M + i * (cw + 0.4), y = fr.bottom + 0.3; chip(s, String(i + 1), x, y); txt(s, t, x + 0.65, y - 0.02, cw - 0.65, 0.9, { fontSize: 17 }); });
+    ["One search across all 464 haplotypes, instead of one assembly at a time.", "Sequences absent from the reference are found on the haplotypes that carry them.", "Any carrier can be opened with the sequence as a track; another carrier costs no remapping."]
+      .forEach((t, i) => { const x = M + i * (cw + 0.4), y = fr.bottom + 0.3; chip(s, String(i + 1), x, y); txt(s, t, x + 0.65, y - 0.02, cw - 0.65, 0.9, { fontSize: 16 }); });
     txt(s, "MAPQ is 0 by design: every locus exists hundreds of times in this graph. Per-haplotype identity and coverage replace it.", M, 6.85, W - 2 * M, 0.4, { fontSize: 14, color: C.muted, align: "center" });
     notes(s, `[7:30-8:05]
-So what does that change on release 2? Before, BLAT ran against one assembly at a time, with 464 to choose from and no way to know which; a sequence missing from hg38 was simply unmapped; nothing told you who else carried it. Now one search against the whole graph returns every carrying haplotype, ranked; sequences absent from the reference are found where they actually live; you land on any carrier as a native track, and re-surjecting to another haplotype costs nothing.
+What this enables on release 2: one search across all 464 haplotypes instead of one assembly at a time; sequences absent from the reference are found on the haplotypes that carry them, together with how many carry them; and any carrier can be opened with the sequence as a track, with another carrier costing no remapping.
 One detail this room will notice: MAPQ is zero by design. In a graph where every locus exists hundreds of times, mapping quality carries no information; per-haplotype identity and coverage replace it.`); }
 
-  // ============ 10. STORY 2, TODAY: QUICKLIFT ============
-  { const s = light("Story 2, today: QuickLift needs a chain per pair"); qtag(s, "Story 2");
+  // ============ 10. USE CASE 2: CONTEXT ============
+  { const s = light("Moving a locus onto a release 2 haplotype today"); qtag(s, "Use case 2");
     const cw = (W - 2 * M - 0.4) / 2;
     card(s, M, T, cw, 4.6); circleIcon(s, ic.FaLayerGroup, M + 0.35, T + 0.35, 0.7);
-    txt(s, "QuickLift, in the browser since 2025", M + 1.25, T + 0.42, cw - 1.6, 0.55, { fontSize: 22, bold: true, color: C.navy });
-    bullets(s, ["View > In Other Genomes, tick \"QuickLift tracks\": your tracks are drawn on the other assembly, differences marked with vertical bars.",
-      "Needs a prebuilt liftOver chain between the two assemblies, made by UCSC on request.",
-      "Superb for hg38 to hs1. Between HPRC haplotypes: 56 chains, out of 200,000+ pairs."], M + 0.35, T + 1.3, cw - 0.7, 3.2, { fontSize: 17 });
+    txt(s, "Lift-over needs a pairwise chain", M + 1.25, T + 0.42, cw - 1.6, 0.55, { fontSize: 22, bold: true, color: C.navy });
+    bullets(s, ["The Genome Browser can draw one assembly's tracks on another (QuickLift), but only over a prebuilt chain between the two assemblies.", "Chains are built on request, one assembly pair at a time.", "464 haplotypes are more than 200,000 pairs. Chains exist for 56 of them."], M + 0.35, T + 1.3, cw - 0.7, 3.2, { fontSize: 17 });
     const x2 = M + cw + 0.4; card(s, x2, T, cw, 4.6);
     const gw = cw - 0.7, gh = gw * 982 / 2783; s.addImage({ path: path.join(FIG, "grids.png"), x: x2 + 0.35, y: T + 0.55, w: gw, h: gh });
-    txt(s, "She picks HG02015 from the menu. There is no chain. Dead end.", x2 + 0.35, T + 0.75 + gh, gw, 1.2, { fontSize: 19, italic: true, color: C.navy, align: "center" });
-    takeaway(s, "The renderer is ready. The missing piece is a chain for any pair, on demand.");
+    txt(s, "For an arbitrary release 2 haplotype, such as HG02015, no chain exists.", x2 + 0.35, T + 0.75 + gh, gw, 1.2, { fontSize: 19, italic: true, color: C.navy, align: "center" });
+    takeaway(s, "The graph already contains the alignment for every pair. It has to be usable on demand.");
     notes(s, `[8:05-8:40]
-Second afternoon. She has HLA-DMA open on a reference, ClinVar and GWAS beside it, and she wants that locus on one HPRC individual.
-The browser already has the right tool for this: QuickLift, shipped last year. View, In Other Genomes, tick QuickLift tracks, and your tracks are drawn on the other assembly with the differences marked. It is superb for hg38 to hs1.
-But QuickLift needs a prebuilt chain between the two assemblies, made by UCSC on request. Between HPRC haplotypes the browser has fifty-six, out of more than two hundred thousand pairs. She picks HG02015. There is no chain. Dead end.
-The renderer is ready. What's missing is a chain for any pair, on demand. That is exactly what the walk from slide seven produces.`); }
+Use case 2: a gene known on a reference, on a specific release 2 haplotype.
+Moving a locus between assemblies today relies on a pairwise chain. The Genome Browser can draw one assembly's tracks on another, but only over a prebuilt chain between the two, and chains are built on request, one pair at a time. 464 haplotypes are more than two hundred thousand pairs; chains exist for fifty-six of them. For an arbitrary release 2 haplotype, such as HG02015, no chain exists.
+The graph already contains the alignment for every pair. It has to be usable on demand, and that is exactly what the walk I showed produces.`); }
 
-  // ============ 11. SCENARIO 2: RECORDING ============
-  { const s = light("Story 2: the gene she knows, on HG02015"); qtag(s, "Story 2");
-    const vw = 8.5, vh = vw * 9 / 16; video(s, "scenario2.mp4", M, T, vw, vh, "Screen recording: Convert Coordinates, then land with annotations");
+  // ============ 11. USE CASE 2: RECORDING ============
+  { const s = light("Use case 2: a known gene, on HG02015"); qtag(s, "Use case 2");
+    const vw = 8.5, vh = vw * 9 / 16; video(s, "scenario2.mp4", M, T, vw, vh, "Screen recording: coordinate translation and annotation transfer");
     const rx = M + vw + 0.45, rw = W - M - rx;
-    ["Source: the gene's coordinates on the reference she was using; target: HG02015 paternal, picked from all 464.", "Translated in about 100 ms, 100% of bases.", "She clicks through: the reference's tracks are drawn on HG02015, with insertions, deletions and mismatches marked."]
+    ["Source: the gene's coordinates on the reference; target: HG02015 paternal, chosen from all 464 haplotypes.", "Translated in about 100 ms, covering 100% of bases.", "Opening the result shows the reference's tracks on HG02015, with insertions, deletions and mismatches marked."]
       .forEach((t, i) => { const y = T + 0.1 + i * 1.5; chip(s, String(i + 1), rx, y); txt(s, t, rx + 0.65, y - 0.02, rw - 0.65, 1.4, { fontSize: 16 }); });
     notes(s, `[8:40-10:20]  Start the recording; slow down at the landing.
-Now the same afternoon with our tool. Source: the gene she was looking at, here HLA-DMA on CHM13, ten kilobases on chromosome 6; GRCh38 is a path in this graph too, so hg38 works exactly the same way. Target: HG02015 paternal, the haplotype that was a dead end a minute ago; the picker can show only haplotypes that contain the region.
-Translated in about a hundred milliseconds. A hundred percent of bases.
-She clicks the result, and this is the part I care about most. HG02015 has its own CAT and Liftoff genes from release 2. What it will never have is everything that exists once, on one reference: ClinVar, the GWAS catalog, ENCODE, her own BED file. And here they are, drawn at their translated positions, with the differences marked the way QuickLift users already read them.
-(pause) The chain that made this possible did not exist a second before the page loaded. The translation blocks became a bigChain; the browser's own QuickLift renderer drew the tracks. Same QuickLift. The chain just isn't prebuilt anymore.`); }
+Now the same request on the release 2 graph. Source: the gene as known on the reference, here HLA-DMA on CHM13, ten kilobases on chromosome 6; GRCh38 is a path in this graph too, so it works identically as the source. Target: HG02015 paternal, chosen from all 464; the picker can be restricted to haplotypes that contain the region.
+Translated in about a hundred milliseconds, covering a hundred percent of bases.
+Opening the result is the part I care about most. HG02015 has its own CAT and Liftoff genes from release 2. What it does not have is everything that exists once, on one reference: ClinVar, the GWAS catalog, ENCODE, a lab's own tracks. Here they are, drawn at their translated positions, with the differences between the two assemblies marked.
+(pause) The alignment that made this possible did not exist a second before the page loaded. It was built from the graph for this region and this haplotype, and the browser drew the tracks over it.`); }
 
-  // ============ 12. PAYOFF ============
-  { const s = light("What that changes on release 2"); qtag(s, "Story 2");
+  // ============ 12. USE CASE 2: WHAT IT ENABLES ============
+  { const s = light("What this enables on release 2"); qtag(s, "Use case 2");
     const fr = browser(s, ["crop_lifted.png"], M, T, W - 2 * M);
-    s.addText([{ text: "Before: ", options: { bold: true, color: C.muted } }, { text: "lift-over only between pairs with a prebuilt chain, 56 of 200,000+; a haplotype without one showed only its own tracks.", options: { color: C.muted, breakLine: true } },
-      { text: "Now: ", options: { bold: true, color: C.navy } }, { text: "any of 464 haplotypes as the target, from hg38 or CHM13, in ~100 ms; the reference's tracks come along over a chain built for this page view, with an Alignment Differences track; also in the ordinary hgConvert menu.", options: { color: C.ink } }],
+    s.addText([{ text: "Before: ", options: { bold: true, color: C.muted } }, { text: "a locus could be moved only between assembly pairs with a prebuilt chain; a release 2 haplotype without one showed only its own tracks.", options: { color: C.muted, breakLine: true } },
+      { text: "Now: ", options: { bold: true, color: C.navy } }, { text: "any of the 464 haplotypes as the target, from GRCh38 or CHM13, in about 100 ms; the reference's tracks are drawn there over an alignment built for the region, with insertions, deletions and mismatches marked.", options: { color: C.ink } }],
       { x: M, y: fr.bottom + 0.15, w: W - 2 * M, h: 1.15, fontFace: FONT, fontSize: 16, isTextBox: true, margin: 0, valign: "top", paraSpaceAfter: 4 });
-    txt(s, "translation blocks  →  bigChain  →  QuickLift draws them   •   Alignment Differences marks insertions, deletions and mismatches", M, 6.85, W - 2 * M, 0.4, { fontSize: 15, color: C.muted, align: "center" });
     notes(s, `[10:20-10:55]
-Before: lift-over only between pairs with a prebuilt chain, fifty-six of two hundred thousand, new ones made on request, and a haplotype without a chain showed only its own tracks. Now: any of the 464 haplotypes as the target, from hg38 or CHM13, in about a hundred milliseconds; the chain is built for the region you're looking at and reused as you pan; the reference's tracks come along with the differences marked; and it's in the ordinary hgConvert menu too.
-That is what I mean by making release 2 useful: the thousands of tracks that exist once, on one reference, will never be rebuilt 464 times. Any haplotype can borrow them, on demand.`); }
+Before, a locus could be moved only between assembly pairs with a prebuilt chain, and a release 2 haplotype without one showed only its own tracks. Now any of the 464 haplotypes can be the target, from GRCh38 or CHM13, in about a hundred milliseconds; the reference's tracks are drawn there over an alignment built for that region, with the differences marked.
+The thousands of tracks that exist once, on one reference, will never be rebuilt 464 times. With this, any release 2 haplotype can borrow them for the region under study.`); }
 
   // ============ 12b. WHO THIS IS FOR ============
   { const s = light("Who this is for");
@@ -275,24 +260,6 @@ That is what I mean by making release 2 useful: the thousands of tracks that exi
 Who is this for? For clinicians and curators: is this insertion private to my patient, or carried by HPRC individuals, and which ones? ClinVar and GWAS context on the haplotype that actually carries the patient's allele. And the complex loci where one reference misleads: HLA, KIR, CYP2D6, LPA, SMN, seen on many haplotypes with the reference annotation drawn there.
 For researchers and graph builders: place contigs, probes, primers or guide RNAs on every haplotype at once; move any annotation, including your own tracks, onto any assembly; and inspect the graph's alignment itself, because the Alignment Differences track is the graph, drawn base by base.
 No pipeline, no download. A browser tab, and a sequence or a position.`); }
-
-  // ============ 13. VALIDATION ============
-  { const s = light("What we have checked, and what we haven't");
-    const cw = (W - 2 * M - 0.4) / 2;
-    card(s, M, T, cw, 4.65); circleIcon(s, ic.FaCheck, M + 0.35, T + 0.35, 0.65, C.teal); txt(s, "Checked", M + 1.2, T + 0.4, cw - 1.5, 0.55, { fontSize: 22, bold: true, color: C.navy });
-    bullets(s, ["Alignment Differences, base by base: 22 kb of ABO, hs1 vs HG00597#1, exactly the 2 real mismatches.",
-      "Chains round-trip cleanly through bigChainToChain; blocks follow chain-file semantics.",
-      "Completeness by span: 99% up to 10 kb, 97% at 100 kb, 93% at 1 Mb.",
-      "Hard case: a 37 kb segdup-dense span on 1q21.1 recovers 46% of bases. Missing positions, not wrong ones: a repeat cannot manufacture an anchor."], M + 0.35, T + 1.2, cw - 0.7, 3.4, { fontSize: 16 });
-    const x2 = M + cw + 0.4; card(s, x2, T, cw, 4.65); circleIcon(s, ic.FaExclamation, x2 + 0.35, T + 0.35, 0.65, C.coral); txt(s, "Not yet", x2 + 1.2, T + 0.4, cw - 1.5, 0.55, { fontSize: 22, bold: true, color: C.navy });
-    bullets(s, ["A systematic comparison with halLiftover on the same Cactus alignment.",
-      "Agreement with the 56 chains that already exist in the browser.",
-      "CHM13 CAT transcripts lifted onto a haplotype that has its own CAT annotation: do exon boundaries agree?"], x2 + 0.35, T + 1.2, cw - 0.7, 3.4, { fontSize: 16 });
-    takeaway(s, "Those three numbers come before public release.");
-    notes(s, `[11:35-12:20]
-Before the numbers on speed, the numbers on trust, and which ones I actually have.
-Checked: the Alignment Differences track, base by base, across 22 kb of ABO: exactly the two real mismatches, nothing invented. A correctness check, not a divergence estimate. Completeness by span: 99% at gene scale, 93% at a megabase. And one hard case: a segdup-dense span on 1q21.1 recovers about half its bases. Missing positions, not wrong ones: a repeat cannot manufacture an anchor.
-Not yet: halLiftover on the same Cactus alignment, agreement with the 56 existing chains, and the one I care about most, CHM13's CAT transcripts onto a haplotype that has its own CAT annotation, exon boundary by exon boundary. Those three come before public release.`); }
 
   // ============ 14. FAST ENOUGH ============
   { const s = light("Fast enough to sit behind a web page");
@@ -315,44 +282,28 @@ Not yet: halLiftover on the same Cactus alignment, agreement with the 56 existin
         valAxisMinVal: 0, valAxisMaxVal: 80, valAxisMajorUnit: 20, catAxisTitle: "threads", showCatAxisTitle: true, catAxisTitleColor: C.muted, catAxisTitleFontSize: 14 });
     txt(s, "Single-thread run was warm-up-limited; read the plateau: about 60 queries per second per server.", 6.9, T + 4.4, W - M - 6.9, 0.4, { fontSize: 14, color: C.muted, align: "center" });
     takeaway(s, "Exon-scale in 20 ms, a 10 kb gene in a tenth of a second, a megabase in four. One server sustains about 60 queries a second.", 6.35);
-    notes(s, `[12:20-13:05]
+    notes(s, `[11:35-12:20]
 None of this matters if it takes a minute. So: is it fast enough to sit behind a web page?
 Exon-scale intervals translate in about twenty milliseconds, a ten-kilobase gene in about a tenth of a second, a hundred kilobases in under a second, a megabase in about four.
 And it serves many people at once: throughput goes from six to sixty queries a second and saturates around eight cores. Read that as "one box serves about sixty queries a second", not as perfect scaling; the single-thread number was warm-up-limited.`); }
 
-  // ============ 15. LIMITS + NEXT ============
-  { const s = light("Real limits, and what's next");
-    const cw = (W - 2 * M - 0.4) / 2;
-    card(s, M, T, cw, 3.55); txt(s, "Today", M + 0.35, T + 0.3, cw - 0.7, 0.5, { fontSize: 22, bold: true, color: C.muted });
-    bullets(s, ["Chains are built per view. Pan far enough and another one is built.", "Segdup-dense spans lose positions: 46% recovered on 1q21.1.", "Development browser only. One service, about 250 GB of RAM. No public API yet."], M + 0.35, T + 0.95, cw - 0.7, 2.5, { fontSize: 17 });
-    const x2 = M + cw + 0.4; card(s, x2, T, cw, 3.55); txt(s, "Next", x2 + 0.35, T + 0.3, cw - 0.7, 0.5, { fontSize: 22, bold: true, color: C.navy });
-    bullets(s, ["Shared, persistent chains: popular regions free after the first visit.", "Better recovery in segdup-dense spans.", "A documented JSON API, so it runs from your pipeline too.", "New graphs plug in by building one index."], x2 + 0.35, T + 0.95, cw - 0.7, 2.5, { fontSize: 17 });
-    card(s, M, T + 3.95, W - 2 * M, 1.05, C.navydeep, C.navydeep);
-    s.addText([{ text: "Next milestone: ", options: { color: C.dim } }, { text: "public release in the UCSC Genome Browser", options: { color: C.white, bold: true } }],
-      { x: M, y: T + 3.95, w: W - 2 * M, h: 1.05, fontFace: FONT, fontSize: 24, align: "center", valign: "middle", isTextBox: true, margin: 0 });
-    notes(s, `[13:05-14:00]
-Two things I want to be honest about before I stop.
-Chains are built per view, so if you pan far enough we build another one. And wide, segdup-dense spans lose positions: on 1q21.1 we recover about half. Missing, not wrong. This runs on the development browser, as one service with about 250 gigabytes of RAM, and there is no public API yet.
-What's next. Chains that persist: right now a widened chain dies with your session; share it across users and popular regions are free after the first visit. Better recovery in segdups. A documented JSON API, because half of you will want this from a pipeline, not a browser. And more graphs: nothing here is specific to release 2; a new release plugs in by building one index.
-And the milestone all of that serves: the public UCSC Genome Browser.`); }
-
-  // ============ 16. VISION (rhymes with slide 4) ============
+  // ============ 16. CLOSE ============
   { const s = dark();
-    txt(s, "Both users, served", M, 0.42, W - 2 * M, 0.78, { fontSize: 32, bold: true, color: C.white, valign: "middle" });
-    const done = ["two carriers found in seconds; her insertion mapped as a track on a genome that has it", "HG02015 in ~100 ms, with the reference's tracks drawn around the gene, over a chain built on the spot"];
-    U.forEach(([i, tag, a, b], k) => { const x = M + k * (cw2 + 0.4), y = T, h = 4.5; card(s, x, y, cw2, h, C.cardDark, C.cardDarkLine);
+    txt(s, "Release 2, queryable", M, 0.42, W - 2 * M, 0.78, { fontSize: 32, bold: true, color: C.white, valign: "middle" });
+    const done = ["every carrying haplotype found in seconds; the sequence viewed as a track on any of them", "any of 464 haplotypes as the target in ~100 ms, with the reference's annotation drawn there"];
+    U.forEach(([i, tag, a, b], k) => { const x = M + k * (cw2 + 0.4), y = T, h = 4.2; card(s, x, y, cw2, h, C.cardDark, C.cardDarkLine);
       circleIcon(s, ic[i], x + 0.35, y + 0.4, 0.85, C.teal);
       txt(s, tag, x + 1.4, y + 0.42, cw2 - 1.8, 0.35, { fontSize: 14, bold: true, color: C.dim, charSpacing: 2 });
       txt(s, a, x + 1.4, y + 0.75, cw2 - 1.8, 0.5, { fontSize: 22, bold: true, color: C.white });
-      txt(s, b, x + 0.35, y + 1.6, cw2 - 0.7, 1.4, { fontSize: 19, color: C.dim });
-      txt(s, done[k], x + 0.35, y + 3.1, cw2 - 0.7, 0.5, { fontSize: 15, color: C.dim });
-      txt(s, "done", x + 0.35, y + 3.55, cw2 - 0.7, 0.7, { fontSize: 40, bold: true, color: C.gold, valign: "middle" }); });
-    txt(s, "Live on the development browser today. Bring me your hardest region, and tell me where it breaks.", M, 6.3, W - 2 * M, 0.6, { fontSize: 22, italic: true, color: C.gold, align: "center", valign: "middle" });
-    notes(s, `[14:00-14:35]
-So, back to her two afternoons.
-The insertion that isn't in GRCh38: two carriers found in seconds, and mapped as a track on a genome that has it. The gene she knew on a reference: on HG02015 in a tenth of a second, with the reference's tracks drawn around it, over a chain that didn't exist until she asked.
-It's live on the development browser today. So bring me your hardest region, and tell me where it breaks.
-(Advance to the thanks slide, let it breathe, then take questions.)`); }
+      txt(s, b, x + 0.35, y + 1.6, cw2 - 0.7, 1.4, { fontSize: 17, color: C.dim });
+      txt(s, done[k], x + 0.35, y + 3.1, cw2 - 0.7, 0.9, { fontSize: 16, color: C.gold }); });
+    s.addText([{ text: "Next: ", options: { color: C.dim } }, { text: "public release in the UCSC Genome Browser", options: { color: C.white, bold: true } }],
+      { x: M, y: 5.95, w: W - 2 * M, h: 0.5, fontFace: FONT, fontSize: 22, align: "center", isTextBox: true, margin: 0 });
+    txt(s, "Available on the development browser now. Bring us your hardest region.", M, 6.5, W - 2 * M, 0.5, { fontSize: 20, italic: true, color: C.gold, align: "center", valign: "middle" });
+    notes(s, `[12:20-13:00]
+So, the two use cases. Sequence search: every carrying haplotype found in seconds, and the sequence viewed as a track on any of them. Coordinate translation: any of the 464 haplotypes as the target in about a hundred milliseconds, with the reference's annotation drawn there.
+Release 2 becomes something a scientist can query, not only browse. The next step is the public UCSC Genome Browser. It is available on the development browser now; bring us your hardest region.
+(Advance to thanks. Let it breathe. Then questions.)`); }
 
   // ============ 17. THANKS ============
   { const s = dark();
@@ -362,13 +313,13 @@ It's live on the development browser today. So bring me your hardest region, and
     txt(s, "Thank you", M, 2.7, 6, 0.7, { fontSize: 32, bold: true, color: C.white });
     txt(s, "seeskand@ucsc.edu", M, 3.6, 6.5, 0.5, { fontFace: "Courier New", fontSize: 22, color: C.gold });
     txt(s, "github.com/parsaeskandar/hprc_2026_poster", M, 4.1, 7, 0.45, { fontFace: "Courier New", fontSize: 17, color: C.gold });
-    txt(s, "Poster, slides and figures are in the repository.", M, 4.6, 7, 0.4, { fontSize: 16, color: C.dim });
+    txt(s, "github.com/parsaeskandar/pangenome-index", M, 4.55, 9, 0.45, { fontFace: "Courier New", fontSize: 17, color: C.gold });
     s.addText([{ text: "Jouni Sirén  •  Benedict Paten", options: { color: C.white, fontSize: 18, breakLine: true } },
       { text: "UC Santa Cruz Computational Genomics Lab: Adam Novak, Glenn Hickey, Zia Truong, Mark Diekhans", options: { color: C.dim, fontSize: 16, breakLine: true } },
       { text: "The UCSC Genome Browser team  •  The Human Pangenome Reference Consortium", options: { color: C.dim, fontSize: 16, breakLine: true } },
       { text: "Built on vg and the HPRC v2.0 graph", options: { color: C.dim, fontSize: 16 } }],
       { x: M, y: 5.35, w: W - 2 * M, h: 1.7, fontFace: FONT, isTextBox: true, margin: 0, valign: "top", paraSpaceAfter: 6 });
-    notes(s, `[14:35-14:50]
+    notes(s, `[13:00-13:15]
 None of this was mine alone: Jouni Sirén, Benedict Paten, and a lot of help from the Computational Genomics Lab and the Genome Browser team. Thank you. Questions.`); }
 
   // ============ BACKUP ============
@@ -407,7 +358,7 @@ None of this was mine alone: Jouni Sirén, Benedict Paten, and a lot of help fro
     const items = [["148M", "nodes in the HPRC v2.0 Minigraph-Cactus graph", C.navy], ["464", "haplotypes indexed, CHM13 and GRCh38 included", C.navy],
       ["2.6 Tbp", "bidirectional sequence in the index", C.navy], ["26 B", "tag array runs (4.9 B BWT runs)", C.navy],
       ["149 GiB", "tag array index; 23 GiB sampled tag array", C.teal], ["~250 GB", "RAM for the running service", C.teal],
-      ["15 lines", "changed in kent core, across 3 files", C.navy], ["385", "browser-side tests: payload validation, UI, hub writes", C.navy]];
+      ["~60 / s", "translation queries per second on one server", C.teal], ["~100 ms", "to translate a 10 kb gene to any haplotype", C.teal]];
     const cw = (W - 2 * M - 0.9) / 4, chh = 2.35;
     items.forEach(([a, b, col], i) => { const x = M + (i % 4) * (cw + 0.3), y = T + Math.floor(i / 4) * (chh + 0.35);
       card(s, x, y, cw, chh); txt(s, a, x, y + 0.35, cw, 0.8, { fontSize: 32, bold: true, color: col, align: "center", valign: "middle" });
