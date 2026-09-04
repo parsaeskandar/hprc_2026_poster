@@ -188,7 +188,7 @@ Four. Walk the graph between anchors, one base at a time, and group the bases th
 So the output is not a coordinate. It is a chain, and the browser already knows what to do with a chain. If the target does not contain the interval, you get fewer positions, never invented ones.`];
     for (let k = 0; k < 4; k++) {
       const s = light("Translating a region is a walk, not a lookup"); qtag(s, `Step ${k + 1} of 4`);
-      const iw = 7.6, ih = iw * 1715 / 2691; s.addImage({ path: path.join(FIG, "translation.png"), x: M, y: T + 0.1, w: iw, h: ih });
+      const iw = 7.6, ih = iw * 1749 / 2691; s.addImage({ path: path.join(FIG, `translation_step${k + 1}.png`), x: M, y: T + 0.1, w: iw, h: ih });
       const rx = M + iw + 0.4, rw = W - M - rx;
       steps.forEach((t, i) => { if (i > k) return; const y = T + 0.15 + i * 1.2; const cur = i === k;
         if (cur) chip(s, String(i + 1), rx, y);
