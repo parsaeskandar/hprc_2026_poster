@@ -82,32 +82,32 @@ Thank you. I'm Parsa Eskandar, from Benedict Paten's lab at UC Santa Cruz. This 
     for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const g = (r === 6 && c === 9) || (r === 9 && c === 18); const col = g ? C.gold : C.grid;
       s.addShape(pres.shapes.RECTANGLE, { x: gx + c * pitch, y: gy + r * pitch, w: sq, h: sq, fill: { color: col }, line: { color: col, width: 0 } }); }
     txt(s, "464 coordinate systems; two carry the annotation", M, 6.7, 5.9, 0.5, { fontSize: 15, color: C.dim });
-    txt(s, "Release 2 is the most complete picture of human variation we have. A scientist can open any of these assemblies today.", 7.0, 4.05, 5.7, 1.4, { fontSize: 21, color: C.white });
-    txt(s, "What they cannot do is ask where a sequence lives across them, or carry what we know from GRCh38 onto one.", 7.0, 5.55, 5.7, 1.2, { fontSize: 21, italic: true, color: C.gold });
+    txt(s, "Release 2 is the most complete picture of human variation we have, and the tools to work with it exist.", 7.0, 4.05, 5.7, 1.4, { fontSize: 21, color: C.white });
+    txt(s, "Every one of them needs a large index, real compute, and a command-line workflow. Most clinicians and many researchers never get past that.", 7.0, 5.4, 5.7, 1.4, { fontSize: 21, italic: true, color: C.gold });
     notes(s, `[0:15-1:00]
 HPRC release 2 is the most complete picture of human variation we have: 464 haplotypes, in one graph. Two of those haplotypes, GRCh38 and CHM13, carry almost everything we know about the human genome: the gene models, the clinical variants, the regulatory annotation, and everyone's own tracks.
 (pause)
-A scientist can open any of the 464 assemblies today. What they cannot do is ask where their sequence lives across them, or take a locus they know on GRCh38 and see it, with its annotation, on one of the new haplotypes. This talk is about closing that gap.`); }
+The tools to work with the graph exist: vg giraffe maps to it, odgi and the r-index query it, halLiftover and impg move coordinates across it. But every one of them wants a large index on disk, real compute, and a command-line workflow that takes time to set up and time to run. A clinician, or a researcher outside a genomics group, never gets past that step. So in practice release 2 is browsed, one assembly at a time, and the graph itself goes unused. This talk is about removing that barrier.`); }
 
   // ============ 3. THE CHALLENGE ============
-  { const s = light("Three things a scientist cannot yet do with release 2");
+  { const s = light("Possible on release 2, only in a terminal");
     const cw = (W - 2 * M - 0.8) / 3;
-    [["FaSearch", "Place a sequence across haplotypes", "Given a sequence, learn which of the 464 haplotypes carry it, where, and what the region looks like on each. Search today works one assembly at a time."],
-     ["FaRandom", "Move a locus onto a haplotype", "Take coordinates known on GRCh38 or CHM13 to an arbitrary release 2 haplotype. Pairwise lift-over exists for a handful of assembly pairs, not for 464."],
-     ["FaLayerGroup", "Bring the annotation along", "See the reference's gene models, ClinVar, GWAS or one's own tracks on a release 2 haplotype. Each assembly has its own CAT and Liftoff genes; nothing else follows."]]
+    [["FaSearch", "Place a sequence across haplotypes", "Which of the 464 haplotypes carry a sequence, where, and what does each region look like? Today: a giraffe index, a mapping run, and a terminal session before the first answer."],
+     ["FaRandom", "Move a locus onto a haplotype", "Take coordinates known on GRCh38 or CHM13 to an arbitrary release 2 haplotype. Today: halLiftover or impg over the whole alignment, per request, or a ready-made chain for a handful of pairs."],
+     ["FaLayerGroup", "Bring the annotation along", "See the reference's gene models, ClinVar, GWAS or one's own tracks on a release 2 haplotype. Today: lift every track yourself, per haplotype, before anyone can look."]]
       .forEach(([ic_, a, b], i) => { const x = M + i * (cw + 0.4); card(s, x, T, cw, 4.55); circleIcon(s, ic[ic_], x + 0.35, T + 0.35, 0.8);
         txt(s, a, x + 0.35, T + 1.35, cw - 0.7, 0.9, { fontSize: 21, bold: true, color: C.navy }); txt(s, b, x + 0.35, T + 2.3, cw - 0.7, 2.1, { fontSize: 16 }); });
-    takeaway(s, "The graph already aligns all 464 haplotypes. Interactive access to that alignment is what has been missing.");
+    takeaway(s, "The graph already holds the answers. Reaching them takes resources and expertise most clinicians and many researchers do not have.");
     notes(s, `[1:00-1:55]
-Concretely, three things a scientist cannot yet do with release 2, interactively.
-Place a sequence across haplotypes: given a sequence, which of the 464 carry it, where, and what does the region look like on each? Search today works one assembly at a time.
-Move a locus onto a haplotype: take coordinates known on GRCh38 or CHM13 to an arbitrary release 2 haplotype. Pairwise lift-over exists for a handful of assembly pairs, not for 464.
-And bring the annotation along: see the reference's gene models, ClinVar, GWAS, or your own tracks on a release 2 haplotype. Each assembly has its own CAT and Liftoff genes, and nothing else follows.
-The graph already aligns all 464 haplotypes. Interactive access to that alignment is what has been missing.`); }
+Concretely, three things release 2 can already do, but only from the command line.
+Place a sequence across haplotypes: which of the 464 carry it, where, and what does each region look like? Today that is a giraffe index, a mapping run, and a terminal session before the first answer.
+Move a locus onto a haplotype: take coordinates known on GRCh38 or CHM13 to an arbitrary release 2 haplotype. Today that is halLiftover or impg over the whole alignment, per request, or a ready-made chain for the handful of pairs that have one.
+And bring the annotation along: see the reference's gene models, ClinVar, GWAS, or your own tracks on a release 2 haplotype. Today you lift every track yourself, per haplotype, before anyone can look.
+None of this is impossible. The graph already holds the answers. Reaching them takes compute, disk, and bioinformatics expertise that most clinicians and many researchers do not have, and time that even the experts would rather spend elsewhere.`); }
 
   // ============ 4. TWO USE CASES ============
-  const U = [["FaSearch", "Use case 1", "Sequence search", "A researcher has a sequence that is not in GRCh38: an insertion assembled from a sample, a probe, a contig. Which release 2 haplotypes carry it, and where?", "not available interactively"],
-    ["FaRandom", "Use case 2", "Coordinate translation", "A researcher knows a gene on GRCh38 or CHM13 and wants to see it, with its annotation, on a specific release 2 haplotype.", "only for the few pairs with a chain"]];
+  const U = [["FaSearch", "Use case 1", "Sequence search", "A researcher has a sequence that is not in GRCh38: an insertion assembled from a sample, a probe, a contig. Which release 2 haplotypes carry it, and where?", "a large index and a terminal"],
+    ["FaRandom", "Use case 2", "Coordinate translation", "A researcher knows a gene on GRCh38 or CHM13 and wants to see it, with its annotation, on a specific release 2 haplotype.", "a few chains; a script for the rest"]];
   const cw2 = (W - 2 * M - 0.4) / 2;
   { const s = light("Two use cases on the release 2 graph");
     U.forEach(([i, tag, a, b, today], k) => { const x = M + k * (cw2 + 0.4), y = T, h = 4.5; card(s, x, y, cw2, h);
@@ -122,7 +122,7 @@ The graph already aligns all 464 haplotypes. Interactive access to that alignmen
 I will follow two use cases through the rest of the talk.
 Use case 1, sequence search. A researcher has a sequence that is not in GRCh38: an insertion assembled from a sample, a probe, a contig. Which release 2 haplotypes carry it, and where on each?
 Use case 2, coordinate translation. A researcher knows a gene on GRCh38 or CHM13 and wants to see it, with its annotation, on a specific release 2 haplotype.
-Today the first is not available interactively at all, and the second only for the few assembly pairs that happen to have a chain. Both are shown live on the release 2 graph in this talk.`); }
+Today the first means a giraffe index and a terminal session; the second, a ready-made chain for a few assembly pairs and a halLiftover run for every other one. Both are shown live, in a web page, on the release 2 graph in this talk.`); }
 
   // ============ 5. WHAT WE BUILT ============
   { const s = light("Two capabilities on one index of the release 2 graph");

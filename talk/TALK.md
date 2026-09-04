@@ -8,7 +8,7 @@
 
 ## 1. The one sentence
 
-> HPRC release 2 is the most complete picture of human variation we have, and until now a scientist could only browse it. One index over the release 2 graph lets anyone search it with a sequence, or move a known locus and its annotation onto any of the 464 haplotypes, interactively.
+> HPRC release 2 is the most complete picture of human variation we have, and until now querying it meant a large index, real compute, and command-line work most clinicians and many researchers cannot do. One index over the release 2 graph lets anyone search it with a sequence, or move a known locus and its annotation onto any of the 464 haplotypes, interactively.
 
 ## 2. The arc
 
@@ -16,7 +16,7 @@
 |---|---|---|---|
 | 1 | Title | 0:15 | 0:15 |
 | 2 | 464 haplotypes; 2 hold almost everything we know | 0:45 | 1:00 |
-| 3 | Three things a scientist cannot yet do with release 2 | 0:55 | 1:55 |
+| 3 | Possible on release 2, only in a terminal | 0:55 | 1:55 |
 | 4 | Two use cases on the release 2 graph | 0:40 | 2:35 |
 | 5 | Two capabilities on one index of the release 2 graph | 0:35 | 3:10 |
 | 6 | Indexing a pangenome forced a trade-off | 0:35 | 3:50 |
@@ -32,7 +32,7 @@
 | 16 | Release 2, queryable | 0:40 | 13:00 |
 | 17 | Thank you | 0:15 | 13:15 |
 
-Why this order: release 2 comes first, as the audience's own resource, with the gap stated in scientific terms (place a sequence, move a locus, bring the annotation). The two use cases are planted before the method so the method has a purpose. Tag arrays get three slides because they are the contribution everything rests on. Each use case is a recording you narrate, followed by one "what this enables" slide. Existing browser tools and chain counts appear only where they explain why use case 2 was not possible before.
+Why this order: release 2 comes first, as the audience's own resource, with the gap stated honestly: the tools exist (giraffe, odgi, r-index, halLiftover, impg), but each needs a large index, compute, and a terminal workflow that most clinicians and many researchers cannot use. Never say "no tools exist"; the room wrote them. The two use cases are planted before the method so the method has a purpose. Tag arrays get three slides because they are the contribution everything rests on. Each use case is a recording you narrate, followed by one "what this enables" slide. Existing browser tools and chain counts appear only where they explain why use case 2 was not possible before.
 
 ## 3. Script
 
@@ -46,22 +46,22 @@ Timings are cumulative. Stage directions in *italics*. Everything below is also 
 
 "HPRC release 2 is the most complete picture of human variation we have: 464 haplotypes, in one graph. Two of those haplotypes, GRCh38 and CHM13, carry almost everything we know about the human genome: the gene models, the clinical variants, the regulatory annotation, and everyone's own tracks.
 (pause)
-A scientist can open any of the 464 assemblies today. What they cannot do is ask where their sequence lives across them, or take a locus they know on GRCh38 and see it, with its annotation, on one of the new haplotypes. This talk is about closing that gap."
+The tools to work with the graph exist: vg giraffe maps to it, odgi and the r-index query it, halLiftover and impg move coordinates across it. But every one of them wants a large index on disk, real compute, and a command-line workflow that takes time to set up and time to run. A clinician, or a researcher outside a genomics group, never gets past that step. So in practice release 2 is browsed, one assembly at a time, and the graph itself goes unused. This talk is about removing that barrier."
 
-### 3. Three things a scientist cannot yet do with release 2 (1:00 to 1:55)
+### 3. Possible on release 2, only in a terminal (1:00 to 1:55)
 
-"Concretely, three things a scientist cannot yet do with release 2, interactively.
-Place a sequence across haplotypes: given a sequence, which of the 464 carry it, where, and what does the region look like on each? Search today works one assembly at a time.
-Move a locus onto a haplotype: take coordinates known on GRCh38 or CHM13 to an arbitrary release 2 haplotype. Pairwise lift-over exists for a handful of assembly pairs, not for 464.
-And bring the annotation along: see the reference's gene models, ClinVar, GWAS, or your own tracks on a release 2 haplotype. Each assembly has its own CAT and Liftoff genes, and nothing else follows.
-The graph already aligns all 464 haplotypes. Interactive access to that alignment is what has been missing."
+"Concretely, three things release 2 can already do, but only from the command line.
+Place a sequence across haplotypes: which of the 464 carry it, where, and what does each region look like? Today that is a giraffe index, a mapping run, and a terminal session before the first answer.
+Move a locus onto a haplotype: take coordinates known on GRCh38 or CHM13 to an arbitrary release 2 haplotype. Today that is halLiftover or impg over the whole alignment, per request, or a ready-made chain for the handful of pairs that have one.
+And bring the annotation along: see the reference's gene models, ClinVar, GWAS, or your own tracks on a release 2 haplotype. Today you lift every track yourself, per haplotype, before anyone can look.
+None of this is impossible. The graph already holds the answers. Reaching them takes compute, disk, and bioinformatics expertise that most clinicians and many researchers do not have, and time that even the experts would rather spend elsewhere."
 
 ### 4. Two use cases on the release 2 graph (1:55 to 2:35)
 
 "I will follow two use cases through the rest of the talk.
 Use case 1, sequence search. A researcher has a sequence that is not in GRCh38: an insertion assembled from a sample, a probe, a contig. Which release 2 haplotypes carry it, and where on each?
 Use case 2, coordinate translation. A researcher knows a gene on GRCh38 or CHM13 and wants to see it, with its annotation, on a specific release 2 haplotype.
-Today the first is not available interactively at all, and the second only for the few assembly pairs that happen to have a chain. Both are shown live on the release 2 graph in this talk."
+Today the first means a giraffe index and a terminal session; the second, a ready-made chain for a few assembly pairs and a halLiftover run for every other one. Both are shown live, in a web page, on the release 2 graph in this talk."
 
 ### 5. Two capabilities on one index of the release 2 graph (2:35 to 3:10)
 
