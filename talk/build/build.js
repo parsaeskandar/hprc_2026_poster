@@ -142,49 +142,36 @@ Where in the graph is this sequence? Asked once, against all 464 haplotypes, not
 And: who passes through this node, and where? Answered for any haplotype against any other, without a pairwise alignment prepared in advance for each of the more than two hundred thousand pairs.
 Nothing that existed answered both, at that scale, at interactive speed. So before any tool, we built the index: a tag array index over the release 2 graph. Built once. Everything you will see in the rest of this talk is a query against it. Let me spend three slides on what it is.`); }
 
-  // ============ 6a. INDEXING DILEMMA ============
-  { const s = light("Indexing a pangenome forced a trade-off"); qtag(s, "Tag arrays");
-    const cw = (W - 2 * M - 0.8) / 3;
-    [["FM-index on the haplotypes", "Simple and lossless, but the same seed is reported once per haplotype: 464 copies of every hit.", "ropebwt3"],
-     ["FM-index on the graph", "Deduplicated positions, but construction needs graph transformations that are fragile and can drop parts of haplotypes.", "HISAT2, vg map"],
-     ["Minimizer indexes", "Fast, but the seed length is fixed in advance: a permanent trade of sensitivity for specificity.", "vg giraffe"]].forEach(([a, b, c], i) => {
-      const x = M + i * (cw + 0.4); card(s, x, T, cw, 3.7);
-      txt(s, a, x + 0.35, T + 0.35, cw - 0.7, 0.9, { fontSize: 21, bold: true, color: C.navy });
-      txt(s, b, x + 0.35, T + 1.35, cw - 0.7, 1.7, { fontSize: 16 });
-      txt(s, c, x + 0.35, T + 3.1, cw - 0.7, 0.4, { fontSize: 14, color: C.muted }); });
-    card(s, M, T + 4.05, W - 2 * M, 1.05, C.navydeep, C.navydeep);
-    txt(s, "Tag arrays: keep the FM-index on the haplotypes, annotate the BWT with graph positions. Lossless, deduplicated, any seed length.", M + 0.4, T + 4.05, W - 2 * M - 0.8, 1.05, { fontSize: 19, bold: true, color: C.white, align: "center", valign: "middle" });
-    notes(s, `[3:15-3:50]
-A brief word on the index, because everything rests on it.
-Indexing a pangenome used to force a choice. An FM-index on the haplotype sequences is simple and lossless, but reports the same seed once per haplotype. An FM-index on the graph deduplicates, but needs graph transformations that are fragile and can lose parts of haplotypes. Minimizer indexes are fast, but the seed length is fixed in advance.
-Tag arrays take a different route: keep the FM-index on the haplotypes, and annotate the BWT with graph positions. Lossless, deduplicated, any seed length.`); }
-
-  // ============ 6b. TAG ARRAYS ============
+  // ============ 6. TAG ARRAYS ============
   { const s = light("Tag arrays: an index that knows the graph"); qtag(s, "Tag arrays");
-    const iw = 7.7; s.addImage({ path: path.join(FIG, "own/tag2_0.png"), x: M, y: T + 0.15, w: iw, h: iw * 1284 / 1930 });
-    const rx = M + iw + 0.5, rw = W - M - rx;
-    [["One index, all 464 haplotypes", "Every haplotype's sequence, indexed together. A sequence is found once, however many haplotypes carry it."],
-     ["Every match knows its node", "Each position in the index is tagged with its place in the graph. A hit is a graph position, not a line in one assembly."],
-     ["Every node knows its haplotypes", "Ask a node who passes through it and get every haplotype, with its own coordinate. That is what moves a locus from one haplotype to another."]]
-      .forEach(([a, b], k) => { const y = T + 0.15 + k * 1.6; txt(s, a, rx, y, rw, 0.4, { fontSize: 18, bold: true, color: C.navy }); txt(s, b, rx, y + 0.42, rw, 1.2, { fontSize: 15 }); });
-    card(s, rx, T + 4.85, rw, 0.6, C.card); txt(s, "Any haplotype to any other. No pairwise index.", rx, T + 4.85, rw, 0.6, { fontSize: 14, bold: true, color: C.navy, align: "center", valign: "middle" });
-    txt(s, "Eskandar, Paten, Sirén. Lossless pangenome indexing using tag arrays. WABI 2025; Algorithms for Molecular Biology 2026.", M, 7.0, W - 2 * M, 0.4, { fontSize: 13, color: C.muted, align: "center" });
-    notes(s, `[3:50-4:30]
-This is the idea on a toy graph, and it is all you need for the rest of the talk. Three haplotypes, indexed together. Alongside the index sits the tag array: for every position, the graph node it came from.
-Three consequences. One index holds all 464 haplotypes, so a sequence is found once, however many haplotypes carry it. Every match knows its node, so a hit is a position in the graph, not a line in one assembly. And every node knows its haplotypes, so we can ask who passes through a node and get each haplotype with its own coordinate. That last one is what moves a locus from one haplotype to another.
-Notice what is missing: nothing anywhere says CHM13-to-HG02015. There is no pairwise index, which is why any of the 464 can be translated to any other. The details are in the paper; I am happy to go into them in questions.`); }
+    const gh = 3.75, gw = gh * 1930 / 1284; s.addImage({ path: path.join(FIG, "own/tag2_0.png"), x: M, y: T + 0.05, w: gw, h: gh });
+    const ch = 3.75, bw = ch * 735 / 1961, tw = ch * 422 / 1961, cx = M + gw + 0.55;
+    s.addImage({ path: path.join(FIG, "bwt_col.png"), x: cx, y: T + 0.05, w: bw, h: ch });
+    s.addImage({ path: path.join(FIG, "tags_col.png"), x: cx + bw + 0.15, y: T + 0.05, w: tw, h: ch });
+    txt(s, "every BWT position carries a tag: its node and offset", cx - 0.9, T + 3.85, bw + tw + 1.95, 0.35, { fontSize: 11, italic: true, color: C.muted, align: "center" });
+    const cw = (W - 2 * M - 0.8) / 3;
+    [["One index answers for every haplotype", "All 464 haplotypes are indexed together. A sequence is looked up once and found on every haplotype that carries it."],
+     ["Every match knows its place in the graph", "The tag on a BWT position is a node and an offset. A hit is a position in the graph, not a line in one assembly."],
+     ["Every node knows who visits it", "Ask a node, get every haplotype passing through it with its own coordinate. That is how a locus moves between haplotypes."]]
+      .forEach(([a, b], k) => { const x = M + k * (cw + 0.4), y = T + 4.35; chip(s, String(k + 1), x, y + 0.02, 0.4);
+        txt(s, a, x + 0.55, y, cw - 0.55, 0.45, { fontSize: 15, bold: true, color: C.navy, valign: "middle" }); txt(s, b, x + 0.55, y + 0.5, cw - 0.55, 0.75, { fontSize: 12.5 }); });
+    txt(s, "Eskandar, Paten, Sirén. Lossless pangenome indexing using tag arrays. WABI 2025; Algorithms for Molecular Biology 2026.", M, 7.08, W - 2 * M, 0.32, { fontSize: 11, color: C.muted, align: "center" });
+    notes(s, `[3:10-4:10]
+Here is the index on a toy graph, and it is all you need for the rest of the talk. Three haplotypes, one text, one BWT. Alongside the BWT sits the tag array: every BWT position carries a tag, the node and offset in the graph that character came from. On the right, the same thing as columns: search a pattern the way any FM-index does, read the tags in the interval, and you have the graph positions.
+Three consequences. One index answers for every haplotype: all 464 are indexed together, so a sequence is looked up once and found on every haplotype that carries it. Every match knows its place in the graph: a hit is a node and an offset, not a line in one assembly. And every node knows who visits it: ask a node and get every haplotype passing through it, each with its own coordinate. That last one is how a locus moves from one haplotype to another.
+Earlier pangenome indexes made you choose: index the haplotypes and get every hit 464 times, or index the graph and lose parts of the haplotypes. Tag arrays keep the haplotypes and add the graph. Nothing is lost, nothing is repeated, and nothing anywhere says CHM13-to-HG02015: there is no pairwise index, which is why any of the 464 can be translated to any other. Details are in the paper and I am happy to go into them in questions.`); }
 
   // ============ 7. TRANSLATION (4 build slides, one point per click) ============
   { const steps = ["Find the query's nodes on the source path.", "Ask the tag arrays who else is here.", "Nodes both visit exactly once: unambiguous anchors.", "Walk between anchors, base by base; group shared offsets into chain blocks."];
     const stepNotes = [
-`[4:30-4:50]
+`[4:10-4:30]
 With that one property in hand, translating a region stops being a lookup and becomes a walk. Four steps, one click each.
 (click) One. Find the query interval's nodes on the source haplotype's path. The tag arrays give us those directly.`,
-`[4:50-5:05]
+`[4:30-4:45]
 Two. At those nodes, ask the tag arrays who else is standing here. Every haplotype comes back at once, including the target we care about.`,
-`[5:05-5:30]
+`[4:45-5:10]
 Three. Nodes that source and target each visit exactly once are unambiguous anchors. Orthology is inherited from the graph's alignment; what we add is that a repeat cannot manufacture a false anchor, and a colinearity check drops pairs whose spans disagree.`,
-`[5:30-5:50]
+`[5:10-5:30]
 Four. Walk the graph between anchors, one base at a time, and group the bases that share an offset into blocks. A block breaks on an indel, never on a SNP; an inversion starts a new chain. That is exactly what a chain file means.
 So the output is not a coordinate. It is a chain, and the browser already knows what to do with a chain. If the target does not contain the interval, you get fewer positions, never invented ones.`];
     for (let k = 0; k < 4; k++) {
@@ -205,7 +192,7 @@ So the output is not a coordinate. It is a chain, and the browser already knows 
     const rx = M + vw + 0.45, rw = W - M - rx;
     ["The sequence is pasted into Pangenome Mapping and mapped once, to the whole release 2 graph.", "Every haplotype that carries it is returned, ranked by identity: two of 464, and GRCh38 is not one of them.", "Selecting a carrier opens it in the browser with the sequence drawn as a track."]
       .forEach((t, i) => { const y = T + 0.1 + i * 1.5; chip(s, String(i + 1), rx, y); txt(s, t, rx + 0.65, y - 0.02, rw - 0.65, 1.4, { fontSize: 16 }); });
-    notes(s, `[5:50-7:10]  Start the recording; narrate over it.
+    notes(s, `[5:30-6:50]  Start the recording; narrate over it.
 Use case 1: a sequence that is not in the reference. This is the Pangenome Mapping page.
 The sequence is pasted and mapped once, to the whole release 2 graph, with vg giraffe, in a few seconds. The result is something no single-assembly search can give: exactly two of the 464 haplotypes carry this sequence, HG01167 hap1 and HG04157 paternal, and GRCh38 is not one of them. They are ranked by identity, with coverage beside it.
 Selecting HG01167 opens it in the browser: the sequence is drawn as a track with base-level differences, in the context of that haplotype's own annotation. Selecting a different carrier re-uses the same alignment; nothing is remapped.`); }
@@ -217,7 +204,7 @@ Selecting HG01167 opens it in the browser: the sequence is drawn as a track with
     ["One search across all 464 haplotypes, instead of one assembly at a time.", "Sequences absent from the reference are found on the haplotypes that carry them.", "Any carrier can be opened with the sequence as a track; another carrier costs no remapping."]
       .forEach((t, i) => { const x = M + i * (cw + 0.4), y = fr.bottom + 0.3; chip(s, String(i + 1), x, y); txt(s, t, x + 0.65, y - 0.02, cw - 0.65, 0.9, { fontSize: 16 }); });
     txt(s, "MAPQ is 0 by design: every locus exists hundreds of times in this graph. Per-haplotype identity and coverage replace it.", M, 6.85, W - 2 * M, 0.4, { fontSize: 14, color: C.muted, align: "center" });
-    notes(s, `[7:10-7:45]
+    notes(s, `[6:50-7:25]
 What this enables on release 2: one search across all 464 haplotypes instead of one assembly at a time; sequences absent from the reference are found on the haplotypes that carry them, together with how many carry them; and any carrier can be opened with the sequence as a track, with another carrier costing no remapping.
 One detail this room will notice: MAPQ is zero by design. In a graph where every locus exists hundreds of times, mapping quality carries no information; per-haplotype identity and coverage replace it.`); }
 
@@ -231,7 +218,7 @@ One detail this room will notice: MAPQ is zero by design. In a graph where every
     const gw = cw - 0.7, gh = gw * 982 / 2783; s.addImage({ path: path.join(FIG, "grids.png"), x: x2 + 0.35, y: T + 0.55, w: gw, h: gh });
     txt(s, "For an arbitrary release 2 haplotype, such as HG02015, no chain exists.", x2 + 0.35, T + 0.75 + gh, gw, 1.2, { fontSize: 19, italic: true, color: C.navy, align: "center" });
     takeaway(s, "The graph already contains the alignment for every pair. It has to be usable on demand.");
-    notes(s, `[7:45-8:20]
+    notes(s, `[7:25-8:00]
 Use case 2: a gene known on a reference, on a specific release 2 haplotype.
 Moving a locus between assemblies today relies on a pairwise chain. The Genome Browser can draw one assembly's tracks on another, but only over a prebuilt chain between the two, and chains are built on request, one pair at a time. 464 haplotypes are more than two hundred thousand pairs; chains exist for fifty-six of them. For an arbitrary release 2 haplotype, such as HG02015, no chain exists.
 The graph already contains the alignment for every pair. It has to be usable on demand, and that is exactly what the walk I showed produces.`); }
@@ -242,7 +229,7 @@ The graph already contains the alignment for every pair. It has to be usable on 
     const rx = M + vw + 0.45, rw = W - M - rx;
     ["Source: the gene's coordinates on the reference; target: HG02015 paternal, chosen from all 464 haplotypes.", "Translated in about 100 ms, covering 100% of bases.", "Opening the result shows the reference's tracks on HG02015, with insertions, deletions and mismatches marked."]
       .forEach((t, i) => { const y = T + 0.1 + i * 1.5; chip(s, String(i + 1), rx, y); txt(s, t, rx + 0.65, y - 0.02, rw - 0.65, 1.4, { fontSize: 16 }); });
-    notes(s, `[8:20-10:00]  Start the recording; slow down at the landing.
+    notes(s, `[8:00-9:40]  Start the recording; slow down at the landing.
 Now the same request on the release 2 graph. Source: the gene as known on the reference, here HLA-DMA on CHM13, ten kilobases on chromosome 6; GRCh38 is a path in this graph too, so it works identically as the source. Target: HG02015 paternal, chosen from all 464; the picker can be restricted to haplotypes that contain the region.
 Translated in about a hundred milliseconds, covering a hundred percent of bases.
 Opening the result is the part I care about most. HG02015 has its own CAT and Liftoff genes from release 2. What it does not have is everything that exists once, on one reference: ClinVar, the GWAS catalog, ENCODE, a lab's own tracks. Here they are, drawn at their translated positions, with the differences between the two assemblies marked.
@@ -254,7 +241,7 @@ Opening the result is the part I care about most. HG02015 has its own CAT and Li
     s.addText([{ text: "Before: ", options: { bold: true, color: C.muted } }, { text: "a locus could be moved only between assembly pairs with a prebuilt chain; a release 2 haplotype without one showed only its own tracks.", options: { color: C.muted, breakLine: true } },
       { text: "Now: ", options: { bold: true, color: C.navy } }, { text: "any of the 464 haplotypes as the target, from GRCh38 or CHM13, in about 100 ms; the reference's tracks are drawn there over an alignment built for the region, with insertions, deletions and mismatches marked.", options: { color: C.ink } }],
       { x: M, y: fr.bottom + 0.15, w: W - 2 * M, h: 1.15, fontFace: FONT, fontSize: 16, isTextBox: true, margin: 0, valign: "top", paraSpaceAfter: 4 });
-    notes(s, `[10:00-10:35]
+    notes(s, `[9:40-10:15]
 Before, a locus could be moved only between assembly pairs with a prebuilt chain, and a release 2 haplotype without one showed only its own tracks. Now any of the 464 haplotypes can be the target, from GRCh38 or CHM13, in about a hundred milliseconds; the reference's tracks are drawn there over an alignment built for that region, with the differences marked.
 The thousands of tracks that exist once, on one reference, will never be rebuilt 464 times. With this, any release 2 haplotype can borrow them for the region under study.`); }
 
@@ -266,7 +253,7 @@ The thousands of tracks that exist once, on one reference, will never be rebuilt
     const x2 = M + cw + 0.4; card(s, x2, T, cw, 4.6); circleIcon(s, ic.FaFlask, x2 + 0.35, T + 0.35, 0.7); txt(s, "Researchers and graph builders", x2 + 1.25, T + 0.42, cw - 1.6, 0.55, { fontSize: 21, bold: true, color: C.navy });
     bullets(s, ["Place contigs, probes, primers or guide RNAs on every haplotype at once; see which haplotypes lack the site.", "Move any reference annotation, or your own tracks, onto any assembly; compare a locus across individuals.", "Inspect the graph's alignment itself: the Alignment Differences track is the graph, drawn base by base."], x2 + 0.35, T + 1.25, cw - 0.7, 3.2, { fontSize: 16 });
     takeaway(s, "No pipeline, no download: a browser tab, and a sequence or a position.");
-    notes(s, `[10:35-11:15]
+    notes(s, `[10:15-10:55]
 Who is this for? For clinicians and curators: is this insertion private to my patient, or carried by HPRC individuals, and which ones? ClinVar and GWAS context on the haplotype that actually carries the patient's allele. And the complex loci where one reference misleads: HLA, KIR, CYP2D6, LPA, SMN, seen on many haplotypes with the reference annotation drawn there.
 For researchers and graph builders: place contigs, probes, primers or guide RNAs on every haplotype at once; move any annotation, including your own tracks, onto any assembly; and inspect the graph's alignment itself, because the Alignment Differences track is the graph, drawn base by base.
 No pipeline, no download. A browser tab, and a sequence or a position.`); }
@@ -292,7 +279,7 @@ No pipeline, no download. A browser tab, and a sequence or a position.`); }
         valAxisMinVal: 0, valAxisMaxVal: 80, valAxisMajorUnit: 20, catAxisTitle: "threads", showCatAxisTitle: true, catAxisTitleColor: C.muted, catAxisTitleFontSize: 14 });
     txt(s, "Single-thread run was warm-up-limited; read the plateau: about 60 queries per second per server.", 6.9, T + 4.4, W - M - 6.9, 0.4, { fontSize: 14, color: C.muted, align: "center" });
     takeaway(s, "Exon-scale in 20 ms, a 10 kb gene in a tenth of a second, a megabase in four. One server sustains about 60 queries a second.", 6.35);
-    notes(s, `[11:15-12:00]
+    notes(s, `[10:55-11:40]
 None of this matters if it takes a minute. So: is it fast enough to sit behind a web page?
 Exon-scale intervals translate in about twenty milliseconds, a ten-kilobase gene in about a tenth of a second, a hundred kilobases in under a second, a megabase in about four.
 And it serves many people at once: throughput goes from six to sixty queries a second and saturates around eight cores. Read that as "one box serves about sixty queries a second", not as perfect scaling; the single-thread number was warm-up-limited.`); }
@@ -310,7 +297,7 @@ And it serves many people at once: throughput goes from six to sixty queries a s
     s.addText([{ text: "Next: ", options: { color: C.dim } }, { text: "public release in the UCSC Genome Browser", options: { color: C.white, bold: true } }],
       { x: M, y: 5.95, w: W - 2 * M, h: 0.5, fontFace: FONT, fontSize: 22, align: "center", isTextBox: true, margin: 0 });
     txt(s, "Available on the development browser now. Bring us your hardest region.", M, 6.5, W - 2 * M, 0.5, { fontSize: 20, italic: true, color: C.gold, align: "center", valign: "middle" });
-    notes(s, `[12:00-12:40]
+    notes(s, `[11:40-12:20]
 So, the two use cases. Sequence search: every carrying haplotype found in seconds, and the sequence viewed as a track on any of them. Coordinate translation: any of the 464 haplotypes as the target in about a hundred milliseconds, with the reference's annotation drawn there.
 Release 2 becomes something a scientist can query, not only browse. The next step is the public UCSC Genome Browser. It is available on the development browser now; bring us your hardest region.
 (Advance to thanks. Let it breathe. Then questions.)`); }
@@ -329,7 +316,7 @@ Release 2 becomes something a scientist can query, not only browse. The next ste
       { text: "The UCSC Genome Browser team  •  The Human Pangenome Reference Consortium", options: { color: C.dim, fontSize: 16, breakLine: true } },
       { text: "Built on vg and the HPRC v2.0 graph", options: { color: C.dim, fontSize: 16 } }],
       { x: M, y: 5.35, w: W - 2 * M, h: 1.7, fontFace: FONT, isTextBox: true, margin: 0, valign: "top", paraSpaceAfter: 6 });
-    notes(s, `[12:40-12:55]
+    notes(s, `[12:20-12:35]
 None of this was mine alone: Jouni Sirén, Benedict Paten, and a lot of help from the Computational Genomics Lab and the Genome Browser team. Thank you. Questions.`); }
 
   // ============ BACKUP ============
