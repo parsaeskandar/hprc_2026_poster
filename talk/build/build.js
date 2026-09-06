@@ -124,22 +124,23 @@ Use case 1, sequence search. A researcher has a sequence that is not in GRCh38: 
 Use case 2, coordinate translation. A researcher knows a gene on GRCh38 or CHM13 and wants to see it, with its annotation, on a specific release 2 haplotype.
 Today the first means a giraffe index and a terminal session; the second, a ready-made chain for a few assembly pairs and a halLiftover run for every other one. Both are shown live, in a web page, on the release 2 graph in this talk.`); }
 
-  // ============ 5. WHAT WE BUILT ============
-  { const s = light("Two capabilities on one index of the release 2 graph");
-    card(s, M, T + 0.2, W - 2 * M, 1.35, C.navy, C.navy);
-    txt(s, "Tag-array index over the HPRC release 2 graph", M, T + 0.32, W - 2 * M, 0.5, { fontSize: 22, bold: true, color: C.white, align: "center" });
-    txt(s, "464 haplotypes  •  every BWT position knows its graph position  •  every node knows every haplotype crossing it", M, T + 0.88, W - 2 * M, 0.4, { fontSize: 16, color: C.dim, align: "center" });
-    [[M, "FaSearch", "Sequence search", "A sequence is mapped once, to the whole graph. Every haplotype that carries it is reported, and the hit can be viewed on any of them."],
-     [M + cw2 + 0.4, "FaRandom", "Coordinate translation", "A locus on any haplotype is translated to any other haplotype, and the source's annotation is drawn there over an alignment built on demand."]].forEach(([x, i, a, b]) => {
-      s.addShape(pres.shapes.LINE, { x: x + cw2 / 2, y: T + 1.55, w: 0, h: 0.5, line: { color: C.navy, width: 2, endArrowType: "triangle" } });
-      card(s, x, T + 2.05, cw2, 2.9); circleIcon(s, ic[i], x + 0.35, T + 2.4, 0.8);
-      txt(s, a, x + 1.4, T + 2.5, cw2 - 1.8, 0.55, { fontSize: 22, bold: true, color: C.navy });
-      txt(s, b, x + 0.35, T + 3.35, cw2 - 0.7, 1.5, { fontSize: 17 }); });
-    takeaway(s, "Both run inside the UCSC Genome Browser, on the release 2 graph, today.");
+  // ============ 5. BRIDGE: WHAT INTERACTIVE REQUIRES ============
+  { const s = light("Two questions, answered in milliseconds");
+    [[M, "FaSearch", "Where in the graph is this sequence?", "Asked once against all 464 haplotypes, not 464 times against one assembly each. Any sequence, any length."],
+     [M + cw2 + 0.4, "FaRandom", "Who passes through this node, and where?", "Answered for any haplotype against any other, without a pairwise alignment prepared for each of the 200,000+ pairs."]].forEach(([x, i, a, b]) => {
+      card(s, x, T + 0.1, cw2, 2.75); circleIcon(s, ic[i], x + 0.35, T + 0.45, 0.8);
+      txt(s, a, x + 1.4, T + 0.5, cw2 - 1.8, 0.75, { fontSize: 20, bold: true, color: C.navy, valign: "middle" });
+      txt(s, b, x + 0.35, T + 1.4, cw2 - 0.7, 1.35, { fontSize: 17 });
+      s.addShape(pres.shapes.LINE, { x: x + cw2 / 2, y: T + 2.95, w: 0, h: 0.5, line: { color: C.navy, width: 2, endArrowType: "triangle" } }); });
+    card(s, M, T + 3.55, W - 2 * M, 1.45, C.navy, C.navy);
+    txt(s, "One index answers both: the tag array index", M, T + 3.68, W - 2 * M, 0.55, { fontSize: 24, bold: true, color: C.white, align: "center" });
+    txt(s, "Built once over the release 2 graph. Everything in the rest of this talk is a query against it.", M, T + 4.3, W - 2 * M, 0.45, { fontSize: 16, color: C.dim, align: "center" });
+    takeaway(s, "A web page can wait a second, not an hour. The index is what makes that possible.");
     notes(s, `[2:35-3:10]
-What we built, in one picture. One index over the HPRC release 2 graph, a tag-array index, which I will explain in a moment. Every position in the BWT knows its graph position, and every node knows every haplotype crossing it.
-Two capabilities sit on top of it. Sequence search: a sequence is mapped once, to the whole graph, every haplotype that carries it is reported, and the hit can be viewed on any of them. Coordinate translation: a locus on any haplotype is translated to any other, and the source's annotation is drawn there over an alignment built on demand.
-Both run inside the UCSC Genome Browser, on the release 2 graph, today.`); }
+So what would it take to do this in a web page, where a user waits a second and not an hour? Both use cases come down to two questions the index underneath has to answer in milliseconds.
+Where in the graph is this sequence? Asked once, against all 464 haplotypes, not 464 times against one assembly each, and for any sequence, of any length.
+And: who passes through this node, and where? Answered for any haplotype against any other, without a pairwise alignment prepared in advance for each of the more than two hundred thousand pairs.
+Nothing that existed answered both, at that scale, at interactive speed. So before any tool, we built the index: a tag array index over the release 2 graph. Built once. Everything you will see in the rest of this talk is a query against it. Let me spend three slides on what it is.`); }
 
   // ============ 6a. INDEXING DILEMMA ============
   { const s = light("Indexing a pangenome forced a trade-off"); qtag(s, "Tag arrays");

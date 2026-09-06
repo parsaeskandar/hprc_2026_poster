@@ -18,7 +18,7 @@
 | 2 | 464 haplotypes; 2 hold almost everything we know | 0:45 | 1:00 |
 | 3 | Possible on release 2, only in a terminal | 0:55 | 1:55 |
 | 4 | Two use cases on the release 2 graph | 0:40 | 2:35 |
-| 5 | Two capabilities on one index of the release 2 graph | 0:35 | 3:10 |
+| 5 | Two questions, answered in milliseconds | 0:35 | 3:10 |
 | 6 | Indexing a pangenome forced a trade-off | 0:35 | 3:50 |
 | 7 | Tag arrays: an index that knows the graph | 0:40 | 4:30 |
 | 8 | Translating a region is a walk, not a lookup (4 build slides) | 1:20 | 5:50 |
@@ -32,7 +32,7 @@
 | 16 | Release 2, queryable | 0:40 | 12:40 |
 | 17 | Thank you | 0:15 | 12:55 |
 
-Why this order: release 2 comes first, as the audience's own resource, with the gap stated honestly: the tools exist (giraffe, odgi, r-index, halLiftover, impg), but each needs a large index, compute, and a terminal workflow that most clinicians and many researchers cannot use. Never say "no tools exist"; the room wrote them. The two use cases are planted before the method so the method has a purpose. Tag arrays get three slides because they are the contribution everything rests on. Each use case is a recording you narrate, followed by one "what this enables" slide. Existing browser tools and chain counts appear only where they explain why use case 2 was not possible before.
+Why this order: release 2 comes first, as the audience's own resource, with the gap stated honestly: the tools exist (giraffe, odgi, r-index, halLiftover, impg), but each needs a large index, compute, and a terminal workflow that most clinicians and many researchers cannot use. Never say "no tools exist"; the room wrote them. The two use cases are planted before the method; slide 5 turns them into the two questions an index must answer interactively, which is why the tag array index comes next and the tools only after it. Tag arrays get three slides because they are the contribution everything rests on. Each use case is a recording you narrate, followed by one "what this enables" slide. Existing browser tools and chain counts appear only where they explain why use case 2 was not possible before.
 
 ## 3. Script
 
@@ -63,11 +63,12 @@ Use case 1, sequence search. A researcher has a sequence that is not in GRCh38: 
 Use case 2, coordinate translation. A researcher knows a gene on GRCh38 or CHM13 and wants to see it, with its annotation, on a specific release 2 haplotype.
 Today the first means a giraffe index and a terminal session; the second, a ready-made chain for a few assembly pairs and a halLiftover run for every other one. Both are shown live, in a web page, on the release 2 graph in this talk."
 
-### 5. Two capabilities on one index of the release 2 graph (2:35 to 3:10)
+### 5. Two questions, answered in milliseconds (2:35 to 3:10)
 
-"What we built, in one picture. One index over the HPRC release 2 graph, a tag-array index, which I will explain in a moment. Every position in the BWT knows its graph position, and every node knows every haplotype crossing it.
-Two capabilities sit on top of it. Sequence search: a sequence is mapped once, to the whole graph, every haplotype that carries it is reported, and the hit can be viewed on any of them. Coordinate translation: a locus on any haplotype is translated to any other, and the source's annotation is drawn there over an alignment built on demand.
-Both run inside the UCSC Genome Browser, on the release 2 graph, today."
+"So what would it take to do this in a web page, where a user waits a second and not an hour? Both use cases come down to two questions the index underneath has to answer in milliseconds.
+Where in the graph is this sequence? Asked once, against all 464 haplotypes, not 464 times against one assembly each, and for any sequence, of any length.
+And: who passes through this node, and where? Answered for any haplotype against any other, without a pairwise alignment prepared in advance for each of the more than two hundred thousand pairs.
+Nothing that existed answered both, at that scale, at interactive speed. So before any tool, we built the index: a tag array index over the release 2 graph. Built once. Everything you will see in the rest of this talk is a query against it. Let me spend three slides on what it is."
 
 ### 6. Indexing a pangenome forced a trade-off (3:15 to 3:50)
 
