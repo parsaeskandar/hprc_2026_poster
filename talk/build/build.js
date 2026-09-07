@@ -93,7 +93,7 @@ The tools to work with the graph exist: vg giraffe maps to it, odgi and the r-in
   { const s = light("Possible on release 2, only in a terminal");
     const cw = (W - 2 * M - 0.8) / 3;
     [["FaSearch", "Place a sequence across haplotypes", "Which of the 464 haplotypes carry a sequence, where, and what does each region look like? Today: a giraffe index, a mapping run, and a terminal session before the first answer."],
-     ["FaRandom", "Move a locus onto a haplotype", "Take coordinates known on GRCh38 or CHM13 to an arbitrary release 2 haplotype. Today: halLiftover or impg over the whole alignment, per request, or a ready-made chain for a handful of pairs."],
+     ["FaRandom", "Move a locus onto a haplotype", "Take coordinates known on GRCh38 or CHM13 to any release 2 haplotype you choose. Today: halLiftover or impg over the whole alignment, per request, or a ready-made chain for a handful of pairs."],
      ["FaLayerGroup", "Bring the annotation along", "See the reference's gene models, ClinVar, GWAS or one's own tracks on a release 2 haplotype. Today: lift every track yourself, per haplotype, before anyone can look."]]
       .forEach(([ic_, a, b], i) => { const x = M + i * (cw + 0.4); card(s, x, T, cw, 4.55); circleIcon(s, ic[ic_], x + 0.35, T + 0.35, 0.8);
         txt(s, a, x + 0.35, T + 1.35, cw - 0.7, 0.9, { fontSize: 21, bold: true, color: C.navy }); txt(s, b, x + 0.35, T + 2.3, cw - 0.7, 2.1, { fontSize: 16 }); });
@@ -101,7 +101,7 @@ The tools to work with the graph exist: vg giraffe maps to it, odgi and the r-in
     notes(s, `[1:00-1:55]
 Concretely, three things release 2 can already do, but only from the command line.
 Place a sequence across haplotypes: which of the 464 carry it, where, and what does each region look like? Today that is a giraffe index, a mapping run, and a terminal session before the first answer.
-Move a locus onto a haplotype: take coordinates known on GRCh38 or CHM13 to an arbitrary release 2 haplotype. Today that is halLiftover or impg over the whole alignment, per request, or a ready-made chain for the handful of pairs that have one.
+Move a locus onto a haplotype: take coordinates known on GRCh38 or CHM13 to any release 2 haplotype you choose. Today that is halLiftover or impg over the whole alignment, per request, or a ready-made chain for the handful of pairs that have one.
 And bring the annotation along: see the reference's gene models, ClinVar, GWAS, or your own tracks on a release 2 haplotype. Today you lift every track yourself, per haplotype, before anyone can look.
 None of this is impossible. The graph already holds the answers. Reaching them takes compute, disk, and bioinformatics expertise that most clinicians and many researchers do not have, and time that even the experts would rather spend elsewhere.`); }
 
@@ -216,11 +216,11 @@ One detail this room will notice: MAPQ is zero by design. In a graph where every
     bullets(s, ["The Genome Browser can draw one assembly's tracks on another (QuickLift), but only over a prebuilt chain between the two assemblies.", "Chains are built on request, one assembly pair at a time.", "464 haplotypes are more than 200,000 pairs. Chains exist for 56 of them."], M + 0.35, T + 1.3, cw - 0.7, 3.2, { fontSize: 17 });
     const x2 = M + cw + 0.4; card(s, x2, T, cw, 4.6);
     const gw = cw - 0.7, gh = gw * 982 / 2783; s.addImage({ path: path.join(FIG, "grids.png"), x: x2 + 0.35, y: T + 0.55, w: gw, h: gh });
-    txt(s, "For an arbitrary release 2 haplotype, such as HG02015, no chain exists.", x2 + 0.35, T + 0.75 + gh, gw, 1.2, { fontSize: 19, italic: true, color: C.navy, align: "center" });
+    txt(s, "For most release 2 haplotypes, HG02015 among them, no chain exists.", x2 + 0.35, T + 0.75 + gh, gw, 1.2, { fontSize: 19, italic: true, color: C.navy, align: "center" });
     takeaway(s, "The graph already contains the alignment for every pair. It has to be usable on demand.");
     notes(s, `[7:25-8:00]
 Use case 2: a gene known on a reference, on a specific release 2 haplotype.
-Moving a locus between assemblies today relies on a pairwise chain. The Genome Browser can draw one assembly's tracks on another, but only over a prebuilt chain between the two, and chains are built on request, one pair at a time. 464 haplotypes are more than two hundred thousand pairs; chains exist for fifty-six of them. For an arbitrary release 2 haplotype, such as HG02015, no chain exists.
+Moving a locus between assemblies today relies on a pairwise chain. The Genome Browser can draw one assembly's tracks on another, but only over a prebuilt chain between the two, and chains are built on request, one pair at a time. 464 haplotypes are more than two hundred thousand pairs; chains exist for fifty-six of them. For most release 2 haplotypes, HG02015 among them, no chain exists.
 The graph already contains the alignment for every pair. It has to be usable on demand, and that is exactly what the walk I showed produces.`); }
 
   // ============ 11. USE CASE 2: RECORDING ============

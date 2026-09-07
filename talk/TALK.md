@@ -51,7 +51,7 @@ The tools to work with the graph exist: vg giraffe maps to it, odgi and the r-in
 
 "Concretely, three things release 2 can already do, but only from the command line.
 Place a sequence across haplotypes: which of the 464 carry it, where, and what does each region look like? Today that is a giraffe index, a mapping run, and a terminal session before the first answer.
-Move a locus onto a haplotype: take coordinates known on GRCh38 or CHM13 to an arbitrary release 2 haplotype. Today that is halLiftover or impg over the whole alignment, per request, or a ready-made chain for the handful of pairs that have one.
+Move a locus onto a haplotype: take coordinates known on GRCh38 or CHM13 to any release 2 haplotype you choose. Today that is halLiftover or impg over the whole alignment, per request, or a ready-made chain for the handful of pairs that have one.
 And bring the annotation along: see the reference's gene models, ClinVar, GWAS, or your own tracks on a release 2 haplotype. Today you lift every track yourself, per haplotype, before anyone can look.
 None of this is impossible. The graph already holds the answers. Reaching them takes compute, disk, and bioinformatics expertise that most clinicians and many researchers do not have, and time that even the experts would rather spend elsewhere."
 
@@ -103,7 +103,7 @@ One detail this room will notice: MAPQ is zero by design. In a graph where every
 ### 10. Moving a locus onto a release 2 haplotype today (7:25 to 8:00)
 
 "Use case 2: a gene known on a reference, on a specific release 2 haplotype.
-Moving a locus between assemblies today relies on a pairwise chain. The Genome Browser can draw one assembly's tracks on another, but only over a prebuilt chain between the two, and chains are built on request, one pair at a time. 464 haplotypes are more than two hundred thousand pairs; chains exist for fifty-six of them. For an arbitrary release 2 haplotype, such as HG02015, no chain exists.
+Moving a locus between assemblies today relies on a pairwise chain. The Genome Browser can draw one assembly's tracks on another, but only over a prebuilt chain between the two, and chains are built on request, one pair at a time. 464 haplotypes are more than two hundred thousand pairs; chains exist for fifty-six of them. For most release 2 haplotypes, HG02015 among them, no chain exists.
 The graph already contains the alignment for every pair. It has to be usable on demand, and that is exactly what the walk I showed produces."
 
 ### 11. Use case 2: a known gene, on HG02015 (8:00 to 9:40)
@@ -194,7 +194,7 @@ The r-index over the haplotype sequences finds where a string occurs. The tag ar
 Pipeline: not yet, honestly; it is JSON over HTTP and the browser is just a client, but there is no documented or stable endpoint. A public API is on the plan. Own graph: yes, one index build per GBZ; nothing is release-specific. GRCh38 is already a path in this graph, so hg38 as a source works now. Own assemblies: to be a target, an assembly has to be in the graph. Own annotations: anything QuickLift can draw travels over the chain; I want to verify that for track hubs before promising it.
 
 **"Why not just precompute all the chains?"**
-464 × 463 is more than 200,000 chains, a large standing cost for pairs almost nobody asks for. On-demand generation makes arbitrary regions and arbitrary pairs possible today, and caching widened chains across users gets popular regions most of the benefit without the cost.
+464 × 463 is more than 200,000 chains, a large standing cost for pairs almost nobody asks for. On-demand generation makes any region and any pair possible today, and caching widened chains across users gets popular regions most of the benefit without the cost.
 
 **"Is identity the same as BLAT identity?"**
 No. It is per haplotype: of the read bases aligned to the graph, the fraction lying on nodes that haplotype visits and matching there. Soft-clipped ends are excluded, so a partial hit can look better than it is; we show coverage alongside identity for that reason. MAPQ is 0 by design in a graph where every locus exists hundreds of times.
