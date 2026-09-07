@@ -95,13 +95,13 @@ Thank you. I'm Parsa Eskandar, from Benedict Paten's lab at UC Santa Cruz. This 
     // bottom: the gap
     s.addShape(pres.shapes.LINE, { x: M + 1.5, y: 5.5, w: W - 2 * M - 3, h: 0, line: { color: C.dimdark, width: 1 } });
     txt(s, "Both directions are possible today, with a cluster and a terminal.", M, 5.7, W - 2 * M, 0.5, { fontSize: 20, color: C.white, align: "center" });
-    txt(s, "For everyone else, release 2 is 464 assemblies to browse one at a time.", M, 6.2, W - 2 * M, 0.5, { fontSize: 20, italic: true, color: C.gold, align: "center" });
+    txt(s, "For a clinician, neither is an option: release 2 stays 464 assemblies to browse one at a time.", M, 6.2, W - 2 * M, 0.5, { fontSize: 20, italic: true, color: C.gold, align: "center" });
     notes(s, `[0:15-1:10]
 HPRC release 2 is 464 haplotypes in one graph: the most complete picture of human variation we have ever had.
 (pause)
 Now look at how our knowledge sits on those 464. Two of them, GRCh38 and CHM13, carry almost everything we know: the gene models, ClinVar, the GWAS catalog, the regulatory annotation, every track anyone has ever built. The other 462 are the reason release 2 exists. They carry what the two references miss: the insertions that are not in GRCh38, the alleles at HLA or LPA, the segmental duplications the reference gets wrong. And they carry almost none of our annotation.
 So the value of release 2 depends on traffic in both directions. Our knowledge has to travel from the two onto the 462: take a gene we understand on GRCh38 and see it on another haplotype. And sequence has to travel from the 462 back to the two: take something that is not in the reference, find which haplotypes carry it, and see it next to what we already know.
-Both directions are possible today, if you have a cluster and a terminal. For everyone else, release 2 is 464 assemblies to browse one at a time. That is the gap.`); }
+Both directions are possible today, if you have a cluster and a terminal. A clinician has neither, and most researchers would rather not. For them, release 2 stays 464 assemblies to browse one at a time. That is the gap.`); }
 
   // ============ 3. THE CHALLENGE ============
   { const s = light("Possible on release 2, only in a terminal");

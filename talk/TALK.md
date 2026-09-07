@@ -47,7 +47,7 @@ Timings are cumulative. Stage directions in *italics*. Everything below is also 
 (pause)
 Now look at how our knowledge sits on those 464. Two of them, GRCh38 and CHM13, carry almost everything we know: the gene models, ClinVar, the GWAS catalog, the regulatory annotation, every track anyone has ever built. The other 462 are the reason release 2 exists. They carry what the two references miss: the insertions that are not in GRCh38, the alleles at HLA or LPA, the segmental duplications the reference gets wrong. And they carry almost none of our annotation.
 So the value of release 2 depends on traffic in both directions. Our knowledge has to travel from the two onto the 462: take a gene we understand on GRCh38 and see it on another haplotype. And sequence has to travel from the 462 back to the two: take something that is not in the reference, find which haplotypes carry it, and see it next to what we already know.
-Both directions are possible today, if you have a cluster and a terminal. For everyone else, release 2 is 464 assemblies to browse one at a time. That is the gap."
+Both directions are possible today, if you have a cluster and a terminal. A clinician has neither, and most researchers would rather not. For them, release 2 stays 464 assemblies to browse one at a time. That is the gap."
 
 ### 3. Possible on release 2, only in a terminal (1:10 to 2:05)
 
