@@ -6,7 +6,7 @@
 ## 1. The order
 
 1. Title
-2. In the Genome Browser today: what a researcher cannot do (BLAT one assembly at a time; lift-over only where a chain exists; the release 2 graph unused)
+2. Not possible in the Genome Browser today: search across all haplotypes; lift-over to any haplotype; the reference annotation on a haplotype
 3. Two use cases (sequence search; coordinate translation)
 4. Use case 1: recording
 5. Use case 1: result screenshot (two of 464 carry it; GRCh38 does not)
@@ -25,7 +25,7 @@ Rough budget: 2 minutes for slides 1 to 3, 5 minutes for the two use cases, 4 mi
 
 These are the same as the slide notes. Each is a fact or a cue, not a line to read.
 
-- **2.** BLAT searches one assembly. Lift-over needs a prebuilt chain; 56 chains exist for 200,000+ pairs. The graph already aligns all 464, and nothing in the browser uses it.
+- **2.** No search across haplotypes: BLAT is one assembly at a time. No lift-over to a haplotype without a prebuilt chain: 56 chains, 200,000+ pairs. The graph already aligns all 464; nothing in the browser uses it.
 - **3.** Use case 1: a sequence not in the reference; which haplotypes carry it, and where. Use case 2: a locus known on GRCh38; see it on another haplotype with its annotation.
 - **4.** Paste; map once to the whole graph; results ranked by identity; click one, the sequence is a track on that haplotype.
 - **5.** HG01167 hap1 and HG04157 paternal; not GRCh38. One search instead of 464. MAPQ is 0 by design in a graph this redundant; identity and coverage carry the ranking.

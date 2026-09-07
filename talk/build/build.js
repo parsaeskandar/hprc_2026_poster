@@ -17,7 +17,7 @@ async function icon(name, color, px = 256) { const svg = ReactDOMServer.renderTo
 (async () => {
   const pres = new pptxgen(); pres.layout = "LAYOUT_WIDE"; pres.author = "Parsa Eskandar";
   pres.title = "A pangenome sequence search and coordinate translation service for the UCSC Genome Browser";
-  const ic = {}; for (const k of ["FaSearch", "FaRandom", "FaLayerGroup", "FaCheck", "FaExclamation", "FaRocket", "FaUserMd", "FaFlask"]) ic[k] = await icon(k, C.white);
+  const ic = {}; for (const k of ["FaSearch", "FaRandom", "FaLayerGroup", "FaCheck", "FaExclamation", "FaRocket", "FaUserMd", "FaFlask", "FaTimes"]) ic[k] = await icon(k, C.white);
 
   let n = 0;
   const num = (s, dark) => { n++; s.addText(String(n), { x: W - M - 0.5, y: H - 0.45, w: 0.5, h: 0.3, fontFace: FONT, fontSize: 10, color: dark ? C.dimdark : C.hair, align: "right", isTextBox: true, margin: 0 }); };
@@ -74,19 +74,19 @@ async function icon(name, color, px = 256) { const svg = ReactDOMServer.renderTo
     txt(s, "UC Santa Cruz Genomics Institute", M, 6.5, 10, 0.4, { fontSize: 16, color: C.dim });
     points(s, ["who you are, joint work with Jouni and the Genome Browser team"]); }
 
-  // ============ 2. TODAY IN THE BROWSER ============
-  { const s = light("In the Genome Browser today");
-    const lw = 5.6;
-    [["FaSearch", "Search a sequence", "BLAT: one assembly at a time"],
-     ["FaRandom", "Move a locus to another assembly", "QuickLift: only where a chain exists"],
-     ["FaLayerGroup", "Use the release 2 graph", "not possible"]].forEach(([i, a, b], k) => {
-      const y = T + 0.2 + k * 1.55; circleIcon(s, ic[i], M, y, 0.7);
-      txt(s, a, M + 0.95, y - 0.02, lw - 0.95, 0.4, { fontSize: 20, bold: true, color: C.navy });
-      txt(s, b, M + 0.95, y + 0.42, lw - 0.95, 0.4, { fontSize: 17, color: k === 2 ? C.coral : C.muted }); });
+  // ============ 2. NOT POSSIBLE TODAY ============
+  { const s = light("Not possible in the Genome Browser today");
+    const lw = 6.2;
+    [["Search a sequence across all 464 HPRC haplotypes", "today: BLAT, one assembly at a time"],
+     ["Move a locus onto any HPRC haplotype", "today: only between the few assembly pairs with a prebuilt chain"],
+     ["See the reference's annotation on an HPRC haplotype", "today: only for those same few pairs"]].forEach(([a, b], k) => {
+      const y = T + 0.2 + k * 1.6; circleIcon(s, ic.FaTimes, M, y, 0.7, C.coral);
+      txt(s, a, M + 0.95, y - 0.05, lw - 0.95, 0.85, { fontSize: 20, bold: true, color: C.navy });
+      txt(s, b, M + 0.95, y + 0.78, lw - 0.95, 0.4, { fontSize: 15, color: C.muted }); });
     const gx = M + lw + 0.5, gw = W - M - gx, gh = gw * 982 / 2783;
     s.addImage({ path: path.join(FIG, "grids.png"), x: gx, y: T + 0.6, w: gw, h: gh });
     txt(s, "464 haplotypes make 200,000+ assembly pairs. Chains exist for 56 of them.", gx, T + 0.8 + gh, gw, 0.8, { fontSize: 15, color: C.muted, align: "center" });
-    points(s, ["what a researcher cannot do here today", "BLAT searches one assembly; lift-over needs a prebuilt chain; 56 chains vs 200,000+ pairs", "the graph aligns all 464 already, but nothing in the browser uses it"]); }
+    points(s, ["what a researcher cannot do here today", "no search across haplotypes: BLAT is one assembly at a time", "no lift-over to a haplotype without a prebuilt chain: 56 chains, 200,000+ pairs", "the graph aligns all 464 already; nothing in the browser uses it"]); }
 
   // ============ 3. TWO USE CASES ============
   { const s = light("Two use cases");
