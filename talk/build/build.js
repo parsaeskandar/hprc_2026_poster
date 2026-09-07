@@ -245,18 +245,25 @@ Opening the result is the part I care about most. HG02015 has its own CAT and Li
 Before, a locus could be moved only between assembly pairs with a prebuilt chain, and a release 2 haplotype without one showed only its own tracks. Now any of the 464 haplotypes can be the target, from GRCh38 or CHM13, in about a hundred milliseconds; the reference's tracks are drawn there over an alignment built for that region, with the differences marked.
 The thousands of tracks that exist once, on one reference, will never be rebuilt 464 times. With this, any release 2 haplotype can borrow them for the region under study.`); }
 
-  // ============ 12b. WHO THIS IS FOR ============
-  { const s = light("Who this is for");
-    const cw = (W - 2 * M - 0.4) / 2;
-    card(s, M, T, cw, 4.6); circleIcon(s, ic.FaUserMd, M + 0.35, T + 0.35, 0.7); txt(s, "Clinicians and variant curators", M + 1.25, T + 0.42, cw - 1.6, 0.55, { fontSize: 21, bold: true, color: C.navy });
-    bullets(s, ["Is this insertion or SV sequence private to my patient, or carried by HPRC individuals? Which ones?", "ClinVar and GWAS context on the haplotype that actually carries the patient's allele.", "Loci where one reference misleads: HLA, KIR, CYP2D6, LPA, SMN1/2, seen on many haplotypes with the reference annotation drawn there."], M + 0.35, T + 1.25, cw - 0.7, 3.2, { fontSize: 16 });
-    const x2 = M + cw + 0.4; card(s, x2, T, cw, 4.6); circleIcon(s, ic.FaFlask, x2 + 0.35, T + 0.35, 0.7); txt(s, "Researchers and graph builders", x2 + 1.25, T + 0.42, cw - 1.6, 0.55, { fontSize: 21, bold: true, color: C.navy });
-    bullets(s, ["Place contigs, probes, primers or guide RNAs on every haplotype at once; see which haplotypes lack the site.", "Move any reference annotation, or your own tracks, onto any assembly; compare a locus across individuals.", "Inspect the graph's alignment itself: the Alignment Differences track is the graph, drawn base by base."], x2 + 0.35, T + 1.25, cw - 0.7, 3.2, { fontSize: 16 });
-    takeaway(s, "No pipeline, no download: a browser tab, and a sequence or a position.");
-    notes(s, `[10:15-10:55]
-Who is this for? For clinicians and curators: is this insertion private to my patient, or carried by HPRC individuals, and which ones? ClinVar and GWAS context on the haplotype that actually carries the patient's allele. And the complex loci where one reference misleads: HLA, KIR, CYP2D6, LPA, SMN, seen on many haplotypes with the reference annotation drawn there.
-For researchers and graph builders: place contigs, probes, primers or guide RNAs on every haplotype at once; move any annotation, including your own tracks, onto any assembly; and inspect the graph's alignment itself, because the Alignment Differences track is the graph, drawn base by base.
-No pipeline, no download. A browser tab, and a sequence or a position.`); }
+  // ============ 12b. WHAT A USER CAN NOW ASK ============
+  { const s = light("What a release 2 user can now ask");
+    const cw = (W - 2 * M - 0.8) / 3;
+    [["FaSearch", "Is my sequence in any HPRC individual?", "Paste a sequence.", "Every haplotype that carries it, and where on each."],
+     ["FaRandom", "What does my locus look like on another haplotype?", "Give a position and pick a haplotype.", "The locus on that haplotype, with the reference annotation drawn there."],
+     ["FaLayerGroup", "Where does that haplotype differ from the reference?", "Same view.", "The graph's alignment, base by base, in the Alignment Differences track."]]
+      .forEach(([i, q, give, get], k) => { const x = M + k * (cw + 0.4); card(s, x, T, cw, 4.5); circleIcon(s, ic[i], x + 0.35, T + 0.35, 0.75);
+        txt(s, q, x + 0.35, T + 1.25, cw - 0.7, 1.0, { fontSize: 19, bold: true, color: C.navy });
+        txt(s, "you give", x + 0.35, T + 2.35, cw - 0.7, 0.3, { fontSize: 12, bold: true, color: C.muted, charSpacing: 2 });
+        txt(s, give, x + 0.35, T + 2.65, cw - 0.7, 0.5, { fontSize: 15 });
+        txt(s, "you get", x + 0.35, T + 3.25, cw - 0.7, 0.3, { fontSize: 12, bold: true, color: C.muted, charSpacing: 2 });
+        txt(s, get, x + 0.35, T + 3.55, cw - 0.7, 0.9, { fontSize: 15 }); });
+    takeaway(s, "A browser tab, and a sequence or a position. No pipeline, no download.");
+    notes(s, `[10:15-10:40]
+Put simply, three questions a release 2 user can now ask without leaving the browser.
+Is my sequence in any HPRC individual? Paste it, and get every haplotype that carries it and where.
+What does my locus look like on another haplotype? Give a position, pick a haplotype, and see it there with the reference annotation drawn on it.
+And where does that haplotype differ from the reference? Same view: the graph's alignment, base by base.
+A browser tab, and a sequence or a position. No pipeline, no download.`); }
 
   // ============ 14. FAST ENOUGH ============
   { const s = light("Fast enough to sit behind a web page");
@@ -279,7 +286,7 @@ No pipeline, no download. A browser tab, and a sequence or a position.`); }
         valAxisMinVal: 0, valAxisMaxVal: 80, valAxisMajorUnit: 20, catAxisTitle: "threads", showCatAxisTitle: true, catAxisTitleColor: C.muted, catAxisTitleFontSize: 14 });
     txt(s, "Single-thread run was warm-up-limited; read the plateau: about 60 queries per second per server.", 6.9, T + 4.4, W - M - 6.9, 0.4, { fontSize: 14, color: C.muted, align: "center" });
     takeaway(s, "Exon-scale in 20 ms, a 10 kb gene in a tenth of a second, a megabase in four. One server sustains about 60 queries a second.", 6.35);
-    notes(s, `[10:55-11:40]
+    notes(s, `[10:40-11:25]
 None of this matters if it takes a minute. So: is it fast enough to sit behind a web page?
 Exon-scale intervals translate in about twenty milliseconds, a ten-kilobase gene in about a tenth of a second, a hundred kilobases in under a second, a megabase in about four.
 And it serves many people at once: throughput goes from six to sixty queries a second and saturates around eight cores. Read that as "one box serves about sixty queries a second", not as perfect scaling; the single-thread number was warm-up-limited.`); }
@@ -297,7 +304,7 @@ And it serves many people at once: throughput goes from six to sixty queries a s
     s.addText([{ text: "Next: ", options: { color: C.dim } }, { text: "public release in the UCSC Genome Browser", options: { color: C.white, bold: true } }],
       { x: M, y: 5.95, w: W - 2 * M, h: 0.5, fontFace: FONT, fontSize: 22, align: "center", isTextBox: true, margin: 0 });
     txt(s, "Available on the development browser now. Bring us your hardest region.", M, 6.5, W - 2 * M, 0.5, { fontSize: 20, italic: true, color: C.gold, align: "center", valign: "middle" });
-    notes(s, `[11:40-12:20]
+    notes(s, `[11:25-12:05]
 So, the two use cases. Sequence search: every carrying haplotype found in seconds, and the sequence viewed as a track on any of them. Coordinate translation: any of the 464 haplotypes as the target in about a hundred milliseconds, with the reference's annotation drawn there.
 Release 2 becomes something a scientist can query, not only browse. The next step is the public UCSC Genome Browser. It is available on the development browser now; bring us your hardest region.
 (Advance to thanks. Let it breathe. Then questions.)`); }
@@ -316,7 +323,7 @@ Release 2 becomes something a scientist can query, not only browse. The next ste
       { text: "The UCSC Genome Browser team  •  The Human Pangenome Reference Consortium", options: { color: C.dim, fontSize: 16, breakLine: true } },
       { text: "Built on vg and the HPRC v2.0 graph", options: { color: C.dim, fontSize: 16 } }],
       { x: M, y: 5.35, w: W - 2 * M, h: 1.7, fontFace: FONT, isTextBox: true, margin: 0, valign: "top", paraSpaceAfter: 6 });
-    notes(s, `[12:20-12:35]
+    notes(s, `[12:05-12:20]
 None of this was mine alone: Jouni Sirén, Benedict Paten, and a lot of help from the Computational Genomics Lab and the Genome Browser team. Thank you. Questions.`); }
 
   // ============ BACKUP ============

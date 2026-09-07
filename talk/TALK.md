@@ -1,6 +1,6 @@
 # HPRC 2026 talk: design, script, and delivery notes (v5)
 
-**Slot:** 15 minutes. The script runs about 12:35 including two ~45 s screen recordings, leaving room for the room.
+**Slot:** 15 minutes. The script runs about 12:20 including two ~45 s screen recordings, leaving room for the room.
 **Deck:** `HPRC2026_talk.pptx`, 19 main slides (16 distinct, slide 7 is four builds) + 5 backup. Speaker notes are on every slide; the script below is generated from them, so the two cannot drift.
 **Audience:** HPRC scientists. The point is not that a browser tool got better; the point is that the release 2 assemblies and graph become directly queryable. Speak of release 2 as their resource. No implementation detail (code, servers, browser internals) belongs in the talk.
 
@@ -20,16 +20,16 @@
 | 4 | Two use cases on the release 2 graph | 0:40 | 2:35 |
 | 5 | Two questions, answered in milliseconds | 0:35 | 3:10 |
 | 6 | Tag arrays: an index that knows the graph | 1:00 | 4:10 |
-| 7 | Translating a region is a walk, not a lookup (4 build slides) | 1:20 | 5:50 |
-| 8 | Use case 1: a sequence that is not in GRCh38 | 1:20 | 7:10 |
-| 9 | What this enables on release 2 | 0:35 | 7:45 |
-| 10 | Moving a locus onto a release 2 haplotype today | 0:35 | 8:20 |
-| 11 | Use case 2: a known gene, on HG02015 | 1:40 | 10:00 |
-| 12 | What this enables on release 2 | 0:35 | 10:35 |
-| 13 | Who this is for | 0:40 | 11:15 |
-| 14 | Fast enough to sit behind a web page | 0:45 | 12:00 |
-| 15 | Release 2, queryable | 0:40 | 12:40 |
-| 16 | Thank you | 0:15 | 12:55 |
+| 7 | Translating a region is a walk, not a lookup (4 build slides) | 1:20 | 5:30 |
+| 8 | Use case 1: a sequence that is not in GRCh38 | 1:20 | 6:50 |
+| 9 | What this enables on release 2 | 0:35 | 7:25 |
+| 10 | Moving a locus onto a release 2 haplotype today | 0:35 | 8:00 |
+| 11 | Use case 2: a known gene, on HG02015 | 1:40 | 9:40 |
+| 12 | What this enables on release 2 | 0:35 | 10:15 |
+| 13 | What a release 2 user can now ask | 0:25 | 10:40 |
+| 14 | Fast enough to sit behind a web page | 0:45 | 11:25 |
+| 15 | Release 2, queryable | 0:40 | 12:05 |
+| 16 | Thank you | 0:15 | 12:20 |
 
 Why this order: release 2 comes first, as the audience's own resource, with the gap stated honestly: the tools exist (giraffe, odgi, r-index, halLiftover, impg), but each needs a large index, compute, and a terminal workflow that most clinicians and many researchers cannot use. Never say "no tools exist"; the room wrote them. The two use cases are planted before the method; slide 5 turns them into the two questions an index must answer interactively, which is why the tag array index comes next and the tools only after it. Tag arrays get one slide plus the four-step translation walk: the index is the contribution everything rests on, but the room needs the idea, not the data structure. Each use case is a recording you narrate, followed by one "what this enables" slide. Existing browser tools and chain counts appear only where they explain why use case 2 was not possible before.
 
@@ -119,25 +119,27 @@ Opening the result is the part I care about most. HG02015 has its own CAT and Li
 "Before, a locus could be moved only between assembly pairs with a prebuilt chain, and a release 2 haplotype without one showed only its own tracks. Now any of the 464 haplotypes can be the target, from GRCh38 or CHM13, in about a hundred milliseconds; the reference's tracks are drawn there over an alignment built for that region, with the differences marked.
 The thousands of tracks that exist once, on one reference, will never be rebuilt 464 times. With this, any release 2 haplotype can borrow them for the region under study."
 
-### 13. Who this is for (10:15 to 10:55)
+### 13. What a release 2 user can now ask (10:15 to 10:40)
 
-"Who is this for? For clinicians and curators: is this insertion private to my patient, or carried by HPRC individuals, and which ones? ClinVar and GWAS context on the haplotype that actually carries the patient's allele. And the complex loci where one reference misleads: HLA, KIR, CYP2D6, LPA, SMN, seen on many haplotypes with the reference annotation drawn there.
-For researchers and graph builders: place contigs, probes, primers or guide RNAs on every haplotype at once; move any annotation, including your own tracks, onto any assembly; and inspect the graph's alignment itself, because the Alignment Differences track is the graph, drawn base by base.
-No pipeline, no download. A browser tab, and a sequence or a position."
+"Put simply, three questions a release 2 user can now ask without leaving the browser.
+Is my sequence in any HPRC individual? Paste it, and get every haplotype that carries it and where.
+What does my locus look like on another haplotype? Give a position, pick a haplotype, and see it there with the reference annotation drawn on it.
+And where does that haplotype differ from the reference? Same view: the graph's alignment, base by base.
+A browser tab, and a sequence or a position. No pipeline, no download."
 
-### 14. Fast enough to sit behind a web page (10:55 to 11:40)
+### 14. Fast enough to sit behind a web page (10:40 to 11:25)
 
 "None of this matters if it takes a minute. So: is it fast enough to sit behind a web page?
 Exon-scale intervals translate in about twenty milliseconds, a ten-kilobase gene in about a tenth of a second, a hundred kilobases in under a second, a megabase in about four.
 And it serves many people at once: throughput goes from six to sixty queries a second and saturates around eight cores. Read that as "one box serves about sixty queries a second", not as perfect scaling; the single-thread number was warm-up-limited."
 
-### 15. Release 2, queryable (11:40 to 12:20)
+### 15. Release 2, queryable (11:25 to 12:05)
 
 "So, the two use cases. Sequence search: every carrying haplotype found in seconds, and the sequence viewed as a track on any of them. Coordinate translation: any of the 464 haplotypes as the target in about a hundred milliseconds, with the reference's annotation drawn there.
 Release 2 becomes something a scientist can query, not only browse. The next step is the public UCSC Genome Browser. It is available on the development browser now; bring us your hardest region.
 (Advance to thanks. Let it breathe. Then questions.)"
 
-### 16. Thank you (12:20 to 12:35)
+### 16. Thank you (12:05 to 12:20)
 
 "None of this was mine alone: Jouni Sirén, Benedict Paten, and a lot of help from the Computational Genomics Lab and the Genome Browser team. Thank you. Questions."
 
