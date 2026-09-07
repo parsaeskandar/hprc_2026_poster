@@ -28,7 +28,7 @@ Differences track).
 
 `talk/` holds the 15-minute HPRC 2026 talk built from the same material:
 
-- `talk/HPRC2026_talk.pptx`: the deck (19 slides + 5 backup; slide 7 is four builds), speaker notes on every slide; drop screen recordings into `talk/figures/videos/` as `scenario1.mp4` and `scenario2.mp4` and rebuild to embed them.
-- `talk/TALK.md`: narrative design, full timed script, delivery notes, and likely questions.
+- `talk/HPRC2026_talk.pptx`: the deck (15 slides + 3 backup; slides 9 to 12 are one figure built up in four clicks), speaker notes on every slide; drop screen recordings into `talk/figures/videos/` as `scenario1.mp4` and `scenario2.mp4` and rebuild to embed them.
+- `talk/TALK.md`: outline, talking points, recording notes, numbers, and likely questions.
 - `talk/build/build.js`: generator (`cd talk/build && npm install && node build.js`).
 - `talk/figures/`: rendered figures and cropped screenshots (TikZ sources in `figures/src`).
