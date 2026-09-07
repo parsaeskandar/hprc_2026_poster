@@ -1,6 +1,6 @@
 # HPRC 2026 talk: design, script, and delivery notes (v5)
 
-**Slot:** 15 minutes. The script runs about 12:20 including two ~45 s screen recordings, leaving room for the room.
+**Slot:** 15 minutes. The script runs about 12:30 including two ~45 s screen recordings, leaving room for the room.
 **Deck:** `HPRC2026_talk.pptx`, 19 main slides (16 distinct, slide 7 is four builds) + 5 backup. Speaker notes are on every slide; the script below is generated from them, so the two cannot drift.
 **Audience:** HPRC scientists. The point is not that a browser tool got better; the point is that the release 2 assemblies and graph become directly queryable. Speak of release 2 as their resource. No implementation detail (code, servers, browser internals) belongs in the talk.
 
@@ -15,21 +15,21 @@
 | # | Slide | Budget | Elapsed |
 |---|---|---|---|
 | 1 | Title | 0:15 | 0:15 |
-| 2 | 464 haplotypes; 2 hold almost everything we know | 0:45 | 1:00 |
-| 3 | Possible on release 2, only in a terminal | 0:55 | 1:55 |
-| 4 | Two use cases on the release 2 graph | 0:40 | 2:35 |
-| 5 | Two questions, answered in milliseconds | 0:35 | 3:10 |
-| 6 | Tag arrays: an index that knows the graph | 1:00 | 4:10 |
-| 7 | Translating a region is a walk, not a lookup (4 build slides) | 1:20 | 5:30 |
-| 8 | Use case 1: a sequence that is not in GRCh38 | 1:20 | 6:50 |
-| 9 | What this enables on release 2 | 0:35 | 7:25 |
-| 10 | Moving a locus onto a release 2 haplotype today | 0:35 | 8:00 |
-| 11 | Use case 2: a known gene, on HG02015 | 1:40 | 9:40 |
-| 12 | What this enables on release 2 | 0:35 | 10:15 |
-| 13 | What a release 2 user can now ask | 0:25 | 10:40 |
-| 14 | Fast enough to sit behind a web page | 0:45 | 11:25 |
-| 15 | Release 2, queryable | 0:40 | 12:05 |
-| 16 | Thank you | 0:15 | 12:20 |
+| 2 | 464 haplotypes; 2 hold almost everything we know | 0:55 | 1:10 |
+| 3 | Possible on release 2, only in a terminal | 0:55 | 2:05 |
+| 4 | Two use cases on the release 2 graph | 0:40 | 2:45 |
+| 5 | Two questions, answered in milliseconds | 0:35 | 3:20 |
+| 6 | Tag arrays: an index that knows the graph | 1:00 | 4:20 |
+| 7 | Translating a region is a walk, not a lookup (4 build slides) | 1:20 | 5:40 |
+| 8 | Use case 1: a sequence that is not in GRCh38 | 1:20 | 7:00 |
+| 9 | What this enables on release 2 | 0:35 | 7:35 |
+| 10 | Moving a locus onto a release 2 haplotype today | 0:35 | 8:10 |
+| 11 | Use case 2: a known gene, on HG02015 | 1:40 | 9:50 |
+| 12 | What this enables on release 2 | 0:35 | 10:25 |
+| 13 | What a release 2 user can now ask | 0:25 | 10:50 |
+| 14 | Fast enough to sit behind a web page | 0:45 | 11:35 |
+| 15 | Release 2, queryable | 0:40 | 12:15 |
+| 16 | Thank you | 0:15 | 12:30 |
 
 Why this order: release 2 comes first, as the audience's own resource, with the gap stated honestly: the tools exist (giraffe, odgi, r-index, halLiftover, impg), but each needs a large index, compute, and a terminal workflow that most clinicians and many researchers cannot use. Never say "no tools exist"; the room wrote them. The two use cases are planted before the method; slide 5 turns them into the two questions an index must answer interactively, which is why the tag array index comes next and the tools only after it. Tag arrays get one slide plus the four-step translation walk: the index is the contribution everything rests on, but the room needs the idea, not the data structure. Each use case is a recording you narrate, followed by one "what this enables" slide. Existing browser tools and chain counts appear only where they explain why use case 2 was not possible before.
 
@@ -41,13 +41,15 @@ Timings are cumulative. Stage directions in *italics*. Everything below is also 
 
 "Thank you. I'm Parsa Eskandar, from Benedict Paten's lab at UC Santa Cruz. This is joint work with Jouni Sirén and the UCSC Genome Browser team, and it is about making the release 2 assemblies something a scientist can query directly."
 
-### 2. 464 haplotypes; 2 hold almost everything we know (0:15 to 1:00)
+### 2. 464 haplotypes; 2 hold almost everything we know (0:15 to 1:10)
 
-"HPRC release 2 is the most complete picture of human variation we have: 464 haplotypes, in one graph. Two of those haplotypes, GRCh38 and CHM13, carry almost everything we know about the human genome: the gene models, the clinical variants, the regulatory annotation, and everyone's own tracks.
+"HPRC release 2 is 464 haplotypes in one graph: the most complete picture of human variation we have ever had.
 (pause)
-The tools to work with the graph exist: vg giraffe maps to it, odgi and the r-index query it, halLiftover and impg move coordinates across it. But every one of them wants a large index on disk, real compute, and a command-line workflow that takes time to set up and time to run. A clinician, or a researcher outside a genomics group, never gets past that step. So in practice release 2 is browsed, one assembly at a time, and the graph itself goes unused. This talk is about removing that barrier."
+Now look at how our knowledge sits on those 464. Two of them, GRCh38 and CHM13, carry almost everything we know: the gene models, ClinVar, the GWAS catalog, the regulatory annotation, every track anyone has ever built. The other 462 are the reason release 2 exists. They carry what the two references miss: the insertions that are not in GRCh38, the alleles at HLA or LPA, the segmental duplications the reference gets wrong. And they carry almost none of our annotation.
+So the value of release 2 depends on traffic in both directions. Our knowledge has to travel from the two onto the 462: take a gene we understand on GRCh38 and see it on another haplotype. And sequence has to travel from the 462 back to the two: take something that is not in the reference, find which haplotypes carry it, and see it next to what we already know.
+Both directions are possible today, if you have a cluster and a terminal. For everyone else, release 2 is 464 assemblies to browse one at a time. That is the gap."
 
-### 3. Possible on release 2, only in a terminal (1:00 to 1:55)
+### 3. Possible on release 2, only in a terminal (1:10 to 2:05)
 
 "Concretely, three things release 2 can already do, but only from the command line.
 Place a sequence across haplotypes: which of the 464 carry it, where, and what does each region look like? Today that is a giraffe index, a mapping run, and a terminal session before the first answer.
@@ -55,27 +57,27 @@ Move a locus onto a haplotype: take coordinates known on GRCh38 or CHM13 to any 
 And bring the annotation along: see the reference's gene models, ClinVar, GWAS, or your own tracks on a release 2 haplotype. Today you lift every track yourself, per haplotype, before anyone can look.
 None of this is impossible. The graph already holds the answers. Reaching them takes compute, disk, and bioinformatics expertise that most clinicians and many researchers do not have, and time that even the experts would rather spend elsewhere."
 
-### 4. Two use cases on the release 2 graph (1:55 to 2:35)
+### 4. Two use cases on the release 2 graph (2:05 to 2:45)
 
 "I will follow two use cases through the rest of the talk.
 Use case 1, sequence search. A researcher has a sequence that is not in GRCh38: an insertion assembled from a sample, a probe, a contig. Which release 2 haplotypes carry it, and where on each?
 Use case 2, coordinate translation. A researcher knows a gene on GRCh38 or CHM13 and wants to see it, with its annotation, on a specific release 2 haplotype.
 Today the first means a giraffe index and a terminal session; the second, a ready-made chain for a few assembly pairs and a halLiftover run for every other one. Both are shown live, in a web page, on the release 2 graph in this talk."
 
-### 5. Two questions, answered in milliseconds (2:35 to 3:10)
+### 5. Two questions, answered in milliseconds (2:45 to 3:20)
 
 "So what would it take to do this in a web page, where a user waits a second and not an hour? Both use cases come down to two questions the index underneath has to answer in milliseconds.
 Where in the graph is this sequence? Asked once, against all 464 haplotypes, not 464 times against one assembly each, and for any sequence, of any length.
 And: who passes through this node, and where? Answered for any haplotype against any other, without a pairwise alignment prepared in advance for each of the more than two hundred thousand pairs.
 Nothing that existed answered both, at that scale, at interactive speed. So before any tool, we built the index: a tag array index over the release 2 graph. Built once. Everything you will see in the rest of this talk is a query against it. Let me spend three slides on what it is."
 
-### 6. Tag arrays: an index that knows the graph (3:10 to 4:10)
+### 6. Tag arrays: an index that knows the graph (3:20 to 4:20)
 
 "Here is the index on a toy graph, and it is all you need for the rest of the talk. Three haplotypes, one text, one BWT. Alongside the BWT sits the tag array: every BWT position carries a tag, the node and offset in the graph that character came from. On the right, the same thing as columns: search a pattern the way any FM-index does, read the tags in the interval, and you have the graph positions.
 Three consequences. One index answers for every haplotype: all 464 are indexed together, so a sequence is looked up once and found on every haplotype that carries it. Every match knows its place in the graph: a hit is a node and an offset, not a line in one assembly. And every node knows who visits it: ask a node and get every haplotype passing through it, each with its own coordinate. That last one is how a locus moves from one haplotype to another.
 Earlier pangenome indexes made you choose: index the haplotypes and get every hit 464 times, or index the graph and lose parts of the haplotypes. Tag arrays keep the haplotypes and add the graph. Nothing is lost, nothing is repeated, and nothing anywhere says CHM13-to-HG02015: there is no pairwise index, which is why any of the 464 can be translated to any other. Details are in the paper and I am happy to go into them in questions."
 
-### 7. Translating a region is a walk, not a lookup (4:10 to 5:30; four slides, one step per click)
+### 7. Translating a region is a walk, not a lookup (4:20 to 5:40; four slides, one step per click)
 
 "With that one property in hand, translating a region stops being a lookup and becomes a walk. Four steps, one click each."
 *click*
@@ -88,25 +90,25 @@ Earlier pangenome indexes made you choose: index the haplotypes and get every hi
 "Four. Walk the graph between anchors, one base at a time, and group the bases that share an offset into blocks. A block breaks on an indel, never on a SNP; an inversion starts a new chain. That is exactly what a chain file means.
 So the output is not a coordinate. It is a chain, and the browser already knows what to do with a chain. If the target does not contain the interval, you get fewer positions, never invented ones."
 
-### 8. Use case 1: a sequence that is not in GRCh38 (5:30 to 6:50)
+### 8. Use case 1: a sequence that is not in GRCh38 (5:40 to 7:00)
 
 "Start the recording; narrate over it.
 Use case 1: a sequence that is not in the reference. This is the Pangenome Mapping page.
 The sequence is pasted and mapped once, to the whole release 2 graph, with vg giraffe, in a few seconds. The result is something no single-assembly search can give: exactly two of the 464 haplotypes carry this sequence, HG01167 hap1 and HG04157 paternal, and GRCh38 is not one of them. They are ranked by identity, with coverage beside it.
 Selecting HG01167 opens it in the browser: the sequence is drawn as a track with base-level differences, in the context of that haplotype's own annotation. Selecting a different carrier re-uses the same alignment; nothing is remapped."
 
-### 9. What this enables on release 2 (6:50 to 7:25)
+### 9. What this enables on release 2 (7:00 to 7:35)
 
 "What this enables on release 2: one search across all 464 haplotypes instead of one assembly at a time; sequences absent from the reference are found on the haplotypes that carry them, together with how many carry them; and any carrier can be opened with the sequence as a track, with another carrier costing no remapping.
 One detail this room will notice: MAPQ is zero by design. In a graph where every locus exists hundreds of times, mapping quality carries no information; per-haplotype identity and coverage replace it."
 
-### 10. Moving a locus onto a release 2 haplotype today (7:25 to 8:00)
+### 10. Moving a locus onto a release 2 haplotype today (7:35 to 8:10)
 
 "Use case 2: a gene known on a reference, on a specific release 2 haplotype.
 Moving a locus between assemblies today relies on a pairwise chain. The Genome Browser can draw one assembly's tracks on another, but only over a prebuilt chain between the two, and chains are built on request, one pair at a time. 464 haplotypes are more than two hundred thousand pairs; chains exist for fifty-six of them. For most release 2 haplotypes, HG02015 among them, no chain exists.
 The graph already contains the alignment for every pair. It has to be usable on demand, and that is exactly what the walk I showed produces."
 
-### 11. Use case 2: a known gene, on HG02015 (8:00 to 9:40)
+### 11. Use case 2: a known gene, on HG02015 (8:10 to 9:50)
 
 "Start the recording; slow down at the landing.
 Now the same request on the release 2 graph. Source: the gene as known on the reference, here HLA-DMA on CHM13, ten kilobases on chromosome 6; GRCh38 is a path in this graph too, so it works identically as the source. Target: HG02015 paternal, chosen from all 464; the picker can be restricted to haplotypes that contain the region.
@@ -114,12 +116,12 @@ Translated in about a hundred milliseconds, covering a hundred percent of bases.
 Opening the result is the part I care about most. HG02015 has its own CAT and Liftoff genes from release 2. What it does not have is everything that exists once, on one reference: ClinVar, the GWAS catalog, ENCODE, a lab's own tracks. Here they are, drawn at their translated positions, with the differences between the two assemblies marked.
 (pause) The alignment that made this possible did not exist a second before the page loaded. It was built from the graph for this region and this haplotype, and the browser drew the tracks over it."
 
-### 12. What this enables on release 2 (9:40 to 10:15)
+### 12. What this enables on release 2 (9:50 to 10:25)
 
 "Before, a locus could be moved only between assembly pairs with a prebuilt chain, and a release 2 haplotype without one showed only its own tracks. Now any of the 464 haplotypes can be the target, from GRCh38 or CHM13, in about a hundred milliseconds; the reference's tracks are drawn there over an alignment built for that region, with the differences marked.
 The thousands of tracks that exist once, on one reference, will never be rebuilt 464 times. With this, any release 2 haplotype can borrow them for the region under study."
 
-### 13. What a release 2 user can now ask (10:15 to 10:40)
+### 13. What a release 2 user can now ask (10:25 to 10:50)
 
 "Put simply, three questions a release 2 user can now ask without leaving the browser.
 Is my sequence in any HPRC individual? Paste it, and get every haplotype that carries it and where.
@@ -127,19 +129,19 @@ What does my locus look like on another haplotype? Give a position, pick a haplo
 And where does that haplotype differ from the reference? Same view: the graph's alignment, base by base.
 A browser tab, and a sequence or a position. No pipeline, no download."
 
-### 14. Fast enough to sit behind a web page (10:40 to 11:25)
+### 14. Fast enough to sit behind a web page (10:50 to 11:35)
 
 "None of this matters if it takes a minute. So: is it fast enough to sit behind a web page?
 Exon-scale intervals translate in about twenty milliseconds, a ten-kilobase gene in about a tenth of a second, a hundred kilobases in under a second, a megabase in about four.
 And it serves many people at once: throughput goes from six to sixty queries a second and saturates around eight cores. Read that as "one box serves about sixty queries a second", not as perfect scaling; the single-thread number was warm-up-limited."
 
-### 15. Release 2, queryable (11:25 to 12:05)
+### 15. Release 2, queryable (11:35 to 12:15)
 
 "So, the two use cases. Sequence search: every carrying haplotype found in seconds, and the sequence viewed as a track on any of them. Coordinate translation: any of the 464 haplotypes as the target in about a hundred milliseconds, with the reference's annotation drawn there.
 Release 2 becomes something a scientist can query, not only browse. The next step is the public UCSC Genome Browser. It is available on the development browser now; bring us your hardest region.
 (Advance to thanks. Let it breathe. Then questions.)"
 
-### 16. Thank you (12:05 to 12:20)
+### 16. Thank you (12:15 to 12:30)
 
 "None of this was mine alone: Jouni Sirén, Benedict Paten, and a lot of help from the Computational Genomics Lab and the Genome Browser team. Thank you. Questions."
 
@@ -151,7 +153,7 @@ Release 2 becomes something a scientist can query, not only browse. The next ste
   - Use case 2: Convert Coordinates page with source and region pre-filled > pick HG02015 paternal > Convert > click the result link > hgTracks with lifted tracks and Alignment Differences > pan once.
   - If you want use case 2 to literally start from GRCh38, record it with hg38 as the source; the deck needs no change.
 - **One pause per slide.** Slide 2 after "GRCh38 and CHM13." Slide 12 after "did not exist a second before the page loaded."
-- **Hard caps where you will run long:** slide 7 (1:05), slide 8 (1:25), slide 12 (1:45).
+- **Hard caps where you will run long:** slide 7 (1:15), slide 8 (1:35), slide 12 (1:55).
 - **Numbers to know cold:** 464 haplotypes (CHM13 and GRCh38 included), 56 chains of 200,000+ pairs, 148M nodes; index: 2.6 Tbp, 26 B tag runs, 149 GiB, 23 GiB sampled; ~20 ms for ≤1 kb, 115 ms at 10 kb, 0.6 s at 100 kb, 4.3 s at 1 Mb; ~60 queries/s per server.
 - **Vocabulary:** "release 2" means the HPRC release 2 assemblies and graph, never our software. "Haplotype" for the 464; never 466; never "genome" for the 464. "Use case 1 / use case 2", not stories or personas.
 - **QuickLift facts** (UCSC 2026 update): View > In Other Genomes, tick "QuickLift tracks"; needs a prebuilt liftOver chain, "such alignments can be created by UCSC upon request"; showcase is hg38 to hs1; differences shown as vertical bars. Speak of it with respect: our tool uses its renderer.
