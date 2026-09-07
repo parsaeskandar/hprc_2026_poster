@@ -15,7 +15,7 @@
 | # | Slide | Budget | Elapsed |
 |---|---|---|---|
 | 1 | Title | 0:15 | 0:15 |
-| 2 | 464 haplotypes; 2 hold almost everything we know | 0:55 | 1:10 |
+| 2 | 2 references, 462 new haplotypes, traffic both ways | 0:55 | 1:10 |
 | 3 | Possible on release 2, only in a terminal | 0:55 | 2:05 |
 | 4 | Two use cases on the release 2 graph | 0:40 | 2:45 |
 | 5 | Two questions, answered in milliseconds | 0:35 | 3:20 |
@@ -41,7 +41,7 @@ Timings are cumulative. Stage directions in *italics*. Everything below is also 
 
 "Thank you. I'm Parsa Eskandar, from Benedict Paten's lab at UC Santa Cruz. This is joint work with Jouni Sirén and the UCSC Genome Browser team, and it is about making the release 2 assemblies something a scientist can query directly."
 
-### 2. 464 haplotypes; 2 hold almost everything we know (0:15 to 1:10)
+### 2. 2 references, 462 new haplotypes, traffic both ways (0:15 to 1:10)
 
 "HPRC release 2 is 464 haplotypes in one graph: the most complete picture of human variation we have ever had.
 (pause)

@@ -72,18 +72,30 @@ async function icon(name, color, px = 256) { const svg = ReactDOMServer.renderTo
     notes(s, `[0:00-0:15]
 Thank you. I'm Parsa Eskandar, from Benedict Paten's lab at UC Santa Cruz. This is joint work with Jouni Sirén and the UCSC Genome Browser team, and it is about making the release 2 assemblies something a scientist can query directly.`); }
 
-  // ============ 2. OPENING ============
+  // ============ 2. OPENING: 2 AND 462, TRAFFIC BOTH WAYS ============
   { const s = dark();
-    txt(s, "464", M, 0.85, 5.6, 2.0, { fontSize: 120, bold: true, color: C.gold, valign: "middle" });
-    txt(s, "haplotypes in the HPRC release 2 graph", M, 2.85, 5.6, 0.9, { fontSize: 22, color: C.white });
-    txt(s, "2", 7.0, 0.85, 5.7, 2.0, { fontSize: 120, bold: true, color: C.white, valign: "middle" });
-    txt(s, "of them hold almost everything we know: GRCh38 and CHM13", 7.0, 2.85, 5.7, 0.9, { fontSize: 22, color: C.dim });
-    const cols = 29, rows = 16, sq = 0.115, pitch = 0.16, gx = M, gy = 4.0;
-    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const g = (r === 6 && c === 9) || (r === 9 && c === 18); const col = g ? C.gold : C.grid;
-      s.addShape(pres.shapes.RECTANGLE, { x: gx + c * pitch, y: gy + r * pitch, w: sq, h: sq, fill: { color: col }, line: { color: col, width: 0 } }); }
-    txt(s, "464 coordinate systems; two carry the annotation", M, 6.7, 5.9, 0.5, { fontSize: 15, color: C.dim });
-    txt(s, "Release 2 is the most complete picture of human variation we have, and the tools to work with it exist.", 7.0, 4.05, 5.7, 1.4, { fontSize: 21, color: C.white });
-    txt(s, "Every one of them needs a large index, real compute, and a command-line workflow. Most clinicians and many researchers never get past that.", 7.0, 5.4, 5.7, 1.4, { fontSize: 21, italic: true, color: C.gold });
+    txt(s, "HPRC release 2: 464 haplotypes in one graph", M, 0.45, W - 2 * M, 0.5, { fontSize: 20, color: C.dim, align: "center", charSpacing: 1 });
+    const lw = 3.9, lx = M, rx = W - M - lw, midx = lx + lw + 0.3, midw = rx - midx - 0.3;
+    // left: the two references
+    txt(s, "2", lx, 1.1, lw, 1.9, { fontSize: 120, bold: true, color: C.gold, align: "center", valign: "middle" });
+    txt(s, "GRCh38 and CHM13", lx, 3.0, lw, 0.5, { fontSize: 22, bold: true, color: C.white, align: "center" });
+    txt(s, "carry almost everything we know: gene models, ClinVar, GWAS, regulatory annotation, everyone's own tracks", lx, 3.55, lw, 1.3, { fontSize: 15, color: C.dim, align: "center" });
+    // right: the new haplotypes
+    txt(s, "462", rx, 1.1, lw, 1.9, { fontSize: 120, bold: true, color: C.white, align: "center", valign: "middle" });
+    txt(s, "new haplotypes", rx, 3.0, lw, 0.5, { fontSize: 22, bold: true, color: C.white, align: "center" });
+    txt(s, "carry what the references miss: insertions, HLA and LPA alleles, segmental duplications. Almost none of our annotation.", rx, 3.55, lw, 1.3, { fontSize: 15, color: C.dim, align: "center" });
+    // middle: two directions of traffic
+    const ay1 = 2.15, ay2 = 3.85, ah = 0.42;
+    s.addShape(pres.shapes.RIGHT_ARROW, { x: midx, y: ay1, w: midw, h: ah, fill: { color: C.gold }, line: { color: C.gold, width: 0 } });
+    txt(s, "knowledge travels out", midx, ay1 - 0.5, midw, 0.45, { fontSize: 17, bold: true, color: C.gold, align: "center" });
+    txt(s, "a gene we understand on GRCh38, seen on any haplotype", midx, ay1 + ah + 0.02, midw, 0.6, { fontSize: 13, color: C.dim, align: "center" });
+    s.addShape(pres.shapes.LEFT_ARROW, { x: midx, y: ay2, w: midw, h: ah, fill: { color: C.teal }, line: { color: C.teal, width: 0 } });
+    txt(s, "sequence travels back", midx, ay2 - 0.5, midw, 0.45, { fontSize: 17, bold: true, color: "5FC3DE", align: "center" });
+    txt(s, "a sequence not in the reference: which haplotypes carry it, next to what we know", midx, ay2 + ah + 0.02, midw, 0.6, { fontSize: 13, color: C.dim, align: "center" });
+    // bottom: the gap
+    s.addShape(pres.shapes.LINE, { x: M + 1.5, y: 5.5, w: W - 2 * M - 3, h: 0, line: { color: C.dimdark, width: 1 } });
+    txt(s, "Both directions are possible today, with a cluster and a terminal.", M, 5.7, W - 2 * M, 0.5, { fontSize: 20, color: C.white, align: "center" });
+    txt(s, "For everyone else, release 2 is 464 assemblies to browse one at a time.", M, 6.2, W - 2 * M, 0.5, { fontSize: 20, italic: true, color: C.gold, align: "center" });
     notes(s, `[0:15-1:10]
 HPRC release 2 is 464 haplotypes in one graph: the most complete picture of human variation we have ever had.
 (pause)
