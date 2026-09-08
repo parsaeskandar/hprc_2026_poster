@@ -15,7 +15,7 @@
 8. How: tag arrays, one index over the whole graph (your figure plus the BWT and tag columns)
 9 to 12. Translating a region, one step per click
 13. Speed (latency lollipop)
-14. Next: public release; on the development browser now
+14. Roadmap: public release; translation that just works; from a variant on GRCh38 to its release 2 carriers; local ancestry (pclai) in the mapping results
 15. Thanks
 Backup: toy translation example; by the numbers
 
@@ -37,7 +37,7 @@ These are the same as the slide notes. Each is a fact or a cue, not a line to re
 - **11.** A node both paths visit exactly once cannot be a false anchor. Orthology comes from the graph.
 - **12.** Walk base by base; a block breaks on an indel, never a SNP; the output is a chain and the browser knows chains. Missing positions are possible, invented ones are not.
 - **13.** A gene in a tenth of a second, a megabase in seconds, about 60 queries a second per server. Nothing precomputed per pair.
-- **14.** What is done, what is planned. Invite people to try it on the development browser.
+- **14.** Roadmap. Release: both tools in the public browser, development browser today. Translation already flows from In Other Genomes and should be invisible everywhere. HPRC variant tracks on GRCh38: click a variant, see its release 2 carriers, go there. pclai local ancestry: color the carriers, helps choose which haplotypes to examine. The point: the pangenome as something browser users work with.
 
 ## 3. Recordings
 

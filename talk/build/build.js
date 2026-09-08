@@ -17,7 +17,7 @@ async function icon(name, color, px = 256) { const svg = ReactDOMServer.renderTo
 (async () => {
   const pres = new pptxgen(); pres.layout = "LAYOUT_WIDE"; pres.author = "Parsa Eskandar";
   pres.title = "A pangenome sequence search and coordinate translation service for the UCSC Genome Browser";
-  const ic = {}; for (const k of ["FaSearch", "FaRandom", "FaLayerGroup", "FaCheck", "FaExclamation", "FaRocket", "FaUserMd", "FaFlask", "FaTimes"]) ic[k] = await icon(k, C.white);
+  const ic = {}; for (const k of ["FaSearch", "FaRandom", "FaLayerGroup", "FaCheck", "FaExclamation", "FaRocket", "FaUserMd", "FaFlask", "FaTimes", "FaMapMarkerAlt", "FaPalette", "FaMagic"]) ic[k] = await icon(k, C.white);
 
   let n = 0;
   const num = (s, dark) => { n++; s.addText(String(n), { x: W - M - 0.5, y: H - 0.45, w: 0.5, h: 0.3, fontFace: FONT, fontSize: 10, color: dark ? C.dimdark : C.hair, align: "right", isTextBox: true, margin: 0 }); };
@@ -162,12 +162,20 @@ async function icon(name, color, px = 256) { const svg = ReactDOMServer.renderTo
     txt(s, "About 60 queries per second on one server.", M, 6.5, W - 2 * M, 0.5, { fontSize: 20, italic: true, color: C.navy, align: "center" });
     points(s, ["a gene in a tenth of a second; a megabase in seconds", "about 60 queries a second per server", "everything is built when the page loads; nothing is precomputed per pair"]); }
 
-  // ============ 14. NEXT ============
-  { const s = dark();
-    txt(s, "Next", M, 1.6, W - 2 * M, 0.6, { fontSize: 20, bold: true, color: C.gold, charSpacing: 3, align: "center" });
-    txt(s, "Public release in the UCSC Genome Browser", M, 2.4, W - 2 * M, 1.0, { fontSize: 40, bold: true, color: C.white, align: "center", valign: "middle" });
-    txt(s, "On the development browser now.", M, 3.7, W - 2 * M, 0.6, { fontSize: 24, italic: true, color: C.dim, align: "center" });
-    points(s, ["what is done, what is planned", "invite people to try it on the development browser"]); }
+  // ============ 14. ROADMAP ============
+  { const s = light("Roadmap");
+    const cw = (W - 2 * M - 0.4) / 2, ch = 2.45;
+    [["FaRocket", "Public release", "Both tools in the UCSC Genome Browser. On the development browser now.", "next"],
+     ["FaMagic", "Translation that just works", "Coordinates and tracks follow you from haplotype to haplotype. No conversion step to think about.", "next"],
+     ["FaMapMarkerAlt", "From a variant to its haplotypes", "Click an HPRC variant on GRCh38, see which release 2 haplotypes carry it, and jump to the sequence there.", "planned"],
+     ["FaPalette", "Ancestry in the results", "Mapping results colored by local ancestry (pclai): where the carriers sit in ancestry space, and which haplotypes to examine.", "planned"]]
+      .forEach(([i, a, b, when], k) => { const x = M + (k % 2) * (cw + 0.4), y = T + Math.floor(k / 2) * (ch + 0.3);
+        card(s, x, y, cw, ch); circleIcon(s, ic[i], x + 0.35, y + 0.35, 0.75, when === "next" ? C.navy : C.teal);
+        txt(s, when, x + cw - 1.6, y + 0.4, 1.25, 0.3, { fontSize: 12, bold: true, color: when === "next" ? C.navy : C.teal, align: "right", charSpacing: 2 });
+        txt(s, a, x + 1.3, y + 0.45, cw - 3.0, 0.6, { fontSize: 21, bold: true, color: C.navy, valign: "middle" });
+        txt(s, b, x + 0.35, y + 1.3, cw - 0.7, 1.05, { fontSize: 16 }); });
+    takeaway(s, "The pangenome becomes something a browser user works with, not something they know about.", 6.75);
+    points(s, ["release: both tools in the public browser; development browser today", "translation already flows from In Other Genomes; it should be invisible everywhere", "HPRC variant tracks on GRCh38: click a variant, see its release 2 carriers, go there", "pclai local ancestry: color the carriers; helps pick which haplotypes to look at", "the point: the pangenome as a thing browser users work with"]); }
 
   // ============ 15. THANKS ============
   { const s = dark();
