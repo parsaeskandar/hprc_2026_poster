@@ -23,7 +23,7 @@ async function icon(name, color, px = 256) { const svg = ReactDOMServer.renderTo
   const num = (s, dark) => { n++; s.addText(String(n), { x: W - M - 0.5, y: H - 0.45, w: 0.5, h: 0.3, fontFace: FONT, fontSize: 10, color: dark ? C.dimdark : C.hair, align: "right", isTextBox: true, margin: 0 }); };
   const notes = (s, t) => s.addNotes(t.trim());
   const txt = (s, text, x, y, w, h, o = {}) => s.addText(text, Object.assign({ x, y, w, h, fontFace: FONT, fontSize: 18, color: C.ink, isTextBox: true, margin: 0, valign: "top" }, o));
-  const bullets = (s, items, x, y, w, h, o = {}) => s.addText(items.map((t, i) => ({ text: t, options: { bullet: { indent: 16 }, breakLine: i < items.length - 1, paraSpaceAfter: 9 } })),
+  const bullets = (s, items, x, y, w, h, o = {}) => s.addText(items.map((t, i) => ({ text: t, options: { bullet: { indent: 16 }, breakLine: i < items.length - 1, paraSpaceAfter: o.paraSpaceAfter || 9 } })),
     Object.assign({ x, y, w, h, fontFace: FONT, fontSize: 18, color: C.ink, isTextBox: true, margin: 0, valign: "top" }, o));
   const light = (title) => { const s = pres.addSlide(); s.background = { color: C.white };
     txt(s, title, M, 0.42, W - 2 * M - 2.3, 0.78, { fontSize: 32, bold: true, color: C.navy, valign: "middle" }); num(s, false); return s; };
@@ -164,18 +164,11 @@ async function icon(name, color, px = 256) { const svg = ReactDOMServer.renderTo
 
   // ============ 14. ROADMAP ============
   { const s = light("Roadmap");
-    const cw = (W - 2 * M - 0.4) / 2, ch = 2.45;
-    [["FaRocket", "Public release", "Both tools in the UCSC Genome Browser. On the development browser now.", "next"],
-     ["FaMagic", "Translation that just works", "Coordinates and tracks follow you from haplotype to haplotype. No conversion step to think about.", "next"],
-     ["FaMapMarkerAlt", "From a variant to its haplotypes", "Click an HPRC variant on GRCh38, see which release 2 haplotypes carry it, and jump to the sequence there.", "planned"],
-     ["FaPalette", "Ancestry in the results", "Mapping results colored by local ancestry (pclai): where the carriers sit in ancestry space, and which haplotypes to examine.", "planned"]]
-      .forEach(([i, a, b, when], k) => { const x = M + (k % 2) * (cw + 0.4), y = T + Math.floor(k / 2) * (ch + 0.3);
-        card(s, x, y, cw, ch); circleIcon(s, ic[i], x + 0.35, y + 0.35, 0.75, when === "next" ? C.navy : C.teal);
-        txt(s, when, x + cw - 1.6, y + 0.4, 1.25, 0.3, { fontSize: 12, bold: true, color: when === "next" ? C.navy : C.teal, align: "right", charSpacing: 2 });
-        txt(s, a, x + 1.3, y + 0.45, cw - 3.0, 0.6, { fontSize: 21, bold: true, color: C.navy, valign: "middle" });
-        txt(s, b, x + 0.35, y + 1.3, cw - 0.7, 1.05, { fontSize: 16 }); });
-    takeaway(s, "The pangenome becomes something a browser user works with, not something they know about.", 6.75);
-    points(s, ["release: both tools in the public browser; development browser today", "translation already flows from In Other Genomes; it should be invisible everywhere", "HPRC variant tracks on GRCh38: click a variant, see its release 2 carriers, go there", "pclai local ancestry: color the carriers; helps pick which haplotypes to look at", "the point: the pangenome as a thing browser users work with"]); }
+    bullets(s, ["Public release in the UCSC Genome Browser",
+                "Translation that just works: tracks follow you across haplotypes, no conversion step",
+                "Click an HPRC variant on GRCh38, see which release 2 haplotypes carry it, go there",
+                "Mapping results colored by local ancestry (pclai)"], M + 0.3, T + 0.4, W - 2 * M - 0.6, 4.5, { fontSize: 24, paraSpaceAfter: 22 });
+    points(s, ["release: both tools in the public browser; development browser today", "translation already flows from In Other Genomes; it should be invisible everywhere", "HPRC variant tracks on GRCh38: click a variant, see its release 2 carriers, go there", "pclai local ancestry: color the carriers; helps pick which haplotypes to look at"]); }
 
   // ============ 15. THANKS ============
   { const s = dark();
